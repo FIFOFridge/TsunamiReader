@@ -1,27 +1,35 @@
 "use strict";
-const fs = require('fs');
-const remote = require('electron').remote;
+import fs from 'fs';
+import { remote } from 'electron';
 
-var BookManager = {
-    booksPath: path.join(remote.app.getPath('userData'), '/books.json'),
-    books: [],
-    currentBook: null,
-    getCurrentBook: function() {
-        return BookManager.currentBook;
-    },
-    setCurrentBook: function(book) {
-        BookManager.currentBook = book;
-    },
-    saveBooks: function() {
-        var booksContent = JSON.stringify(BookManager.books);
-        fs.writeFileSync(BookManager.booksPath, booksContent);
+export class BookManager {
+    booksPath;
+    books;
+    currentBook;
+    fnOnBookChange;
+
+    constructor(fnOnBookChange) {
+        this.booksPath = path.join(remote.app.getPath('userData'), '/books.json');
+        this.books = [];
+        this.fnOnBookChange = fnOnBookChange;
+
+        if (fs.existsSync(this.booksPath)) {
+            var booksContent = fs.readFileSync(BooksManager.booksPath);
+            this.books = JSON.parse(booksContent);
+        } else {
+            fs.writeFileSync(JSON.stringify(this.books)); 
+        }
     }
-};
 
-(function() {
-    //load books
-    var booksContent = fs.readFileSync(BooksManager.booksPath);
-    BooksManager.books = JSON.parse(booksContent);
-})
+    get getBooks() {
+        return this.books;
+    }
 
-module.exports = BookManager;
+    get getCurrentBook() {
+        return this.currentBook;
+    }
+
+    set setCurrentBook(book) {
+        this.currentBook = book;
+    }
+}
