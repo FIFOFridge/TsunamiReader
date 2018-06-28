@@ -44,7 +44,7 @@ function createWindow() {
 
 //init
 app.on('ready', function() {
-    appSettings.save();
+    //appSettings.save();
     createWindow();
 })
 

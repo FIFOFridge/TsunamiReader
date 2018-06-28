@@ -9,7 +9,7 @@ export class Settings {
         this.tempExtension = ".new";
     }
 
-    get save() {
+    save() {
         var newSettingsPath = path.join(remote.app.getPath('userData'), 
             ('/books.json' + this.tempExtension) 
         );

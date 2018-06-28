@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import appRouter from '../../modules/appRouter'
 
 Vue.use(Router)
 
-export default new Router({
+var router = new Router({
     routes: [
         {
             path: '*',
@@ -26,3 +27,7 @@ export default new Router({
         }
     ]
 })
+
+router.beforeEach = appRouter.beforeEach;
+
+export default router;
