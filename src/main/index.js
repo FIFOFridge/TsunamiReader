@@ -36,8 +36,8 @@ function createWindow() {
 
 //init
 app.on('ready', function() {
-    var settings = new Settings()
-    //global.appSettings = appSettings;
+    var settings = new Settings(app.platform)
+    global.appSettings = settings;
 
     createWindow()
 })
