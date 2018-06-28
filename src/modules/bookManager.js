@@ -1,28 +1,25 @@
 "use strict";
 import fs from 'fs';
 import { remote } from 'electron';
+import hashtable from './helpers/hastable';
 
 export class BookManager {
-    booksPath;
-    books;
-    currentBook;
-    fnOnBookChange;
-
     constructor(fnOnBookChange) {
         this.booksPath = path.join(remote.app.getPath('userData'), '/books.json');
-        this.books = [];
         this.fnOnBookChange = fnOnBookChange;
+        this.currentBook = null;
+        this.bookCollection = new hashtable();
 
         if (fs.existsSync(this.booksPath)) {
             var booksContent = fs.readFileSync(BooksManager.booksPath);
-            this.books = JSON.parse(booksContent);
+            this.bookCollection = JSON.parse(booksContent);
         } else {
-            fs.writeFileSync(JSON.stringify(this.books)); 
+            fs.writeFileSync(JSON.stringify(this.bookCollection)); 
         }
     }
 
     get getBooks() {
-        return this.books;
+        return this.bookCollection;
     }
 
     get getCurrentBook() {
