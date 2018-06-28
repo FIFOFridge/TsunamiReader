@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from 'electron'
-import appSettings from '../modules/appSettings'
+import Settings from '../modules/appSettings'
 
 /**
  * Set `__static` path to static files in production
@@ -15,25 +15,17 @@ const winURL = process.env.NODE_ENV === 'development'
     : `file://${__dirname}/index.html`
 
 function createWindow() {
-    //window options
-    var options = {
+
+    mainWindow = new BrowserWindow({
         width: 1200, 
         minWidth: 1200,
         height: 800, 
-        minHeight: 800
-    }
-
-    //windows || linux
-    if(process.platform != 'darwin') {
-        //override default titlbar and frame
-        options.titlebar = 'hidden';
-        options.frame = false;
-        options.resizble = true;
-    }
-
-    mainWindow = new BrowserWindow({
-        options
+        minHeight: 800,
+        titlebar: 'hidden',
+        frame: false
     })
+
+    mainWindow.setMenu(null)
 
     mainWindow.loadURL(winURL)
 
@@ -44,8 +36,10 @@ function createWindow() {
 
 //init
 app.on('ready', function() {
-    //appSettings.save();
-    createWindow();
+    var settings = new Settings()
+    //global.appSettings = appSettings;
+
+    createWindow()
 })
 
 app.on('window-all-closed', () => {

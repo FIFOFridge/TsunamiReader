@@ -1,7 +1,8 @@
 "use strict";
 import fs from 'fs';
+import path from 'path';
 
-export class dataModels {
+class dataModels {
     constructor() {
         this.modelDirectory = path.join(__static, `models`);
     }
@@ -14,3 +15,5 @@ export class dataModels {
         return JSON.parse(content);
     }
 }
+
+export default dataModels

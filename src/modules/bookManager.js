@@ -1,32 +1,35 @@
-"use strict";
-import fs from 'fs';
-import { remote } from 'electron';
-import hashtable from './helpers/hastable';
+"use strict"
+import fs from 'fs'
+import { app } from 'electron'
+import hashtable from './helpers/hastable'
+import path from 'path'
 
-export class BookManager {
+class BookManager {
     constructor(fnOnBookChange) {
-        this.booksPath = path.join(remote.app.getPath('userData'), '/books.json');
-        this.fnOnBookChange = fnOnBookChange;
-        this.currentBook = null;
-        this.bookCollection = new hashtable();
+        this.booksPath = path.join(app.getPath('userData'), '/books.json')
+        this.fnOnBookChange = fnOnBookChange
+        this.currentBook = null
+        this.bookCollection = new hashtable()
 
         if (fs.existsSync(this.booksPath)) {
-            var booksContent = fs.readFileSync(BooksManager.booksPath);
-            this.bookCollection = JSON.parse(booksContent);
+            var booksContent = fs.readFileSync(BooksManager.booksPath)
+            this.bookCollection = JSON.parse(booksContent)
         } else {
-            fs.writeFileSync(JSON.stringify(this.bookCollection)); 
+            fs.writeFileSync(JSON.stringify(this.bookCollection))
         }
     }
 
     get getBooks() {
-        return this.bookCollection;
+        return this.bookCollection
     }
 
     get getCurrentBook() {
-        return this.currentBook;
+        return this.currentBook
     }
 
     set setCurrentBook(book) {
-        this.currentBook = book;
+        this.currentBook = book
     }
 }
+
+export default BookManager

@@ -1,27 +1,34 @@
-"use strict";
-
 import fs from 'fs';
-import { remote } from 'electron';
+import { app } from 'electron'
+import path from 'path'
 
-export class Settings {
+class Settings {
     constructor() {
-        this.settingsPath = path.join(remote.app.getPath('userData'), '/books.json');
-        this.tempExtension = ".new";
+        this.settingsPath = path.join(app.getPath('userData'), '/config.json')
+        this.tempExtension = ".new"
+
+        
     }
 
     save() {
-        var newSettingsPath = path.join(remote.app.getPath('userData'), 
-            ('/books.json' + this.tempExtension) 
+        var newSettingsPath = path.join(app.getPath('userData'), 
+            ('/config.json' + this.tempExtension) 
         );
 
-        var content = JSON.stringify(this.settingsObject);
+        var content = JSON.stringify(this.settingsObject)
 
-        fs.writeFileSync(newSettingsPath, content);//write new content
-        fs.unlinkSync(this.settingsPath);//delete old one
-        fs.renameSync(newSettingsPath, this.settingsPath);//rename to new one
+        fs.writeFileSync(newSettingsPath, content)//write new content
+        fs.unlinkSync(this.settingsPath)//delete old one
+        fs.renameSync(newSettingsPath, this.settingsPath)//rename to new one
     }
 
-    get settings() {
-        return this.settings;
+    get settingsObject() {
+        return this.settings
+    }
+
+    set settingsObject(object) {
+        this.settingsObject = object
     }
 }
+
+export default Settings
