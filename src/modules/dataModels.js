@@ -1,19 +1,19 @@
-"use strict";
-import fs from 'fs';
-import path from 'path';
+"use strict"
+import fs from 'fs'
+import path from 'path'
 
-class dataModels {
+class DataModels {
     constructor() {
-        this.modelDirectory = path.join(__static, `models`);
+        this.modelDirectory = path.join(__static, `models`)
     }
 
     get makeModel(path) {
         
-        name = _path.join(Model.modelDirectory, name);
-        var content = fs.readFileSync(name);
+        name = _path.join(Model.modelDirectory, name)
+        var content = fs.readFileSync(name)
 
-        return JSON.parse(content);
+        return JSON.parse(content)
     }
 }
 
-export default dataModels
+export let dataModel = new DataModels()

@@ -1,25 +1,40 @@
 import fs from 'fs';
 import { app } from 'electron'
 import path from 'path'
+import { dataModels } from './dataModels'
 
 class Settings {
-    constructor() {
+    constructor(platformName) {
         this.settingsPath = path.join(app.getPath('userData'), '/config.json')
         this.tempExtension = ".new"
 
-        
+        this.tempSettingsPath = path.join(app.getPath('userData'), 
+            ('/config.json' + this.tempExtension) 
+        )
+
+        //tempConfig && !default 
+        if(fs.existsSync(this.tempSettingsPath) && !fs.existsSync(this.settingsPath)) {
+
+        //tempConfig && default
+        } else if(fs.existsSync(this.tempSettingsPath) && fs.existsSync(this.settingsPath)) {
+
+        //default
+        } else if(fs.existsSync(this.settingsPath)) {
+
+        //none
+        } else {
+
+        }
     }
 
     save() {
-        var newSettingsPath = path.join(app.getPath('userData'), 
-            ('/config.json' + this.tempExtension) 
-        );
+
 
         var content = JSON.stringify(this.settingsObject)
 
-        fs.writeFileSync(newSettingsPath, content)//write new content
+        fs.writeFileSync(tempSettingsPath, content)//write new content
         fs.unlinkSync(this.settingsPath)//delete old one
-        fs.renameSync(newSettingsPath, this.settingsPath)//rename to new one
+        fs.renameSync(tempSettingsPath, this.settingsPath)//rename to new one
     }
 
     get settingsObject() {
@@ -31,4 +46,4 @@ class Settings {
     }
 }
 
-export default Settings
+export let instance = new Settings()
