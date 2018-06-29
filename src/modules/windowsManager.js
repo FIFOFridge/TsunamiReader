@@ -26,12 +26,26 @@ class WindowsManager {
     addWindow(name, window) {
         this.invalidIsString(name, "name")
 
-        con.debug("added window with id[key]: " + name)
+        con.debug("adding window with id[key]: " + name)
 
-        if(this.hasWindow(name))
+        if(this.hasWindow(name)) {
             throw TypeError('windows with id: ' + name + ' already exists')
+        }
 
         this.windows[name] = window
+    }
+
+    removeWindow(name, close = true) {
+        this.invalidIsString(name, "name")
+
+        con.debug("removing window with id[key]: " + name)
+
+        if(!(this.hasWindow(name))) {
+            throw TypeError('windows with id: ' + name + ' not exists')
+        }
+
+        this.windows[name].close()
+        this.windows[name] = null
     }
 
     hasWindow(name) {
