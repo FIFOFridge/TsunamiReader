@@ -1,34 +1,31 @@
-import logger from './logger'
-
 var consoleLogger = null
-var orginConsole = console//keep old ref
 
 if (global.consoleLogger === null || global.consoleLogger === undefined) {
     if (process.env.NODE_ENV == 'development') { // *** dev ***
         //based on: https://stackoverflow.com/a/30197438
-        consoleLogger = (function (oldCons) {
+        consoleLogger = (function (logger, orginConsole) {
             return {
                 log: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
-                        text = "[LOG]   :" + text
+                        text = "[LOG]   : " + text
                     orginConsole.log(text)
-                    logger.log(text)
+                    logger.info(text)
                 },
                 debug: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
-                        text = "[DEBUG] :" + text
+                        text = "[DEBUG] : " + text
                     orginConsole.log(text)
                     logger.debug(text)
                 },
                 info: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
-                        text = "[INFO]  :" + text
+                        text = "[INFO]  : " + text
                     orginConsole.info(text)
                     logger.info(text)
                 },
                 warn: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
-                        text = "[WARN]  :" + text
+                        text = "[WARN]  : " + text
                     orginConsole.warn(text)
                     logger.warn(text)
                 },
@@ -42,30 +39,30 @@ if (global.consoleLogger === null || global.consoleLogger === undefined) {
         }/*(window.console)*/)
     } else { //*** prod ***
         //based on: https://stackoverflow.com/a/30197438
-        //supress console.*() for production
-        consoleLogger = (function (oldCons) {
+        //supress console.*(...) for production
+        consoleLogger = (function (logger, orginConsole) {
             return {
                 log: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
-                        text = "[LOG]   :" + text
+                        text = "[LOG]   : " + text
                     //orginConsole.log(text)
-                    logger.log(text)
+                    logger.info(text)
                 },
                 debug: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
-                        text = "[DEBUG] :" + text
+                        text = "[DEBUG] : " + text
                     //orginConsole.log(text)
                     logger.debug(text)
                 },
                 info: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
-                        text = "[INFO]  :" + text
+                        text = "[INFO]  : " + text
                     //orginConsole.info(text)
                     logger.info(text)
                 },
                 warn: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
-                        text = "[WARN]  :" + text
+                        text = "[WARN]  : " + text
                     //orginConsole.warn(text)
                     logger.warn(text)
                 },
@@ -80,6 +77,8 @@ if (global.consoleLogger === null || global.consoleLogger === undefined) {
     }
 
     global.consoleLogger = consoleLogger
+} else {
+    consoleLogger = global.consoleLogger
 }
 
-export default global.consoleLogger
+export default consoleLogger

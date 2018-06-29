@@ -2,6 +2,10 @@ import fs from 'fs';
 import { app } from 'electron'
 import path from 'path'
 import { dataModels } from './dataModels'
+import exconsole from './helpers/loggerConsole'
+import logger from './helpers/logger'
+
+let con = exconsole(logger, console)
 
 class Settings {
     constructor(platformName) {
@@ -15,8 +19,6 @@ class Settings {
 
         var template = null
 
-        console.log(this.settingsPath)
-
         var fnIsOSX = (platform) => { platform === 'darwin' ? true : false }
         var readSettings = (filePath) => { return JSON.parse(fs.readFileSync(filePath, 'utf8')) }
 
@@ -24,7 +26,7 @@ class Settings {
         //
         //tempConfig && !default 
         if (fs.existsSync(this.tempSettingsPath) && !fs.existsSync(this.settingsPath)) {
-            console.log("[SETTINGS]" + " temp && !default")
+            con.log("settings ctr: temp && !default")
             template = readSettings(this.tempSettingsPath)
             fs.renameSync(this.tempSettingsPath, this.settingsPath)
 
@@ -32,7 +34,7 @@ class Settings {
 
             //tempConfig && default
         } else if (fs.existsSync(this.tempSettingsPath) && fs.existsSync(this.settingsPath)) {
-            console.log("[SETTINGS]" + " temp && default")
+            con.log("settings ctr: temp && default")
             template = readSettings(this.settingsPath)
             fs.unlinkSync(this.tempSettingsPath)
 
@@ -40,7 +42,7 @@ class Settings {
 
             //default
         } else if (fs.existsSync(this.settingsPath)) {//[correct]
-            console.log("[SETTINGS]" + " default file found")
+            con.log("settings ctr: default file found")
             //invalid os only
             template = readSettings(this.settingsPath)
 
@@ -48,7 +50,7 @@ class Settings {
 
             //none
         } else {
-            console.log("[SETTINGS]" + " no file found!")
+            con.log("settings ctr: no file found!")
             template = dataModels.makeModel('settings')//load data template
             template = this._initDefault(template, platformName)//init with default values
 

@@ -1,4 +1,7 @@
-import { console } from './helpers/loggerConsole'
+import exconsole from './helpers/loggerConsole'
+import logger from './helpers/logger'
+
+let con = exconsole(logger, console)
 
 class WindowsManager {
     constructor() {
@@ -8,12 +11,12 @@ class WindowsManager {
             typeof s === 'string' ? true : false
 
             if(typeof s !== 'string')
-                console.warn(s + "'isn't sting")
+                con.warn(s + "'isn't sting")
         }
 
         this.invalidIsString = (a, pn) => {
             if(!(this.isString))
-                console.error(a + 'have to be string ==> ' + pn + '(arg)')
+                con.error(a + 'have to be string ==> ' + pn + '(arg)')
 
             if(!(this.isString)) 
                 throw TypeError(pn + " have to be a string") 
@@ -23,7 +26,7 @@ class WindowsManager {
     addWindow(name, window) {
         this.invalidIsString(name, "name")
 
-        console.debug("added window with id[key]: " + name)
+        con.debug("added window with id[key]: " + name)
 
         if(this.hasWindow(name))
             throw TypeError('windows with id: ' + name + ' already exists')
@@ -47,7 +50,7 @@ class WindowsManager {
     }
 
     fireEvent(name, event) {
-        console.debug("executing event: " + event + " on window(key): " + name)
+        con.debug("executing event: " + event + " on window(key): " + name)
 
         this.invalidIsString(name, "name")
 
@@ -68,18 +71,18 @@ class WindowsManager {
                 break
             default:
             {
-                console.error('unable to process event: ' + event + ' for window(key): ' + window)
+                con.error('unable to process event: ' + event + ' for window(key): ' + window)
                 throw TypeError('unable to process event: ' + event)
             }
         }
 
-        console.debug("successfully executed event: " + event + " on window(key): " + name)
+        con.debug("successfully executed event: " + event + " on window(key): " + name)
     }
     
     tryExecuteCustom(name, fn) {
         this.invalidIsString(name, "name")
 
-        console.debug('executing custom function on window: ' + name)
+        con.debug('executing custom function on window: ' + name)
 
         if(!(this.hasWindow(name)))
             throw TypeError('unable to find window: ' + name)
@@ -89,11 +92,11 @@ class WindowsManager {
         try {
             fn(window)
         } catch(error) {
-            console.debug('custom function execution failed on: ' + name)
+            con.debug('custom function execution failed on: ' + name)
             return [ false, error ]
         }
 
-        console.debug('custom function executed successfully on: ' + name)
+        con.debug('custom function executed successfully on: ' + name)
         return [ true ]
     }
 }

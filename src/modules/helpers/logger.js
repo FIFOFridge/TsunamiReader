@@ -4,8 +4,10 @@ import winston from 'winston'
 var logger = null
 
 if (global.logger === null || global.logger === undefined) {
+    console.log('init')
+
     if (process.env.NODE_ENV == 'development') { //dev
-        loggerInstance = winston.createLogger({
+        logger = winston.createLogger({
             level: 'debug',
             format: winston.format.json(),
             transports: [
@@ -16,7 +18,7 @@ if (global.logger === null || global.logger === undefined) {
             ]
         });
     } else { //production
-        loggerInstance = winston.createLogger({
+        logger = winston.createLogger({
             level: 'info',
             format: winston.format.json(),
             transports: [
@@ -25,7 +27,9 @@ if (global.logger === null || global.logger === undefined) {
         });
     }
 
-    global.logger = loggerInstance
+    global.logger = logger
+} else {
+    logger = global.logger
 }
 
-export default global.logger
+export default logger
