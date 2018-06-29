@@ -18,14 +18,16 @@ const winURL = process.env.NODE_ENV === 'development'
 
 function createWindow() {
 
-    mainWindow = new BrowserWindow({
+    var options = {
         width: 1200, 
         minWidth: 1200,
         height: 800, 
         minHeight: 800,
         titlebar: 'hidden',
         frame: false
-    })
+    }
+
+    mainWindow = new BrowserWindow(options)
 
     global.windowsManager.addWindow('main', mainWindow)
 
