@@ -17,6 +17,7 @@ const winURL = process.env.NODE_ENV === 'development'
     : `file://${__dirname}/index.html`
 
 function createWindow() {
+    var settings = global.appSettings.settingsObject
 
     var options = {
         width: 1200, 
@@ -25,6 +26,11 @@ function createWindow() {
         minHeight: 800,
         titlebar: 'hidden',
         frame: false
+    }
+
+    if(!(settings.overrideTitleBar)) {
+        options.frame = true
+        options.titlebar = 'default'
     }
 
     mainWindow = new BrowserWindow(options)

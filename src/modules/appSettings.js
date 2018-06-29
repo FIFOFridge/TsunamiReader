@@ -83,6 +83,10 @@ class Settings {
         fs.unlinkSync(this.settingsPath)//delete old one
         fs.renameSync(tempSettingsPath, this.settingsPath)//rename to new one
     }
+
+    settingsObject() {
+        return this.settingsObject
+    }
 }
 
 export default Settings
