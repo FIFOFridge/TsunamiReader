@@ -14,3 +14,6 @@ thumbs.db
 #vscode
 .vscode/
 vscode.json
+
+#logger
+*.log
