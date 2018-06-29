@@ -122,7 +122,9 @@ let rendererConfig = {
   resolve: {
     alias: {
       '@': path.join(__dirname, '../src/renderer'),
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'simplebar.js': path.join(__static, "simplebar.js"),
+      'epub.js': path.join(__static, "epub.min.js")
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },
