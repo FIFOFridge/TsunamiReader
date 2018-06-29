@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from 'electron'
 import Settings from '../modules/appSettings'
+import WindowsManager from '../modules/windowsManager'
 
 /**
  * Set `__static` path to static files in production
@@ -25,6 +26,8 @@ function createWindow() {
         frame: false
     })
 
+    global.windowsManager.addWindow('main', mainWindow)
+
     mainWindow.setMenu(null)
 
     mainWindow.loadURL(winURL)
@@ -38,6 +41,9 @@ function createWindow() {
 app.on('ready', function() {
     var settings = new Settings(app.platform)
     global.appSettings = settings;
+
+    var windowsManager = new WindowsManager()
+    global.windowsManager = windowsManager
 
     createWindow()
 })
