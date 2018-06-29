@@ -1,3 +1,5 @@
+import { console } from './helpers/loggerConsole'
+
 class WindowsManager {
     constructor() {
         this.windows = {}
