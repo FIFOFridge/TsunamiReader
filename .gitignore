@@ -21,3 +21,6 @@ vscode.json
 #unknown file, always reproduced when running app
 #unknown reason at this moment
 {}
+
+#temp license files
+static/assets/*.license.txt
