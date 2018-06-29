@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron'
 import Settings from '../modules/appSettings'
 import WindowsManager from '../modules/windowsManager'
+import BookManager from '../modules/bookManager'
 
 /**
  * Set `__static` path to static files in production
@@ -45,8 +46,16 @@ app.on('ready', function() {
     var windowsManager = new WindowsManager()
     global.windowsManager = windowsManager
 
+    var bookManager = new BookManager(onBookChange())
+    global.bookManager = bookManager
+
     createWindow()
 })
+
+function onBookChange(book)
+{
+
+}
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
