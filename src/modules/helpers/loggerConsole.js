@@ -14,6 +14,12 @@ if (global.consoleLogger === null || global.consoleLogger === undefined) {
                     orginConsole.log(text)
                     logger.log(text)
                 },
+                debug: function (text, appendInfoPrefix = true) {
+                    if (appendInfoPrefix)
+                        text = "[DEBUG] :" + text
+                    orginConsole.log(text)
+                    logger.debug(text)
+                },
                 info: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
                         text = "[INFO]  :" + text
@@ -33,7 +39,7 @@ if (global.consoleLogger === null || global.consoleLogger === undefined) {
                     logger.error(text)
                 }
             }
-        }(window.console))
+        }/*(window.console)*/)
     } else { //*** prod ***
         //based on: https://stackoverflow.com/a/30197438
         //supress console.*() for production
@@ -44,6 +50,12 @@ if (global.consoleLogger === null || global.consoleLogger === undefined) {
                         text = "[LOG]   :" + text
                     //orginConsole.log(text)
                     logger.log(text)
+                },
+                debug: function (text, appendInfoPrefix = true) {
+                    if (appendInfoPrefix)
+                        text = "[DEBUG] :" + text
+                    //orginConsole.log(text)
+                    logger.debug(text)
                 },
                 info: function (text, appendInfoPrefix = true) {
                     if (appendInfoPrefix)
@@ -64,7 +76,7 @@ if (global.consoleLogger === null || global.consoleLogger === undefined) {
                     logger.error(text)
                 }
             }
-        }(window.console))
+        }/*(window.console)*/)
     }
 
     global.consoleLogger = consoleLogger
