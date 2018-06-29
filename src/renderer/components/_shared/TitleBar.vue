@@ -1,11 +1,17 @@
-<template>
+<template v-if="display">
     <div id="app-titlebar"></div>    
 </template>
 
 <script>
-let titleBar = require('electron-titlebar-windows'); 
+import { remote } from 'electron'
+import titleBar from 'electron-titlebar-windows'
+
+var settings = remote.getGlobal('appSettings').settingsObject
 
 export default {
+    data: {
+        display: settings.overrideTitleBar 
+    },
     mounted() {
         const titlebar = new ElectronTitlebarWindows(options);
 
