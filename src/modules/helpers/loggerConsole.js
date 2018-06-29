@@ -6,7 +6,7 @@ var orginConsole = console//keep old ref
 if (global.consoleLogger === null || global.consoleLogger === undefined) {
     if (process.env.NODE_ENV == 'development') { // *** dev ***
         //https://stackoverflow.com/a/30197438
-        var consoleLogger = (function(oldCons){
+        consoleLogger = (function(oldCons){
             return {
                 log: function(text){
                     orginConsole.log(text)
@@ -29,7 +29,7 @@ if (global.consoleLogger === null || global.consoleLogger === undefined) {
     } else { //*** prod ***
         //https://stackoverflow.com/a/30197438
         //supress console.*() for production
-        var consoleLogger = (function(oldCons){
+        consoleLogger = (function(oldCons){
             return {
                 log: function(text){
                     //orginConsole.log(text)

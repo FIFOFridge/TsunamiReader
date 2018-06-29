@@ -5,7 +5,7 @@ var logger = null
 
 if (global.logger === null || global.logger === undefined) {
     if (process.env.NODE_ENV == 'development') { //dev
-        let loggerInstance = winston.createLogger({
+        loggerInstance = winston.createLogger({
             level: 'debug',
             format: winston.format.json(),
             transports: [
@@ -16,7 +16,7 @@ if (global.logger === null || global.logger === undefined) {
             ]
         });
     } else { //production
-        let loggerInstance = winston.createLogger({
+        loggerInstance = winston.createLogger({
             level: 'info',
             format: winston.format.json(),
             transports: [
