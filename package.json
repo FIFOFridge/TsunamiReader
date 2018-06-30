@@ -54,12 +54,14 @@
   },
   "dependencies": {
     "electron-titlebar-windows": "^3.0.0",
+    "epub-metadata-parser": "^1.1.14",
     "fullpage.js": "^3.0.1",
     "gulp": "^3.9.1",
     "gulp-less": "^3.5.0",
     "jquery": "^3.3.1",
     "less": "^3.0.4",
     "vue": "^2.3.3",
+    "vue-epub-reader": "0.0.9",
     "vue-fullpage.js": "0.0.1",
     "vue-router": "^2.5.3",
     "winston": "^3.0.0"
