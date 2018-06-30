@@ -1,6 +1,6 @@
-import gulp from 'gulp'
-import less from 'gulp-less'
-import path from 'path'
+var gulp = require('gulp')
+var less = require('gulp-less')
+var path = require('path')
 
 gulp.task('less', function () {
     return gulp.src('./src/renderer/less/*.less')
