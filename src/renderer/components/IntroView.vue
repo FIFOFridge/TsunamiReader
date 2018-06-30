@@ -2,7 +2,7 @@
         <div>
             <div id="background"></div>
             <app-titlebar></app-titlebar>
-            <full-page :options="options" id="fullpage" ref="fullpage">
+            <full-page :options="pageOptions" id="fullpage" ref="fullpage">
                 <div class="section">
                     <h3>vue-fullpage.js</h3>
                 </div>
@@ -21,6 +21,20 @@
                     <h3>Section 3</h3>
                 </div>
             </full-page>
+            <!--
+            <div id="fp-nav" class="right">
+                <ul>
+                    <li>
+                        <a class="active" href="intro"><span></span></a>
+                    </li>
+                    <li>
+                        <a class="" href="shelf"><span></span></a>
+                    </li>
+                    <li>
+                        <a class="" href="about"><span></span></a>
+                    </li>
+                </ul>
+            </div>-->
         </div>
 </template>
 
@@ -55,13 +69,18 @@ export default {
         AppTitlebar
     },
     props: {
-        displayTitleBar: true,
-        pageOptions: {
-            navigation: true
-        }
+        displayTitleBar: true
     },
-    data: {
+    data() {
+        return {
+            pageOptions: {
+                anchors: ['intro','shelf','about'],
 
+                navigation: true,
+                navigationPosition: 'right',
+                fixedElements: '#app-titlebar,#background'
+            }
+        } 
     }
 }
 </script>
