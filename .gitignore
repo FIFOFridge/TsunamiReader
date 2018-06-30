@@ -24,3 +24,6 @@ vscode.json
 
 #temp license files
 static/assets/*.license.txt
+
+#compiled css's
+static/css/*
