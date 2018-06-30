@@ -1,36 +1,73 @@
 <template>
-        <full-page :options="options" id="fullpage" ref="fullpage">
-            <div class="section" style="background-color: red;">
-                <h3>vue-fullpage.js</h3>
-            </div>
-            <div class="section" style="background-color: black;">
-                <div class="slide">
-                    <h3>Slide 2.1</h3>
+        <div>
+            <div id="background"></div>
+            <app-titlebar></app-titlebar>
+            <full-page :options="options" id="fullpage" ref="fullpage">
+                <div class="section">
+                    <h3>vue-fullpage.js</h3>
                 </div>
-                <div class="slide">
-                    <h3>Slide 2.2</h3>
+                <div class="section">
+                    <div class="slide">
+                        <h3>Slide 2.1</h3>
+                    </div>
+                    <div class="slide">
+                        <h3>Slide 2.2</h3>
+                    </div>
+                    <div class="slide">
+                        <h3>Slide 2.3</h3>
+                    </div>
                 </div>
-                <div class="slide">
-                    <h3>Slide 2.3</h3>
+                <div class="section">
+                    <h3>Section 3</h3>
                 </div>
-            </div>
-            <div class="section" style="background-color: orange;">
-                <h3>Section 3</h3>
-            </div>
-        </full-page>
+            </full-page>
+        </div>
 </template>
 
 <style>
 /*@import url("static/css/titlebar.css");*/
+#intro-content-container {
+    position: relative;
+}
+
+#intro-content-container::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background-image:url('./../assets/wave.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;    
+}
+
+#background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background-image:url('/static/assets/wave.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;  
+}
+
 </style>
 
 <script>
 import FullPage from './../../../node_modules/vue-fullpage.js/src/fullpage.vue'
+import AppTitlebar from './_shared/TitleBar.vue'
 
 export default {
     name: 'intro-view',
     components: {
-        FullPage
+        FullPage,
+        AppTitlebar
     },
     props: {
         displayTitleBar: true,

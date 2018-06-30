@@ -2,9 +2,15 @@
     <div id="app-titlebar"></div>    
 </template>
 
+<style>
+#app-titlebar {
+    border-bottom: 0.05em solid rgba(255,255,255,0.2);
+}
+</style>
+
 <script>
 import { remote } from 'electron'
-import titleBar from 'electron-titlebar-windows'
+import ElectronTitlebarWindows from 'electron-titlebar-windows'
 
 var settings = remote.getGlobal('appSettings').settingsObject
 
@@ -21,7 +27,8 @@ export default {
             let titlebar = new ElectronTitlebarWindows({
                 darkMode: false,
                 color: 'rgba(0, 0, 0, 0.6)',
-                backgroundColor: 'hsla(41, 16%, 85%, 1)',
+                //backgroundColor: 'hsla(41, 16%, 85%, 1)',
+                backgroundColor: 'rgba(0,0,0,0)',
                 draggable: true,
                 fullscreen: false
             })
