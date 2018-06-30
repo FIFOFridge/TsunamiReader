@@ -4,7 +4,8 @@
 
 <style>
 #app-titlebar {
-    border-bottom: 0.05em solid rgba(255,255,255,0.2);
+    border-bottom: 0.05em solid rgba(255,255,255,0.1);
+    background-image: linear-gradient(to top, rgba(255,255,255,0.2), rgba(255,255,255,0.12), rgba(255,255,255,0.06), rgba(0,0,0,0));
 }
 </style>
 
@@ -26,7 +27,7 @@ export default {
 
             let titlebar = new ElectronTitlebarWindows({
                 darkMode: false,
-                color: 'rgba(0, 0, 0, 0.6)',
+                color: 'rgba(0, 0, 0, 0.3)',
                 //backgroundColor: 'hsla(41, 16%, 85%, 1)',
                 backgroundColor: 'rgba(0,0,0,0)',
                 draggable: true,

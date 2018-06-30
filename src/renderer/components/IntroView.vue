@@ -26,24 +26,6 @@
 
 <style>
 /*@import url("static/css/titlebar.css");*/
-#intro-content-container {
-    position: relative;
-}
-
-#intro-content-container::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    background-image:url('./../assets/wave.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    z-index: -1;    
-}
-
 #background {
     position: fixed;
     width: 100%;
@@ -54,7 +36,9 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    z-index: -1;  
+    z-index: -1;
+    -webkit-filter: contrast(55%) grayscale(85%);  /* Safari 6.0 - 9.0 */
+    filter: contrast(55%) grayscale(85%);
 }
 
 </style>
