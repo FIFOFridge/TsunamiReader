@@ -1,6 +1,20 @@
-//micro interactions
-@transition-time-veryslow: 40s;
+//transitions
+@transition-time-veryslow: 0.40s;
 @transition-time-slow: 0.30s;
 @transition-time-medium: 0.3s;
 @transition-time-fast: 0.25s;
 @transition-time-veryfast: 0.2s;
+
+.abstract-keyframe(@name, @arguments)
+{
+	@keyframes @name { @arguments(); }
+}
+
+.bind-keyframe(@name, @time, @args) {
+	animation: @name @time @args;
+}
+
+// .abstract-keyframe(solo-yolo; {
+//     0% { opacity: 1; }
+//     100% {opacity: 0;}
+// });
