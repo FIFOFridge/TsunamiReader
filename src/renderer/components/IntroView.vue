@@ -1,7 +1,7 @@
 <template>
         <div>
             <div id="background"></div>
-            <app-titlebar></app-titlebar>
+            <app-titlebar is-fixed="true"></app-titlebar>
             <full-page :options="pageOptions" id="fullpage" ref="fullpage">
                 <div class="section">
                     <h3>vue-fullpage.js</h3>
@@ -39,7 +39,8 @@
 </template>
 
 <style>
-/*@import url("static/css/titlebar.css");*/
+@import url("/static/css/titlebar.css");
+
 #background {
     position: fixed;
     width: 100%;
@@ -78,7 +79,7 @@ export default {
 
                 navigation: true,
                 navigationPosition: 'right',
-                fixedElements: '#app-titlebar,#background'
+                fixedElements: '#background,.titlebar'
             }
         } 
     }
