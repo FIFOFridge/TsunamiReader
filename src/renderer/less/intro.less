@@ -1,5 +1,31 @@
 @import './shared/common.less';
+@import './shared/animations.less';
 
-#splash {
+@shelfBackgroundBlur: 1em;
 
+#background {
+    transition: all @transition-time-medium ease-in-out;
+
+    -webkit-filter: contrast(45%) grayscale(45%);
+    filter: contrast(45%) grayscale(45%);
+
+    &.intro {
+        -webkit-filter: contrast(55%) grayscale(85%);
+        filter: contrast(55%) grayscale(85%);
+    }
+
+    &.shelf {
+        -webkit-filter: contrast(40%) grayscale(85%);
+        filter: contrast(40%) grayscale(85%);
+    }
+
+    &.reader {
+        -webkit-filter: contrast(35%) grayscale(85%);
+        filter: contrast(35%) grayscale(85%);
+    }
+
+    &.about {
+        -webkit-filter: contrast(30%) grayscale(85%);
+        filter: contrast(30%) grayscale(85%);
+    }
 }

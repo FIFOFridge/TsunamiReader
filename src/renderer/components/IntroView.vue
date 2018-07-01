@@ -20,6 +20,9 @@
                 <div class="section">
                     <h3>Section 3</h3>
                 </div>
+                <div class="section">
+                    <h1>about</h1>
+                </div>
             </full-page>
             <!--
             <div id="fp-nav" class="right">
@@ -40,6 +43,7 @@
 
 <style>
 @import url("/static/css/titlebar.css");
+@import url("/static/css/intro.css");
 
 #background {
     position: fixed;
@@ -52,16 +56,21 @@
     background-repeat: no-repeat;
     background-size: cover;
     z-index: -1;
-    -webkit-filter: contrast(55%) grayscale(85%);  /* Safari 6.0 - 9.0 */
-    filter: contrast(55%) grayscale(85%);
 }
 
 
 </style>
 
 <script>
+//components
 import FullPage from './../../../node_modules/vue-fullpage.js/src/fullpage.vue'
 import AppTitlebar from './_shared/TitleBar.vue'
+
+//logs
+import exconsole from './../../modules/helpers/loggerConsole'
+import logger from './../../modules/helpers/logger'
+
+let con = exconsole(logger, console)
 
 export default {
     name: 'intro-view',
@@ -75,13 +84,45 @@ export default {
     data() {
         return {
             pageOptions: {
-                anchors: ['intro','shelf','about'],
+                anchors: ['intro','shelf', 'reader', 'about'],
 
                 navigation: true,
                 navigationPosition: 'right',
-                fixedElements: '#background,.titlebar'
+                fixedElements: '#background,.titlebar',
+                afterLoad: this.onSectionLoad,
+                onLeave: this.onSectionLeave
             }
         } 
+    },
+    computed: {
+        getBackgroundElement: function() {
+            return document.getElementById('background')
+        }
+    },
+    methods: {
+        onSectionLoad: function(origin, destination, direction) {
+            con.debug('IntroView loaded section: ' + destination + ' from ' + origin)
+
+            if(destination == '1' || destination == 'intro')
+                this.getBackgroundElement.classList.add('intro')
+            else if(destination == '2' || destination == 'shelf')
+                this.getBackgroundElement.classList.add('shelf')
+            else if(destination == '3' || destination == 'reader')
+                this.getBackgroundElement.classList.add('reader')
+            else if(destination == '4' || destination == 'about')
+                this.getBackgroundElement.classList.add('about')
+        },
+        onSectionLeave: function(origin, destination, direction) {
+            con.debug('IntroView leaving section: ' + origin + ' to ' + destination)
+            if(origin == '1' || origin == 'intro')
+                this.getBackgroundElement.classList.remove('intro')
+            else if(origin == '2' || origin == 'shelf')
+                this.getBackgroundElement.classList.remove('shelf')
+            else if(origin == '3' || origin == 'reader')
+                this.getBackgroundElement.classList.remove('reader')
+            else if(origin == '4' || origin == 'about')
+                this.getBackgroundElement.classList.remove('about')
+        }
     }
 }
 </script>
