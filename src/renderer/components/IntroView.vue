@@ -4,7 +4,15 @@
             <app-titlebar is-fixed="true"></app-titlebar>
             <full-page :options="pageOptions" id="fullpage" ref="fullpage">
                 <div class="section">
-                    <h3>vue-fullpage.js</h3>
+                    <div class="window-content-container">
+                        <div class="lazy-grid no-space">
+                            <div class="row center-content">
+                                <div class="row-8">
+                                    <img id="logo" src="/static/assets/TRLogo.svg"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="section">
                     <div class="slide">
@@ -44,6 +52,7 @@
 <style>
 @import url("/static/css/titlebar.css");
 @import url("/static/css/intro.css");
+@import url('/static/lib/lazygrid.css');
 
 #background {
     position: fixed;
