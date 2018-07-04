@@ -5,15 +5,20 @@
 
 #background {
     transition: all @transition-time-medium ease-in-out;
+    opacity: 1;
 
-    -webkit-filter: contrast(45%) grayscale(45%);
-    filter: contrast(45%) grayscale(45%);
+    -webkit-filter: contrast(45%) grayscale(65%);
+    //filter: contrast(45%) grayscale(65%);
+    filter: contrast(55%) grayscale(85%) brightness(85%);
 
     &.intro {
-        -webkit-filter: contrast(55%) grayscale(85%);
-        filter: contrast(55%) grayscale(85%);
+        filter: contrast(55%) grayscale(85%) brightness(40%);
     }
 
+    // &.shelf {
+    //     filter: contrast(55%) grayscale(85%) brightness(85%);
+    // }
+    /*
     &.shelf {
         -webkit-filter: contrast(40%) grayscale(85%) blur(1px);
         filter: contrast(40%) grayscale(85%) blur(1px);
@@ -27,14 +32,15 @@
     &.about {
         -webkit-filter: contrast(30%) grayscale(85%) blur(1px);
         filter: contrast(30%) grayscale(85%) blur(1px);
-    }
+    }*/
 }
 
 #logo {
     position: relative;
-    width: 100%;
-    height: 100%;
-    transform: translate(-50%, -50%);
+    width: 17em;
+    height: 17em;
+
+    filter: grayscale(90%) contrast(90%) brightness(45%);
 }
 
 //applay to fullpage.js elements
@@ -48,19 +54,50 @@
     }
 }
 
+.chevron-scroll-down {
+    position: absolute;
+    width: 100%;
+    height: 7.5em;
+    transform: translateX(-50%);
+    left: 50%;
+    bottom: 1em;
+}
+
 body {
+    background-color: @background-color;
+
     &.fp-viewing-intro #fp-nav {
         opacity: 0 !important;
     }
 
-    &.fp-viewing-intro #background::after {
-        position: absolute;
-        top: 0px;
-        left: 0px;
+    #background > #bghover {
+        position: relative;
         width: 100%;
         height: 100%;
+        top: 0px;
+        left: 0px;
 
-        background-image: linear-gradient(to top, rgba(0,0,0,0.3), rgba(0,0,0,0.1), rgba(0,0,0,0.02), rgba(0,0,0,0));
+        transition: all @transition-time-medium;
+    }
+
+    &.fp-viewing-intro #background > #bghover {
+        background-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.1));
+    }
+
+    &.fp-viewing-shelf #background > #bghover {
+        background-image: linear-gradient(to top, hsla(193, 43%, 5%, 1), hsla(193, 43%, 5%, 0.82), hsla(193, 43%, 5%, 0.66), hsla(193, 43%, 5%, 0.2));
+    }
+
+    &.fp-viewing-reader #background > #bghover {
+        background-image: linear-gradient(to top, hsla(193, 43%, 5%, 1), hsla(193, 43%, 5%, 0.82), hsla(193, 43%, 5%, 0.66), hsla(193, 43%, 5%, 0.2));
+    }
+
+    &.fp-viewing-about #background > #bghover {
+        background-image: linear-gradient(to top, hsla(193, 43%, 5%, 1), hsla(193, 43%, 5%, 0.82), hsla(193, 43%, 5%, 0.66), hsla(193, 43%, 5%, 0.2));
+    }
+
+    &.fp-viewing-shelf #background {
+        opacity: 0.5;
     }
 
     .fp-arrow {

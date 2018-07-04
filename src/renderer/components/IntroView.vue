@@ -1,6 +1,9 @@
 <template>
         <div>
-            <div id="background"></div>
+            <div id="background">
+                <div id="bghover">
+                </div>
+            </div>
             <app-titlebar is-fixed="true"></app-titlebar>
             <full-page :options="pageOptions" id="fullpage" ref="fullpage">
                 <div class="section">
@@ -12,18 +15,14 @@
                                 </div>
                             </div>
                         </div>
+
+                        <svg class="chevron-scroll-down" viewBox="0 0 24 24">
+                            <path fill="rgba(255,255,255,0.2)" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                        </svg>
                     </div>
                 </div>
                 <div class="section">
-                    <div class="slide">
-                        <h3>Slide 2.1</h3>
-                    </div>
-                    <div class="slide">
-                        <h3>Slide 2.2</h3>
-                    </div>
-                    <div class="slide">
-                        <h3>Slide 2.3</h3>
-                    </div>
+
                 </div>
                 <div class="section">
                     <h3>Section 3</h3>
