@@ -10,15 +10,15 @@ var router = new Router({
             path: '*',
             redirect: '/'
         },
-        {   
-            path: '/main-view',
-            name: 'main-view',
-            component: require('@/components/MainView').default
-        },
         {
             path: '/intro',
-            name: 'intro',
+            name: 'intro-view',
             component: require('@/components/IntroView').default
+        },
+        {
+            path: "/shelf",
+            name: "shelf-view",
+            component: require("@/components/ShelfView").default
         },
         {
             path: '/',
