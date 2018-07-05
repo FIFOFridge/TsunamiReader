@@ -7,8 +7,13 @@
             <div class="book-title">{{ book.title }}</div>
         </div>
         <!-- app -->
-        <div v-else>
-
+        <div class="app" v-else>
+            <div class="img"> <!-- for manual setup by external style sheet -->
+            </div>
+            <div class="action">
+                <div class="button">
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -35,6 +40,9 @@
     height: 100%;
     top: 0px;
     left: 0px;
+
+    grid-row: span 2;
+    align-self: stretch;
 }
 
 .grid-item .book .book-title {
@@ -90,6 +98,9 @@ export default {
                 this.defaultActionLink = this.link
             }
         }
+    },
+    computed: {
+
     }
 }
 </script>

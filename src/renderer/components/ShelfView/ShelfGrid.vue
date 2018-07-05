@@ -1,5 +1,15 @@
 <template>
-    
+    <div class="grid-container">
+        <template v-for="(tile, index) in this.tiles">
+            <shelf-grid-item :key="index"
+                :img="tile.img"
+                :book-object="tile.bookObject"
+                :link="tile.link"
+                :id="tile.id"
+            >
+            </shelf-grid-item>
+        </template>
+    </div>
 </template>
 
 <style>
@@ -22,11 +32,15 @@
 
 <script>
 import { remote } from "electron"
+import ShelfGridItem from "./ShelfGridItem.vue"
 
 let bookManager = remote.getGlobal("bookManager")
 
 export default {
     name: 'shelf-grid',
+    components: {
+        ShelfGridItem
+    },
     props: {
         tiles: []
     },
