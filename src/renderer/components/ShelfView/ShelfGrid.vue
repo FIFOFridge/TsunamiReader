@@ -61,7 +61,7 @@ export default {
         contains: function(book) {
             bookManager.hasBook(book)
         },
-        init: function() {
+        loadBooksFromManager: function() {
 
         },
         // // c-s/e | r-s/e | img | img_placement | isBook | link | class/id = none
@@ -75,7 +75,7 @@ export default {
     mounted: function () {
         this.$nextTick(function () 
         {
-            init();
+            loadBooksFromManager();
         })
     }
 }
