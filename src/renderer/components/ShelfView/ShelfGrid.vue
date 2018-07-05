@@ -35,6 +35,7 @@ import { remote } from "electron"
 import ShelfGridItem from "./ShelfGridItem.vue"
 
 let bookManager = remote.getGlobal("bookManager")
+let dataModelLoader = remote.getGlobal("dataModelLoader")
 
 export default {
     name: 'shelf-grid',
@@ -64,6 +65,16 @@ export default {
         loadBooksFromManager: function() {
 
         },
+        loadAppTiles: function() {
+            var appTiles = []
+            
+            appTiles.push({id: "last-read", img: null, link: "/book/last", bookObject: null })
+            appTiles.push({id: "app-config", img: null, link: "/app/config", bookObject: null })
+            appTiles.push({id: "add-book-to-shelf", img: null, link: "/book/add", bookObject: null })
+            appTiles.push({id: "theme-select", img: null, link: "/app/config/themes", bookObject: null })
+
+            return appTiles
+        }
         // // c-s/e | r-s/e | img | img_placement | isBook | link | class/id = none
         // insertGridItem: function(c, r, img, imgPlacement, isBook, link, selector = null) {
         //     var el = document.createElement("div")
