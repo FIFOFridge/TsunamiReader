@@ -28,7 +28,7 @@ var router = new Router({
     ]
 })
 
-router.push({path: '/intro'})
+router.push({path: '/shelf'})
 //router.beforeEach = appRouter.beforeEach;
 
 export default router;

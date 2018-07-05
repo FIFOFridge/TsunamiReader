@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron'
 import Settings from '../modules/appSettings'
 import WindowsManager from '../modules/windowsManager'
 import BookManager from '../modules/bookManager'
-import dataModels from '../modules/dataModels';
+import dataModels from '../modules/dataModels'
 
 /**
  * Set `__static` path to static files in production
@@ -58,7 +58,7 @@ app.on('ready', function() {
     var bookManager = new BookManager(onBookChange())
     global.bookManager = bookManager
 
-    global.dataModelLoader = new dataModels()
+    global.dataModelLoader = dataModels
 
     createWindow()
 })
