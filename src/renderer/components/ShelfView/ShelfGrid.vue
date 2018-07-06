@@ -88,6 +88,9 @@ export default {
         {
             loadBooksFromManager();
         })
+    },
+    created: function() {
+        this.tiles = this.loadAppTiles()
     }
 }
 </script>
