@@ -36,7 +36,7 @@ class DataModels {
         pathModel = path.join(this.modelDirectory, pathModel + '.json')
         
         if(cache && this._containsCachedModel(pathModel) && !(overrideCache))
-            return this.cachedModels.pathModel 
+            return Object.assign({}, this.cachedModels.pathModel)//return copy of cached model
 
         con.debug('creating object from file: ' + pathModel)
         
@@ -50,6 +50,7 @@ class DataModels {
 
         if(cache) {
             this._cacheModel(pathModel, false, overrideCache)
+            return Object.assign({}, this.cachedModels.pathModel)
         }
 
         return model
