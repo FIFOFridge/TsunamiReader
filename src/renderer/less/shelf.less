@@ -1,1 +1,53 @@
-@import "./common.less";
+@import "./shared/common.less";
+@grid-app-tile-base-height: 8em;
+@grid-book-tile-base-height: 10em;
+
+//app tiles
+.grid-container {
+    & * > {
+        grid-column-start: 1;
+        grid-column-end: 4;
+
+        height: @grid-book-tile-base-height;
+
+        justify-self: stretch;
+        align-self: stretch;
+    }
+
+    // #last-read, #theme-select {
+    //     grid-column: span 2;
+    // }
+
+    // #app-config {
+    //     grid-row: span 2;
+    // }
+
+    //predefined app tiles
+    & > .grid-item {
+        &#last-read {
+            grid-column: 1 / span 3;
+            // grid-row: 1 / span 2;
+            grid-row: 1;
+            background-color: red;
+        }
+        &#theme-select {
+            grid-column: 1 / span 2;
+            // grid-row: 2 / span 1;
+            grid-row: 2;
+            background-color: blue;
+        }
+        &#app-config {
+            grid-column: 4 / span 2;
+            grid-row: 1 / span 2;
+            height: 100%; //force full element size matching to row
+            // grid-row: 1;
+            background-color: green;
+
+            //height: calc(@grid-book-tile-base-height * 2);
+        }
+        &#add-book-to-shelf {
+            grid-column: 4 / span 1;
+            background-color: yellow;
+        }
+    }
+}

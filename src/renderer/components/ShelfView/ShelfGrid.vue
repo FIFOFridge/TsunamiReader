@@ -20,7 +20,7 @@
     
     display: grid;
     grid-template-columns: auto auto auto auto auto;
-    grid-template-rows: 1em 1.25em;
+    grid-template-rows: auto;
     grid-auto-flow: dense;
     grid-gap: 0.5em;
     padding: 1em;
