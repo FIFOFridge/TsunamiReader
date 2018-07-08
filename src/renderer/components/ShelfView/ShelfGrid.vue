@@ -13,8 +13,6 @@
 </template>
 
 <style>
-
-/* 5 */
 .grid-container {
     position: relative;
     
@@ -47,9 +45,6 @@ export default {
     },
     data: function() {
         return {
-            lastIndex: 0,
-            lastColumnEnd: 0,
-            lastRowEnd: 0
         }
     },
     methods: {
@@ -75,13 +70,6 @@ export default {
 
             return appTiles
         }
-        // // c-s/e | r-s/e | img | img_placement | isBook | link | class/id = none
-        // insertGridItem: function(c, r, img, imgPlacement, isBook, link, selector = null) {
-        //     var el = document.createElement("div")
-
-        //     el.style.gridColumn = c
-        //     el.style.gridRow = r
-        // }
     },
     mounted: function () {
         this.$nextTick(function () 
