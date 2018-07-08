@@ -86,7 +86,7 @@ export default {
     mounted: function () {
         this.$nextTick(function () 
         {
-            loadBooksFromManager();
+            this.loadBooksFromManager();
         })
     },
     created: function() {
