@@ -1,75 +1,81 @@
-"use strict"
 import fs from 'fs'
 import path from 'path'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 
-let con = exconsole(logger, console)
+"use strict"
 
-class DataModels {
-    constructor() {
-        this.modelDirectory = path.join(__static, `models`)
-        this.cachedModels = {}
-    }
+if (global.dataModels === null || global.dataModels === undefined) {
 
-    _containsCachedModel(path) {
-        if(this.cachedModels.hasDefinedProperty(path) &&
-            this.cachedModels.path !== null &&
-            this.cachedModels.path !== undefined) {
-            
-            return true
+    let con = exconsole(logger, console)
+
+    class DataModels {
+        constructor() {
+            this.modelDirectory = path.join(__static, `models`)
+            this.cachedModels = {}
         }
 
-        return false
-    }
+        _containsCachedModel(path) {
+            if (this.cachedModels.hasDefinedProperty(path) &&
+                this.cachedModels.path !== null &&
+                this.cachedModels.path !== undefined) {
 
-    _cacheModel(path, value, override) {
-        if(this._containsCachedModel(path) && !(override)) {
-            con.error(path + " is already cached. If you want to update it set overrideCache to true")
-            return
+                return true
+            }
+
+            return false
         }
 
-        this.cachedModels.path = value
-    }
+        _cacheModel(path, value, override) {
+            if (this._containsCachedModel(path) && !(override)) {
+                con.error(path + " is already cached. If you want to update it set overrideCache to true")
+                return
+            }
 
-    makeModel(pathModel, cache = false, overrideCache = false) {
-        pathModel = path.join(this.modelDirectory, pathModel + '.json')
-        
-        if(cache && this._containsCachedModel(pathModel) && !(overrideCache))
-            return Object.assign({}, this.cachedModels.pathModel)//return copy of cached model
-
-        con.debug('creating object from file: ' + pathModel)
-        
-        if(!(fs.existsSync(pathModel))) {
-            con.console.error('file not found: ' + pathModel)
-            return null
+            this.cachedModels.path = value
         }
 
-        var content = fs.readFileSync(pathModel, "utf8")
-        var model = JSON.parse(content)
+        makeModel(pathModel, cache = false, overrideCache = false) {
+            pathModel = path.join(this.modelDirectory, pathModel + '.json')
 
-        if(cache) {
-            this._cacheModel(pathModel, false, overrideCache)
-            return Object.assign({}, this.cachedModels.pathModel)
+            if (cache && this._containsCachedModel(pathModel) && !(overrideCache))
+                return Object.assign({}, this.cachedModels.pathModel)//return copy of cached model
+
+            con.debug('creating object from file: ' + pathModel)
+
+            if (!(fs.existsSync(pathModel))) {
+                con.console.error('file not found: ' + pathModel)
+                return null
+            }
+
+            var content = fs.readFileSync(pathModel, "utf8")
+            var model = JSON.parse(content)
+
+            if (cache) {
+                this._cacheModel(pathModel, false, overrideCache)
+                return Object.assign({}, this.cachedModels.pathModel)
+            }
+
+            return model
         }
 
-        return model
-    }
+        fromFile(pathModel) {
+            pathModel = path.join(this.modelDirectory, pathModel + '.json')
 
-    fromFile(pathModel) {
-        pathModel = path.join(this.modelDirectory, pathModel + '.json')
+            con.debug('creating object from file: ' + pathModel)
 
-        con.debug('creating object from file: ' + pathModel)
-        
-        if(!(fs.existsSync(pathModel))) {
-            con.console.error('file not found: ' + pathModel)
-            return null
+            if (!(fs.existsSync(pathModel))) {
+                con.console.error('file not found: ' + pathModel)
+                return null
+            }
+
+            var content = fs.readFileSync(pathModel, "utf8")
+
+            return JSON.parse(content)
         }
-
-        var content = fs.readFileSync(pathModel, "utf8")
-
-        return JSON.parse(content)
     }
+
+    global.dataModels = new DataModels()
 }
 
-export let dataModels = new DataModels()
+export default global.dataModels
