@@ -89,9 +89,14 @@ class BookManager {
     }
 
     /*
-    get getBooks() {
-        return this.bookCollection
-    }*/
+        return copy of books collection (if returned reference will
+        be overriden, this not affect to bookManager.bookCollection reference)
+        but object references defined in returned array could be overriden and
+        affect to original collection change
+    */
+    getBooks() {
+        return this.bookCollection.slice()
+    }
 
     get getCurrentBook() {
         return this.currentBook
