@@ -39,8 +39,8 @@ class BookManager {
 
     addBook(book) {
         if (!(_invalidBookProps(book))) {
-            throw TypeError('book.tile or book.path is undefined')
             con.error('book.tile or book.path is undefined')
+            throw TypeError('book.tile or book.path is undefined')
         }
 
         var key = this._getKeyFromBook(book)
@@ -57,8 +57,8 @@ class BookManager {
 
     removeBook(book) {
         if (!(_invalidBookProps(book))) {
-            throw TypeError('book.tile or book.path is undefined')
             con.error('book.tile or book.path is undefined')
+            throw TypeError('book.tile or book.path is undefined')
         }
 
         var key = this._getKeyFromBook(book)
@@ -75,8 +75,8 @@ class BookManager {
 
     hasBook(book) {
         if (!(_invalidBookProps(book))) {
-            throw TypeError('book.tile or book.path is undefined')
             con.error('book.tile or book.path is undefined')
+            throw TypeError('book.tile or book.path is undefined')
         }
 
         var key = this._getKeyFromBook(book)
