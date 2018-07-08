@@ -15,7 +15,7 @@ class BookManager {
         this.bookCollection = {}
 
         if (fs.existsSync(this.booksPath)) {
-            var booksContent = fs.readFileSync(this.booksPath)
+            var booksContent = fs.readFileSync(this.booksPath, 'UTF8')
             this.bookCollection = JSON.parse(booksContent)
         } else {
             fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
