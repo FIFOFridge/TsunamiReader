@@ -21,6 +21,8 @@ export default {
             if(!(settings.overrideTitleBar))
                 return
 
+            var _this = this
+
             let titlebar = new ElectronTitlebarWindows({
                 darkMode: false,
                 color: 'rgba(0, 0, 0, 0.3)',
@@ -33,19 +35,19 @@ export default {
 
 			//attach events
 			titlebar.on('close', function(e) {
-				this.$emit('close-button')
+				_this.$emit('close-button')
 			});
 
 			titlebar.on('minimize', function(e) {
-				this.$emit('minimize-button')
+				_this.$emit('minimize-button')
 			});
 
 			titlebar.on('maximize', function(e) {
-				this.$emit('maximize-button')
+				_this.$emit('maximize-button')
 			});
 
 			titlebar.on('fullscreen', function(e) {
-				this.$emit('fullscreen-button')
+				_this.$emit('fullscreen-button')
 			});
         })
     }
