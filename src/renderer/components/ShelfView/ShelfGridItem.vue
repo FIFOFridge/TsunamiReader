@@ -86,7 +86,7 @@ export default {
             this.priority = "priority-high"
         }
 
-        makeActionLinks()
+        this.makeActionLinks()
     },
     methods: {
         makeActionLinks: function() {
