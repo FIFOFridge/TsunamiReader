@@ -88,6 +88,10 @@ class BookManager {
         }
     }
 
+    save() {
+        fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
+    }
+
     /*
         return copy of books collection (if returned reference will
         be overriden, this not affect to bookManager.bookCollection reference)
