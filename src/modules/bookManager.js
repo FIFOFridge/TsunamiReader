@@ -15,9 +15,11 @@ class BookManager {
         this.bookCollection = {}
 
         if (fs.existsSync(this.booksPath)) {
+            con.debug(`reading ${this.booksPath}`)
             var booksContent = fs.readFileSync(BooksManager.booksPath, 'UTF8')
             this.bookCollection = JSON.parse(booksContent)
         } else {
+            con.warn(`unable to find: ${this.booksPath}, writing new one`)
             fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
         }
     }
@@ -103,6 +105,7 @@ class BookManager {
     }
 
     set setCurrentBook(book) {
+        con.debug(`changing current book to ${book}`)
         this.currentBook = book
     }
 
