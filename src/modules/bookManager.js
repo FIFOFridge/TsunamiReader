@@ -15,12 +15,10 @@ class BookManager {
         this.bookCollection = {}
 
         if (fs.existsSync(this.booksPath)) {
-            con.info(`reading books from local file: ${this.booksPath}`)
-            var booksContent = fs.readFileSync(this.booksPath, 'UTF8')
+            var booksContent = fs.readFileSync(BooksManager.booksPath)
             this.bookCollection = JSON.parse(booksContent)
         } else {
-            con.info(`default file not found: ${this.booksPath}, writing new one`)
-            fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
+            fs.writeFileSync(JSON.stringify(this.bookCollection))
         }
     }
 
@@ -88,11 +86,6 @@ class BookManager {
         } else {
             return false
         }
-    }
-
-    save() {
-        con.info(`saving ${this.booksPath}`)
-        fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
     }
 
     /*
