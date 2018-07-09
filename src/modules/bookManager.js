@@ -105,6 +105,11 @@ class BookManager {
     set setCurrentBook(book) {
         this.currentBook = book
     }
+
+    save() {
+        con.debug(`saving ${tihs.booksPath}`)
+        fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
+    }
 }
 
 export default BookManager
