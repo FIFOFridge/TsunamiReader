@@ -56,18 +56,13 @@ app.on('ready', function() {
     var windowsManager = new WindowsManager()
     global.windowsManager = windowsManager
 
-    var bookManager = new BookManager(onBookChange())
+    var bookManager = new BookManager()
     global.bookManager = bookManager
 
     global.dataModelLoader = dataModels
 
     createWindow()
 })
-
-function onBookChange(book)
-{
-
-}
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
