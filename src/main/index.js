@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, dialog } from 'electron'
 import Settings from '../modules/appSettings'
 import WindowsManager from '../modules/windowsManager'
 import BookManager from '../modules/bookManager'
@@ -22,15 +22,15 @@ function createWindow() {
     var settings = global.appSettings.settingsObject
 
     var options = {
-        width: 1200, 
+        width: 1200,
         minWidth: 1200,
-        height: 800, 
+        height: 800,
         minHeight: 800,
         titlebar: 'hidden',
         frame: false
     }
 
-    if(!(settings.overrideTitleBar)) {
+    if (!(settings.overrideTitleBar)) {
         options.frame = true
         options.titlebar = 'default'
     }
@@ -38,6 +38,7 @@ function createWindow() {
     mainWindow = new BrowserWindow(options)
 
     global.windowsManager.addWindow('main', mainWindow)
+    windowRouter.registerAction('book', processBook)
 
     mainWindow.setMenu(null)
 
@@ -49,7 +50,7 @@ function createWindow() {
 }
 
 //init
-app.on('ready', function() {
+app.on('ready', function () {
     var settings = new Settings(app.platform)
     global.appSettings = settings;
 
@@ -63,6 +64,21 @@ app.on('ready', function() {
 
     createWindow()
 })
+
+function processBook(params) {
+    console.log(params)
+}
+
+function loadBook() {
+    var template = dataModels.MakeModel('book', true)
+    var owner = windowsManager.getWindow('main')
+
+    console.log(dialog.showOpenDialog(owner, {
+        filters: [
+            { name: 'EPub', extensions: ['epub'] }
+        ]
+    }))
+}
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
