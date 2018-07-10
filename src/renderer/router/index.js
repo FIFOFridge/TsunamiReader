@@ -28,7 +28,11 @@ var router = new Router({
     ]
 })
 
+
+router.beforeEach((to, from, next) => {
+    windowRouter.beforeEach(to, from, next)
+})
+
 router.push({path: '/shelf'})
-router.beforeEach = windowRouter.beforeEach
 
 export default router;

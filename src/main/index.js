@@ -46,8 +46,6 @@ function createWindow() {
     mainWindow.on('closed', () => {
         mainWindow = null
     })
-
-    windowRouter.fnBeforeEach = beforeRoute
 }
 
 //init
@@ -69,10 +67,6 @@ app.on('ready', function() {
 function onBookChange(book)
 {
 
-}
-
-function beforeRoute(to, from, next) {
-    next()//allow 
 }
 
 app.on('window-all-closed', () => {
