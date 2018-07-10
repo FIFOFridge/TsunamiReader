@@ -8,13 +8,8 @@
         </div>
         <!-- app -->
         <div class="app" v-else><!-- for manual setup by external style sheet -->
-            <img class="_img" :src="this.img">
-
-            <img/> 
-            <div class="action">
-                <button class="_button">
-                </button>
-            </div>
+            <img v-if="!this.isSVG" class="_img" :src="this.img"/>
+            <svg v-else class="_img _svg" :d="this.img" :fill="this.svgFill">
         </div>
     </div>
 </template>
@@ -62,7 +57,9 @@
 <script>
 export default {
     props: {
-        img: "", //encoded as base64
+        img: "", //encoded as base64 || svg,
+        isSVG: false,
+        svgFill: "#000000",
         // imgPosition: '',
         // isBook: true,
         bookObject: null,
@@ -94,7 +91,10 @@ export default {
         this.makeActionLinks()
         
         //format for base64 src
-        this.img = `data:image/png;base64, ${this.img}`
+        if(!(this.isSVG)) {
+            this.img = `data:image/png;base64, ${this.img}`
+        }
+        
     },
     methods: {
         makeActionLinks: function() {
