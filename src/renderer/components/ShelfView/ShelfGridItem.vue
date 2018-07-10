@@ -100,8 +100,8 @@ export default {
         makeActionLinks: function() {
             if(this.bookObject ==! null && this.bookObject ==! undefined)
             {
-                this.defaultActionLink = "/book/view/" + this.link
-                this.removeActionLink = "/book/remove/" + this.link
+                this.defaultActionLink = "/action/book/view/" + this.link
+                this.removeActionLink = "/action/book/remove/" + this.link
             } else {
                 this.defaultActionLink = this.link
             }
