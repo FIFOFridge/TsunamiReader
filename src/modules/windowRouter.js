@@ -22,6 +22,11 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
         }
 
         set fnBeforeEach(val) {
+            if(!(util.isFunction(val))) {
+                con.error("fnBeforeEach have to be a function")
+                throw TypeError("fnBeforeEach have to be a function")
+            }
+
             this.fnBeforeEach = val
         }
 
