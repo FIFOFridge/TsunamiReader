@@ -15,6 +15,7 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
 
             if(this.fnBeforeEach === null) {
                 con.error("fnBeforeEach isn't defined")
+                throw TypeError("fnBeforeEach isn't defined")
             }
 
             this.fnBeforeEach(to, from, next)
