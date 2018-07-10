@@ -4,11 +4,17 @@ import { app } from 'electron'
 import path from 'path'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
+import util from "util";
 
 let con = exconsole(logger, console)
 
 class BookManager {
     constructor(fnOnBookChange) {
+        if(!(util.isFunction(fnOnBookChange))) {
+            con.error(`onBookChange has to be function`)
+            TypeError(`onBookChange has to be function`)
+        }
+
         this.booksPath = path.join(app.getPath('userData'), '/books.json')
         this.fnOnBookChange = fnOnBookChange
         this.currentBook = null
@@ -55,6 +61,7 @@ class BookManager {
         }
 
         this.bookCollection[key] = book
+        this.fnOnBookChange(book, 'added')
     }
 
     removeBook(book) {
@@ -73,6 +80,7 @@ class BookManager {
         }
 
         this.bookCollection[key] = null
+        this.fnOnBookChange(book, 'removed')
     }
 
     hasBook(book) {
@@ -107,6 +115,7 @@ class BookManager {
     set setCurrentBook(book) {
         con.debug(`changing current book to ${book}`)
         this.currentBook = book
+        this.fnOnBookChange(book, 'current')
     }
 
     save() {
