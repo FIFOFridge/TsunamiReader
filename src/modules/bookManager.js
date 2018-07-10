@@ -9,16 +9,11 @@ import util from "util";
 let con = exconsole(logger, console)
 
 class BookManager {
-    constructor(fnOnBookChange) {
-        if(!(util.isFunction(fnOnBookChange))) {
-            con.error(`onBookChange has to be function`)
-            TypeError(`onBookChange has to be function`)
-        }
-
+    constructor() {
         this.booksPath = path.join(app.getPath('userData'), '/books.json')
-        this.fnOnBookChange = fnOnBookChange
         this.currentBook = null
         this.bookCollection = {}
+        this.hooks = []
 
         if (fs.existsSync(this.booksPath)) {
             con.debug(`reading ${this.booksPath}`)
@@ -45,6 +40,21 @@ class BookManager {
         }
     }
 
+    addHook(fn) {
+        if(!(util.isFunction(fnOnBookChange))) {
+            con.error(`onBookChange has to be function`)
+            TypeError(`onBookChange has to be function`)
+        }
+
+        this.hooks.push(fn)
+    }
+
+    _callHooks(book, eventName) {
+        this.hooks.forEach(fn => {
+            fn(book, eventName)
+        });
+    }
+
     addBook(book) {
         if (!(_invalidBookProps(book))) {
             con.error('book.tile or book.path is undefined')
@@ -61,7 +71,7 @@ class BookManager {
         }
 
         this.bookCollection[key] = book
-        this.fnOnBookChange(book, 'added')
+        this._callHooks(book, 'added')
     }
 
     removeBook(book) {
@@ -80,7 +90,7 @@ class BookManager {
         }
 
         this.bookCollection[key] = null
-        this.fnOnBookChange(book, 'removed')
+        this._callHooks(book, 'removed')
     }
 
     hasBook(book) {
@@ -115,7 +125,7 @@ class BookManager {
     set setCurrentBook(book) {
         con.debug(`changing current book to ${book}`)
         this.currentBook = book
-        this.fnOnBookChange(book, 'current')
+        this._callHooks(book, 'current')
     }
 
     save() {
