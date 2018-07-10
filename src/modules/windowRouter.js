@@ -2,28 +2,34 @@ import util from 'util'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 
-let con = exconsole(logger, console)
+if(global.windowRouter === null || global.windowRouter === undefined) {
+    let con = exconsole(logger, console)
 
-class WindowRouter {
-    constructor(fnBeforeEach, owner, ownerName) {
-        if(!(util.isFunction(fnBeforeEach))) {
-            con.error("fnBeforeEach isn't function")
-            throw TypeError("fnBeforeEach isn't function")
+    class WindowRouter {
+        constructor() {
+            this.fnBeforeEach = null
+        }
+    
+        beforeEach(to, from, next) {
+            con.info(`routing from: ${from} to: ${to}`)
+
+            if(this.fnBeforeEach === null) {
+                con.error("fnBeforeEach isn't defined")
+            }
+
+            this.fnBeforeEach(to, from, next)
         }
 
-        if(!(util.isString(ownerName))) {
-            con.error("ownerName isn't string")
-            throw TypeError("ownerName isn't string")
+        set fnBeforeEach(val) {
+            this.fnBeforeEach = val
         }
 
-        this.owner = owner
-        this.fnBeforeEach = fnBeforeEach
+        get fnBeforeEach() {
+            return this.fnBeforeEach
+        }
     }
 
-    beforeEach(to, from, next) {
-        con.info(`routing ${this.ownerName} from: ${from} to: ${to}`)
-        this.fnBeforeEach(to, from, next, owner)
-    }
+    global.windowRouter = new WindowRouter()
 }
 
-export default WindowRouter
+export default global.windowRouter
