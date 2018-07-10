@@ -7,13 +7,13 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
 
     class WindowRouter {
         constructor() {
-            this.fnBeforeEach = null
+            this.beforeEach = null
         }
     
         beforeEach(to, from, next) {
             con.info(`routing from: ${from} to: ${to}`)
 
-            if(this.fnBeforeEach === null) {
+            if(this.beforeEach === null) {
                 con.error("fnBeforeEach isn't defined")
                 throw TypeError("fnBeforeEach isn't defined")
             }
@@ -27,11 +27,11 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
                 throw TypeError("fnBeforeEach have to be a function")
             }
 
-            this.fnBeforeEach = val
+            this.beforeEach = val
         }
 
         get fnBeforeEach() {
-            return this.fnBeforeEach
+            return this.beforeEach
         }
     }
 
