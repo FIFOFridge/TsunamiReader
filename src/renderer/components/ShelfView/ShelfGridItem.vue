@@ -7,12 +7,13 @@
             <div class="book-title">{{ book.title }}</div>
         </div>
         <!-- app -->
-        <div class="app" v-else>
-            <div class="img"> <!-- for manual setup by external style sheet -->
-            </div>
+        <div class="app" v-else><!-- for manual setup by external style sheet -->
+            <img class="_img" :src="this.img">
+
+            <img/> 
             <div class="action">
-                <div class="button">
-                </div>
+                <button class="_button">
+                </button>
             </div>
         </div>
     </div>
@@ -91,6 +92,9 @@ export default {
         }
 
         this.makeActionLinks()
+        
+        //format for base64 src
+        this.img = `data:image/png;base64, ${this.img}`
     },
     methods: {
         makeActionLinks: function() {
