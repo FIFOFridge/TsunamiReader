@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-//import appRouter from '../../modules/appRouter'
+import windowRouter from '../../modules/windowRouter'
 
 Vue.use(Router)
 
@@ -29,6 +29,6 @@ var router = new Router({
 })
 
 router.push({path: '/shelf'})
-//router.beforeEach = appRouter.beforeEach;
+router.beforeEach = windowRouter.beforeEach
 
 export default router;
