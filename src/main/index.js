@@ -3,6 +3,7 @@ import Settings from '../modules/appSettings'
 import WindowsManager from '../modules/windowsManager'
 import BookManager from '../modules/bookManager'
 import dataModels from '../modules/dataModels'
+import windowRouter from '../modules/windowRouter'
 
 /**
  * Set `__static` path to static files in production
@@ -45,6 +46,8 @@ function createWindow() {
     mainWindow.on('closed', () => {
         mainWindow = null
     })
+
+    windowRouter.fnBeforeEach = beforeRoute
 }
 
 //init
@@ -66,6 +69,10 @@ app.on('ready', function() {
 function onBookChange(book)
 {
 
+}
+
+function beforeRoute(to, from, next) {
+    next()//allow 
 }
 
 app.on('window-all-closed', () => {
