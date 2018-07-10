@@ -9,7 +9,7 @@
         <!-- app -->
         <div class="app" v-else><!-- for manual setup by external style sheet -->
             <img v-if="!this.isSVG" class="_img" :src="this.img"/>
-            <svg v-else class="_img _svg" :d="this.img" :fill="this.svgFill">
+            <svg v-else class="_img _svg" :d="this.img" :fill="this.svgFill"/>
             <router-link :to="this.defaultActionLink" tag="button">{{this.label}}</router-link>
         </div>
     </div>
