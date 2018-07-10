@@ -16,7 +16,7 @@ class BookManager {
 
         if (fs.existsSync(this.booksPath)) {
             con.debug(`reading ${this.booksPath}`)
-            var booksContent = fs.readFileSync(BooksManager.booksPath, 'UTF8')
+            var booksContent = fs.readFileSync(this.booksPath, 'UTF8')
             this.bookCollection = JSON.parse(booksContent)
         } else {
             con.warn(`unable to find: ${this.booksPath}, writing new one`)
