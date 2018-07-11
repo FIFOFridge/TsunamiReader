@@ -11,6 +11,7 @@
 <style>
 @import "/static/lib/lazygrid.css";
 @import "/static/css/shelf.css";
+@import "/static/css/shelfGrid.css";
 </style>
 
 <script>

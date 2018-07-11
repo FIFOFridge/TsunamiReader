@@ -4,15 +4,15 @@
 
 //app tiles
 .grid-container {
-    & * > {
-        grid-column-start: 1;
-        grid-column-end: 4;
+    // & > * {
+    //     grid-column-start: 1;
+    //     grid-column-end: 4;
 
-        height: @grid-book-tile-base-height;
+    //     // height: @grid-book-tile-base-height;
 
-        justify-self: stretch;
-        align-self: stretch;
-    }
+    //     justify-self: stretch;
+    //     align-self: stretch;
+    // }
 
     // #last-read, #theme-select {
     //     grid-column: span 2;
@@ -28,18 +28,27 @@
             grid-column: 1 / span 3;
             // grid-row: 1 / span 2;
             grid-row: 1;
+
+            // height: 12em;
+
             background-color: red;
         }
         &#theme-select {
             grid-column: 2 / span 2;
             // grid-row: 2 / span 1;
             grid-row: 2;
+
+            // height: 10em;
+
             background-color: blue;
         }
         &#app-config {
             grid-column: 5 / span 1;
             grid-row: 1 / span 2;
             // grid-row: 1;
+
+            // height: 20em;
+
             background-color: green;
 
             //height: calc(@grid-book-tile-base-height * 2);

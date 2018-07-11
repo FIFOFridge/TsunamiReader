@@ -14,17 +14,7 @@
 
 <style>
 .grid-container {
-    position: relative;
-    
     display: grid;
-    grid-template-columns: auto auto auto auto auto;
-    grid-template-rows: auto;
-    grid-auto-flow: dense;
-    grid-gap: 0.5em;
-    padding: 1em;
-    
-    padding-bottom: 4.5em;
-    padding-top: 2em;
 }
 </style>
 

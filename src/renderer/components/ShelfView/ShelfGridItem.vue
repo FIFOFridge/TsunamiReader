@@ -33,29 +33,6 @@
 .grid-item.priority-low {
     order: 0;
 }
-
-.grid-item .book {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-
-    grid-row: span 2;
-    align-self: stretch;
-}
-
-.grid-item .book .book-title {
-    position: relative;
-    width: 100%;
-    top: 0.15em;
-    text-align: center;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.grid-container > .grid-item {
-    height: 100%; /* globaly fixes custom height elements */
-}
 </style>
 
 <script>
