@@ -1,5 +1,5 @@
 <template>
-    <div :id="[id]" class="grid-item" :class="[priority]">
+    <div :id="[id]" class="grid-item" :class="[priority, type]">
         <!-- book -->
         <div v-if="this.bookObject ==! null && this.bookObject ==! undefined"
             class="book" :style="[backgroundImage]"
@@ -55,7 +55,8 @@ export default {
             priority: "",
             defaultActionLink: "",
             removeActionLink: "",//only for book
-            backgroundImage: ""
+            backgroundImage: "",
+            type: ""
         }
     },
     //exectue before mount
@@ -68,6 +69,12 @@ export default {
             this.priority = this.isFavourite ? "priority-medium" : "priority-low"
         } else {
             this.priority = "priority-high"
+        }
+
+        if(this.bookObject ==! null && this.bookObject ==! undefined) {
+            this.type = "book"
+        } else {
+            this.type = "app"
         }
 
         this.makeActionLinks()
