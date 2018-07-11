@@ -1,12 +1,57 @@
 @import './shared/common.less';
 
 .grid-container {
-    grid-template-columns: auto auto auto auto auto;
-    grid-template-rows: auto;
-    grid-auto-flow: dense;
-    grid-gap: 0.5em;
-    padding: 1em;
+    display: grid;
+    grid-gap: 0px 0px;
 
-    padding-bottom: 4.5em;
-    padding-top: 2em;
+    justify-items: stretch;
+    align-items: stretch;
+    justify-content: stretch;
+    align-content: stretch;
+
+    padding: 0px;
+    margin: 0px;
+
+    &#app-tiles-grid {
+        grid-template-areas: 
+            "last-read      last-read       last-read       .       settings"
+            ".              theme           theme           .       settings"
+            ".              .               add-book        .       .       "
+            ;
+        grid-template-rows: repeat(8em);
+        grid-template-columns: auto auto auto auto auto;
+    }
+
+    &#book-tiles-grid {
+        grid-template-areas: 
+            "book           book            .               .       favourite"
+        ;
+
+    }
+}
+
+.grid-item.book {
+    grid-area: book;
+
+    &.favourite {
+        grid-area: favourite !important;
+    }   
+}
+
+.grid-item.app {
+    &#last-read {
+        grid-area: last-read;
+    }
+
+    &#theme-select {
+        grid-area: theme;
+    }
+
+    &#app-config {
+        grid-area: settings;
+    }
+
+    &#add-book-to-shelf {
+        grid-area: add-book;
+    }
 }
