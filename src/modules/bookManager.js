@@ -1,10 +1,12 @@
 "use strict"
 import fs from 'fs'
-import { app } from 'electron'
+import { app, dialog } from 'electron'
 import path from 'path'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 import util from "util";
+import epubParser from 'epub-metadata-parser'
+import objectHelper from './helpers/objectHelper'
 
 let con = exconsole(logger, console)
 
@@ -41,7 +43,7 @@ class BookManager {
     }
 
     addHook(fn) {
-        if(!(util.isFunction(fnOnBookChange))) {
+        if (!(util.isFunction(fnOnBookChange))) {
             con.error(`onBookChange has to be function`)
             TypeError(`onBookChange has to be function`)
         }
@@ -126,6 +128,46 @@ class BookManager {
         con.debug(`changing current book to ${book}`)
         this.currentBook = book
         this._callHooks(book, 'current')
+    }
+
+    browseEPUBs() {
+        con.debug('opening select dialog')
+        var files = dialog.showOpenDialog(
+            {
+                options: {
+                    title: 'select epub file to read',
+                    properties: [
+                        'openFile',
+                        'multiSelections'
+                    ],
+                    filters: [
+                        { name: 'epubs', extensions: 'epub' }
+                    ]
+                }
+            }
+        )
+
+        if(util.isArray(files) && files.length > 0)
+            return files
+        else
+            return null
+    }
+
+    parseEPUB(filePath) {
+        if(!(util.isString(filePath) && fs.existsSync(filePath))) {
+            con.error('Wrong file path')
+            throw TypeError('Wrong file path')
+        }
+        
+        epubParser.parse(filePath, '@TODO', book => {
+            if(objectHelper.isPropertyDefined(book, 'title'))//successfully parsed
+            {
+                book[path] = filePath
+                return book
+            }
+
+            return null//error during parse
+        })
     }
 
     save() {
