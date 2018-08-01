@@ -27,8 +27,22 @@ class BookManager {
         }
     }
 
+    // _getKeyFromBook(book) {
+    //     return book.path.toLowerCase()
+    // }
+
     _getKeyFromBook(book) {
-        return book.path.toLowerCase()
+        if(!(objectHelper.isPropertyDefined(book, 'md5'))) {
+            con.error(`Unable to find md5 property in: ${book}`)
+            throw TypeError(`Unable to find md5 property in: ${book}`)
+        }
+
+        if(!(util.isString(book.md5))) {
+            con.error(`MD5 has wrong format: ${book.md5}`)
+            throw TypeError(`MD5 has wrong format: ${book.md5}`)
+        }
+
+        return book.md5
     }
 
     _invalidBookProps(book) {
