@@ -1,21 +1,22 @@
 "use strict"
 import fs from 'fs'
-import { app, dialog } from 'electron'
+import { app, dialog, EventEmitter } from 'electron'
 import path from 'path'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 import util from "util";
 import epubParser from 'epub-metadata-parser'
 import objectHelper from './helpers/objectHelper'
+import { EventEmitter } from 'events'
 
 let con = exconsole(logger, console)
 
-class BookManager {
+class BookManager extends EventEmitter {
     constructor() {
         this.booksPath = path.join(app.getPath('userData'), '/books.json')
         this.currentBook = null
         this.bookCollection = {}
-        this.hooks = []
+        // this.hooks = []
 
         if (fs.existsSync(this.booksPath)) {
             con.debug(`reading ${this.booksPath}`)
@@ -56,20 +57,20 @@ class BookManager {
         }
     }
 
-    addHook(fn) {
-        if (!(util.isFunction(fnOnBookChange))) {
-            con.error(`onBookChange has to be function`)
-            TypeError(`onBookChange has to be function`)
-        }
+    // addHook(fn) {
+    //     if (!(util.isFunction(fnOnBookChange))) {
+    //         con.error(`onBookChange has to be function`)
+    //         TypeError(`onBookChange has to be function`)
+    //     }
 
-        this.hooks.push(fn)
-    }
+    //     this.hooks.push(fn)
+    // }
 
-    _callHooks(book, eventName) {
-        this.hooks.forEach(fn => {
-            fn(book, eventName)
-        });
-    }
+    // _callHooks(book, eventName) {
+    //     this.hooks.forEach(fn => {
+    //         fn(book, eventName)
+    //     });
+    // }
 
     addBook(book) {
         if (!(_invalidBookProps(book))) {
@@ -87,7 +88,8 @@ class BookManager {
         }
 
         this.bookCollection[key] = book
-        this._callHooks(book, 'added')
+        //this._callHooks(book, 'added')
+        this.emit('added', book)
     }
 
     removeBook(book) {
@@ -106,7 +108,8 @@ class BookManager {
         }
 
         this.bookCollection[key] = null
-        this._callHooks(book, 'removed')
+        //this._callHooks(book, 'removed')
+        this.emit('removed', book)
     }
 
     hasBook(book) {
@@ -141,7 +144,8 @@ class BookManager {
     set setCurrentBook(book) {
         con.debug(`changing current book to ${book}`)
         this.currentBook = book
-        this._callHooks(book, 'current')
+        //this._callHooks(book, 'current')
+        this.emit('current', book)
     }
 
     browseEPUBs() {
