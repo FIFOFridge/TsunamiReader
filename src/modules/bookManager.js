@@ -8,6 +8,7 @@ import util from "util";
 import epubParser from 'epub-metadata-parser'
 import objectHelper from './helpers/objectHelper'
 import { EventEmitter } from 'events'
+import { resolve } from 'dns';
 
 let con = exconsole(logger, console)
 
@@ -194,7 +195,19 @@ class BookManager extends EventEmitter {
 
     save() {
         con.debug(`saving ${tihs.booksPath}`)
-        fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
+    //     fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
+
+        return new Promise((resolve, reject) => {
+            fs.writeFile(this.booksPath, JSON.stringify(this.bookCollection), (err) => {
+                if (err) {
+                    con.error(`error occured while saving: ${this.booksPath}, error: ${err}`)
+                    reject(err)
+                } else {
+                    con.debug(`successfully saved: ${this.booksPath}`)
+                    resolve()
+                }
+            })
+        })
     }
 }
 
