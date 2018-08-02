@@ -119,12 +119,16 @@ class BookManager extends EventEmitter {
         }
 
         var key = this._getKeyFromBook(book)
+        var found = false
 
-        if (this.bookCollection.hasOwnProperty(key)) {
-            return this.bookCollection[key] !== null ? true : false
-        } else {
-            return false
-        }
+        Object.keys(this.bookCollection).forEach(ownedBook => {
+            if(this.bookCollection[ownedBook]['md5'] == key) {
+                found = true
+                break
+            }
+        })
+
+        return found
     }
 
     /*
