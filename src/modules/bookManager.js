@@ -9,6 +9,7 @@ import epubParser from 'epub-metadata-parser'
 import objectHelper from './helpers/objectHelper'
 import { EventEmitter } from 'events'
 import { resolve } from 'dns';
+import md5 from 'md5'
 
 let con = exconsole(logger, console)
 
@@ -186,16 +187,26 @@ class BookManager extends EventEmitter {
             con.error('Wrong file path')
             throw TypeError('Wrong file path')
         }
+
+        var bookMD5 = md5(fs.readFile(filePath, (err, data) => {
+            if(err) {
+                con.error(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
+                throw TypeError(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
+            }
+        }))
         
         epubParser.parse(filePath, '@TODO', book => {
             if(objectHelper.isPropertyDefined(book, 'title'))//successfully parsed
             {
                 book[path] = filePath
+                book['md5'] = bookMD5
                 return book
             }
 
             return null//error during parse
         })
+
+
     }
 
     save() {
