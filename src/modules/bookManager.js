@@ -214,6 +214,29 @@ class BookManager extends EventEmitter {
             })
         })
     }
+
+    //settings
+    getSetting($var) {
+        if(!(objectHelper.isPropertyDefined(this.settings, $var))) {
+            con.error(`unable to get setting: ${$var} from: ${this.settings}`)
+            throw TypeError(`unable to get setting: ${$var} from: ${this.settings}`)
+        }
+
+        return this.settings[$var]
+    }
+
+    setSetting($var, $value) {
+        if(!(objectHelper.isPropertyDefined(this.settings, $var))) {
+            con.error(`unable to get setting: ${$var} from: ${this.settings}`)
+            throw TypeError(`unable to get setting: ${$var} from: ${this.settings}`)
+        }
+
+        this.settings[$var] = $value
+    }
+
+    getSettingsKeys() {
+        return Object.keys(this.settings)
+    }
 }
 
 export default BookManager
