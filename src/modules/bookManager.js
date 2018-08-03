@@ -17,6 +17,11 @@ class BookManager extends EventEmitter {
         this.booksPath = path.join(app.getPath('userData'), '/books.json')
         this.currentBook = null
         this.bookCollection = {}
+        
+        this.settings = {
+            readEpubAsyncThreshold: 10, //mb
+            readEpubAsyncTimeout: 10000 //in ms
+        }
         // this.hooks = []
 
         if (fs.existsSync(this.booksPath)) {
