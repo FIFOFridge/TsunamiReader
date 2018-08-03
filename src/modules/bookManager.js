@@ -10,6 +10,7 @@ import objectHelper from './helpers/objectHelper'
 import { EventEmitter } from 'events'
 import { resolve } from 'dns';
 import md5 from 'md5'
+import paths from './../constants/paths.js'
 
 let con = exconsole(logger, console)
 
@@ -188,25 +189,32 @@ class BookManager extends EventEmitter {
             throw TypeError('Wrong file path')
         }
 
-        var bookMD5 = md5(fs.readFile(filePath, (err, data) => {
-            if(err) {
-                con.error(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
-                throw TypeError(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
-            }
-        }))
+        return new Promise((res, rej) => {
+            new Promise((resolve, reject) => {
+                fs.readFile(filePath, (err, data) => {
+                    if(err) {
+                        con.error(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
+                        reject(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
+                        // throw TypeError(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
+                    }
+
+                    resolve(data)
+                })
+            }).then((data) => {
+                epubParser.parse(filePath, paths.extractedEpubs, book => {
+                    if(objectHelper.isPropertyDefined(book, 'title'))//successfully parsed
+                    {
+                        book['path'] = filePath
+                        book['md5'] = md5(data)
+                        return book
+                    }
         
-        epubParser.parse(filePath, '@TODO', book => {
-            if(objectHelper.isPropertyDefined(book, 'title'))//successfully parsed
-            {
-                book[path] = filePath
-                book['md5'] = bookMD5
-                return book
-            }
-
-            return null//error during parse
+                    return null//error during parse
+                })
+            }, (err) => {
+                throw TypeError(err)
+            })
         })
-
-
     }
 
     save() {
