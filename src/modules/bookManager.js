@@ -184,16 +184,15 @@ class BookManager extends EventEmitter {
     }
 
     parseEPUB(filePath) {
-        if(!(util.isString(filePath) && fs.existsSync(filePath))) {
-            con.error('Wrong file path')
-            throw TypeError('Wrong file path')
-        }
-
         return new Promise((res, rej) => {
             new Promise((resolve, reject) => {
+                if(!(util.isString(filePath) && fs.existsSync(filePath))) {
+                    con.error('Wrong file path')
+                    reject('Wrong file path')
+                }
+
                 fs.readFile(filePath, (err, data) => {
                     if(err) {
-                        con.error(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
                         reject(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
                         // throw TypeError(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
                     }
@@ -206,12 +205,14 @@ class BookManager extends EventEmitter {
                     {
                         book['path'] = filePath
                         book['md5'] = md5(data)
-                        return book
+                        
+                        res(book)
                     }
         
-                    return null//error during parse
+                    rej(`unable to parse epub metadata: ${filePath}`)
                 })
             }, (err) => {
+                con.error(err)
                 throw TypeError(err)
             })
         })
