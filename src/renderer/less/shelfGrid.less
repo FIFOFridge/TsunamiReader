@@ -23,18 +23,20 @@
     }
 
     &#book-tiles-grid {
-        grid-template-areas: 
-            "book           book            .               .       favourite"
-        ;
-
+        // grid-template-areas: 
+        //     "book           book            .               .       favourite"
+        // ;
+        grid-template-columns: auto auto auto;
     }
 }
 
 .grid-item.book {
-    grid-area: book;
+    //grid-area: book;
+    grid-column-start: 1;
 
     &.favourite {
-        grid-area: favourite !important;
+        grid-column-start: 3 !important;
+        //grid-area: favourite !important;
     }   
 }
 
