@@ -1,4 +1,4 @@
-import { app } from electron
+import { app } from 'electron'
 import fs from 'fs'
 
 const userDataPath = app.getPath('userData')
