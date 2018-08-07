@@ -132,7 +132,7 @@ class BookManager extends EventEmitter {
         Object.keys(this.bookCollection).forEach(ownedBook => {
             if(this.bookCollection[ownedBook]['md5'] == key) {
                 found = true
-                break
+                //break //rly js??
             }
         })
 
