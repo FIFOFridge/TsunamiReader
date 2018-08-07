@@ -16,6 +16,8 @@ let con = exconsole(logger, console)
 
 class BookManager extends EventEmitter {
     constructor() {
+        super()
+
         this.booksPath = path.join(app.getPath('userData'), '/books.json')
         this.currentBook = null
         this.bookCollection = {}
