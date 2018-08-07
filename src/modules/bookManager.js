@@ -1,17 +1,17 @@
 "use strict"
 import fs from 'fs'
-import { app, dialog, EventEmitter } from 'electron'
+import { app, dialog } from 'electron'
 import path from 'path'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 import util from "util";
 import epubParser from 'epub-metadata-parser'
 import objectHelper from './helpers/objectHelper'
-import { EventEmitter } from 'events'
-import { resolve } from 'dns';
+import events from 'events'
 import md5 from 'md5'
 import paths from './../constants/paths.js'
 
+const EventEmitter = events.EventEmitter
 let con = exconsole(logger, console)
 
 class BookManager extends EventEmitter {
