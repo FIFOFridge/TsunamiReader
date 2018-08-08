@@ -7,16 +7,20 @@
             <div class="book-title">{{ book.title }}</div>
         </div>
         <!-- app -->
-        <div class="app" v-else><!-- for manual setup by external style sheet -->
+        <!-- <div class="app" v-else>for manual setup by external style sheet -->
+        <div class="img-container">
             <img v-if="!this.isSVG" class="_img" :src="this.img"/>
             <svg v-else class="_img _svg" viewBox="0 0 24 24">
                 <path :fill="this.svgFill" :d="this.img"/>
             </svg>
+        </div>
+
+        
             <!-- <router-link :to="this.defaultActionLink" tag="button">{{this.label}}</router-link> -->
             <router-link :to="{path: this.defaultActionLink}">
                 <button class="app-button">{{this.label}}</button>
             </router-link>
-        </div>
+        <!-- </div> -->
     </div>
 </template>
 
