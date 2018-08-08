@@ -1,11 +1,11 @@
 import { app } from 'electron'
-import fs from 'fs'
+import path from 'path'
 
 const userDataPath = app.getPath('userData')
 
-export default {
-    appStorage: fs.join(userDataPath, '/TsunamiReader/'),
-    extractedEpubs: fs.join(appStorage, '/extracted/'),
-    settingsDirectory: fs.join(appStorage, '/settings/'),
-    settingsPath: fs.join(settingsDirectory, '/appSettings.json')
+export default function() {
+    this.appStorage = path.join(userDataPath, '/TsunamiReader/')
+    this.extractedEpubs = path.join(appStorage, '/extracted/')
+    this.settingsDirectory = path.join(appStorage, '/settings/')
+    this.settingsPath = path.join(settingsDirectory, '/appSettings.json')
 }
