@@ -5,6 +5,7 @@
                 :img="tile.img"
                 :book-object="tile.bookObject"
                 :link="tile.link"
+                :isSVG="tile.isSVG"
                 :id="tile.id"
             >
             </shelf-grid-item>
