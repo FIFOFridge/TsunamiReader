@@ -3,7 +3,17 @@
 // @grid-book-tile-base-height: 10em;
 
 body {
-    background-color: @gridbase-background-color;
+    background: url('/static/assets/reader/textured_paper.png') ;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: fadeout(@gridbase-background-color, 12%);
 }
 
 //app tiles
