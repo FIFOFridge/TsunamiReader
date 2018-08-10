@@ -11,6 +11,11 @@
     border-bottom: 0.05em solid rgba(255,255,255,0.1);
     background-image: linear-gradient(to top, rgba(255,255,255,0.2), rgba(255,255,255,0.12), rgba(255,255,255,0.06), rgba(0,0,0,0));
 
+    &.dark {
+        border-bottom: 0.05em solid rgba(0, 0, 0, 0.1) !important;
+        background-image: linear-gradient(to top, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.1)) !important;
+    }
+
     &.fixed {
         z-index: 200 !important;
     }

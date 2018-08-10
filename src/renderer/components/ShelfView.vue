@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-titlebar></app-titlebar>
+        <app-titlebar class="dark" is-fixed="true"></app-titlebar>
         <div class="window-content-container">
             <shelf-grid 
                 id="app-tiles-grid"
