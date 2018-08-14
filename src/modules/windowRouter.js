@@ -48,6 +48,7 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
             
             if((params.lenght > 1) && (params[0] === 'action')) {
 
+                con.debug(`routing to action: ${params[1]}`)
                 this.emit(params[1], to)
                 // if(this._hasAction(params[1])) {
                 //     this.actions[params[1]](to.query)//call function
