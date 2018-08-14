@@ -24,6 +24,8 @@ var router = new Router({
             path: '/',
             name: 'landing-page',
             component: require('@/components/LandingPage').default
+        }, {
+            path: '/action/:name/:params?'
         }
     ]
 })

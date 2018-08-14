@@ -45,8 +45,10 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
             // }
 
             var params = to.path.split('/')
-            
-            if((params.lenght > 1) && (params[0] === 'action')) {
+            console.log(params.length)
+            con.debug(params[1])
+
+            if((params.length > 1) && (params[1] === 'action')) {
 
                 con.debug(`routing to action: ${params[1]}`)
 
