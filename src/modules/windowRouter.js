@@ -50,14 +50,14 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
 
             if((params.length > 1) && (params[1] === 'action')) {
 
-                con.debug(`routing to action: ${params[1]}`)
+                con.debug(`routing to action: ${params[2]}`)
 
-                if(this.listenerCount(params[1]) === 0) {
-                    con.error(`no listner(s) detected for: ${params[1]}`)
-                    throw ReferenceError(`no listner(s) detected for: ${params[1]}`)
+                if(this.listenerCount(params[2]) === 0) {
+                    con.error(`no listner(s) detected for: ${params[2]}`)
+                    throw ReferenceError(`no listner(s) detected for: ${params[2]}`)
                 }
 
-                this.emit(params[1], to)
+                this.emit(params[2], to)
                 // if(this._hasAction(params[1])) {
                 //     this.actions[params[1]](to.query)//call function
                 // } else {
