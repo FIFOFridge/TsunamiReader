@@ -38,7 +38,7 @@ function createWindow() {
     mainWindow = new BrowserWindow(options)
 
     global.windowsManager.addWindow('main', mainWindow)
-    windowRouter.registerAction('book', processBook)
+    //windowRouter.registerAction('book', processBook)
 
     mainWindow.setMenu(null)
 
