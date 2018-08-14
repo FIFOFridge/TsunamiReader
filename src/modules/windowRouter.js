@@ -39,10 +39,10 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
             // console.log(from)
             con.info(`routing from: ${from.path} to: ${to.path}`)
 
-            if(this.beforeEach === null) {
-                con.error("fnBeforeEach isn't defined")
-                throw TypeError("fnBeforeEach isn't defined")
-            }
+            // if(this.beforeEach === null) {
+            //     con.error("fnBeforeEach isn't defined")
+            //     throw TypeError("fnBeforeEach isn't defined")
+            // }
 
             var params = to.path.split('/')
             
