@@ -14,6 +14,9 @@ class WindowsManager {
                 con.warn(s + "'isn't sting")
         }
 
+        //TODO
+        //BUG
+        //fix this using 'util' module and FIX conds
         this.invalidIsString = (a, pn) => {
             if(!(this.isString))
                 con.error(a + 'have to be string ==> ' + pn + '(arg)')
