@@ -3,6 +3,7 @@ import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 import objectHelper from "./helpers/objectHelper";
 import events from 'events'
+import actionsHandler from './actionsHandler'
 
 if(global.windowRouter === null || global.windowRouter === undefined) {
     let con = exconsole(logger, console)
@@ -11,6 +12,7 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
         constructor() {
             super()
             // this.actions = {}
+            new actionsHandler(this)
         }
     
         // _hasAction(name) {
@@ -64,7 +66,9 @@ if(global.windowRouter === null || global.windowRouter === undefined) {
                 //     con.error(`action not defined: ${params[1]}, aborting`)
                 // }
                 
+                con.debug('preventing redirection')
                 next(false)//prevent redirection
+                return
             }
 
             next()
