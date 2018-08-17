@@ -20,9 +20,18 @@ class ActionsHandler {
     }
 
     onBookAdd(params) {
-        con.debug('opening select dialog') 
+        var mainWindow = null
+
+        if (objectHelper.isPropertyDefined(global.windowsManager)) {
+            con.debug(`global.windowManager is defined`)
+            mainWindow = global.windowsManager.getWindow('main')
+        } else {
+            con.debug(`global.windowsManager isn't defined`)
+        }
+
+        con.debug('opening select dialog')
         var files = electron.remote.dialog.showOpenDialog(
-            // dialog.showOpenDialog(
+            mainWindow,
             {
                 title: 'select epub file to read',
                 properties: [
