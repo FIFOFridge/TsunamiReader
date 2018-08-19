@@ -4,6 +4,7 @@ import objectHelper from './helpers/objectHelper'
 import electron from 'electron'
 import util from 'util'
 import events from 'events'
+import bookManager from './bookManager'
 
 let con = exconsole(logger, console)
 
@@ -45,12 +46,20 @@ class ActionsHandler {
         )
 
         // con.debug(`selected file(s): ${files}`)
+        var promises = []
 
-        if (util.isArray(files) && files.length > 0)
-            return files
-        else
-            return undefined
+        if (!((util.isArray(files) && files.length > 0) || util.isString(files)))
+            return //no files selected, so return
 
+        if(util.isString(files)) { //single file selected
+            bookManager.parseEpub()
+        } else { //array of files paths
+            //for(var i = 0; i < files; i++) {
+            //
+            //} 
+        }
+
+        //bookManager.parseEpub
     }
 
     onBookContinue(params) {
