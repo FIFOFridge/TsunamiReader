@@ -9,7 +9,7 @@ import epubParser from 'epub-metadata-parser'
 import objectHelper from './helpers/objectHelper'
 import events from 'events'
 import md5 from 'md5'
-import paths from './../constants/paths.js'
+//import paths from './../constants/paths.js'
 
 const EventEmitter = events.EventEmitter
 let con = exconsole(logger, console)
