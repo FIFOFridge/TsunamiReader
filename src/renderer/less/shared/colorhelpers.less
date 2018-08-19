@@ -1,0 +1,21 @@
+.ui-element-theme(@baseColor, @percent, @border, @hover) {
+    background-color: fadeout(@baseColor, @percent);
+}
+
+.ui-element-theme(@baseColor, @percent, @border, @hover) when (@border = true) {
+    border-bottom: solid darken(fadeout(@baseColor, @percent), 6%) 0.188em;
+    border-right: solid darken(fadeout(@baseColor, @percent), 4%) 0.156em;
+}
+
+.ui-element-theme(@baseColor, @percent, @border, @hover) when (@hover = lighten) {
+    &:hover {
+        background-color: lighten(fadeout(@baseColor, @percent), 6%);
+    }
+}
+
+.ui-element-theme(@baseColor, @percent, @border, @hover) when (@hover = darken) {
+    &:hover {
+        background-color: darken(fadeout(@baseColor, @percent), 6%);
+    }
+}
+
