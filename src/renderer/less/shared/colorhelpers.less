@@ -1,21 +1,42 @@
-.ui-element-theme(@baseColor, @percent, @border, @hover) {
-    background-color: fadeout(@baseColor, @percent);
+.ui-element-theme(@baseColor, @desaturatePercent, @background, @border, @hover) when (@background = true) {
+    background-color: desaturate(@baseColor, (@desaturatePercent));
 }
 
-.ui-element-theme(@baseColor, @percent, @border, @hover) when (@border = true) {
-    border-bottom: solid darken(fadeout(@baseColor, @percent), 6%) 0.188em;
-    border-right: solid darken(fadeout(@baseColor, @percent), 4%) 0.156em;
+.ui-element-theme(@baseColor, @desaturatePercent, @background, @border, @hover) when (@border = true) {
+    border-bottom: 
+        solid 
+        darken(
+            desaturate(@baseColor, (@desaturatePercent)),
+            6%
+        ),
+    0.188em;
+
+    border-right: 
+        solid 
+        darken(
+            desaturate(@baseColor, (@desaturatePercent)), 
+            4%
+        ) 
+    0.156em;
 }
 
-.ui-element-theme(@baseColor, @percent, @border, @hover) when (@hover = lighten) {
+.ui-element-theme(@baseColor, @desaturatePercent, @background, @border, @hover) when (@hover = lighten) {
     &:hover {
-        background-color: lighten(fadeout(@baseColor, @percent), 6%);
+        background-color: 
+            lighten(     
+                desaturate(@baseColor, (@desaturatePercent)),
+                6%
+            );
     }
 }
 
-.ui-element-theme(@baseColor, @percent, @border, @hover) when (@hover = darken) {
+.ui-element-theme(@baseColor, @desaturatePercent, @background, @border, @hover) when (@hover = darken) {
     &:hover {
-        background-color: darken(fadeout(@baseColor, @percent), 6%);
+        background-color: 
+            darken(     
+                desaturate(@baseColor, (@desaturatePercent)),
+                6%
+            );
     }
 }
 
