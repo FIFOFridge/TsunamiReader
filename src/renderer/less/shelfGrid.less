@@ -17,7 +17,7 @@
         grid-template-areas: 
             "last-read      last-read       last-read       .               settings"
             ".              add-book        add-book        .               settings"
-            ".              .               .               .               theme"
+            ".              add-book        add-book        .               theme"
             ".              .               .               .               theme"
             ;
 
@@ -241,9 +241,13 @@
 
         background: url('/static/shelf.png');
         background-size: cover; 
+        
+        svg {
+            .svg-fill-light(25);
+        }
 
         .img-container {
-            margin-top: 2em;
+            margin-top: 8em;
         }
         
         button {
