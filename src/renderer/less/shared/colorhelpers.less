@@ -40,3 +40,10 @@
     }
 }
 
+.svg-fill-light(@percent) {
+    fill: fadeout(hsla(0, 0%, 88%, 1), @percent);
+}
+
+.svg-fill-dark(@percent) {
+    fill: fadeout(hsla(0, 0%, 12%, 1), @percent);
+}
