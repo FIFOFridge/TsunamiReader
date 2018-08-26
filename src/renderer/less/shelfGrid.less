@@ -1,4 +1,5 @@
 @import './shared/common.less';
+@import './shared/colorhelpers.less';
 
 .grid-container {
     display: grid;
@@ -17,11 +18,12 @@
             "last-read      last-read       last-read       .               settings"
             ".              add-book        add-book        .               settings"
             ".              .               .               .               theme"
+            ".              .               .               .               theme"
             ;
 
         grid-gap: 2.5em 0em;
 
-        grid-template-rows: 12em;
+        grid-template-rows: 12em 8em 12em;
         grid-template-columns: auto auto auto auto auto;
 
         margin: 0em 2.5em;
@@ -140,32 +142,93 @@
     }   
 }
 
+@grid-item-app-button-width-horizontal: 16em;
+@grid-item-app-button-width-vertical: calc(@grid-item-app-button-width-horizontal / 2); 
+
 .grid-item.app {
     .shadow-light();
+
+    width: 100%;
+    height: 100%;
+
+    a {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+
+        & > * {
+            align-self: center;
+        }
+    }
 
     svg {
         width: 4.5em;
         height: auto;
     }
 
+    // * {
+    //     align-self: center;
+    // }
+
+    button {
+        visibility: hidden !important;
+    }
+
     &#last-read {
         grid-area: last-read;
+
+        button {
+            height: 2.5em;
+            width: @grid-item-app-button-width-horizontal;
+
+            margin-top: 2em;
+            //.ui-element-theme(rgb(255, 247, 20), 20%, true, darken);
+        }
+
+        svg {
+            margin-top: 1.5em;
+        }
     }
 
     &#theme-select {
         grid-area: theme;
+
+        .img-container {
+            margin-top: 2em;
+        }
     }
 
     &#app-config {
         grid-area: settings;
 
+        button {
+            margin-top: 12em;
+
+            height: 2.5em;
+            width: @grid-item-app-button-width-vertical;
+        }
+
+        .img-container {
+            margin-top: 2em;
+        }
+
         svg {
-            width: 3.5em;
-            height: 3.5em;
+            width: 4.5em;
+            height: 4.5em;
         }
     }
 
     &#add-book-to-shelf {
         grid-area: add-book;
+
+        .img-container {
+            margin-top: 2em;
+        }
+        
+        button {
+            width: @grid-item-app-button-width-horizontal;
+            height: 2.5em;
+        }
     }
 }
