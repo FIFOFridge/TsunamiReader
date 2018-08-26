@@ -127,8 +127,8 @@
         );
 
     border: none;
-    border-bottom: @griditem-decoration-color 0.084em solid;
-    border-right: lighten(@griditem-decoration-color, 2%) 0.056em solid;
+    // border-bottom: @griditem-decoration-color 0.084em solid;
+    // border-right: lighten(@griditem-decoration-color, 2%) 0.056em solid;
 }
 
 .grid-item.book {
@@ -146,7 +146,7 @@
 @grid-item-app-button-width-vertical: calc(@grid-item-app-button-width-horizontal / 2); 
 
 .grid-item.app {
-    .shadow-light();
+    .shadow();
 
     width: 100%;
     height: 100%;
@@ -238,6 +238,9 @@
 
     &#add-book-to-shelf {
         grid-area: add-book;
+
+        background: url('/static/shelf.png');
+        background-size: cover; 
 
         .img-container {
             margin-top: 2em;
