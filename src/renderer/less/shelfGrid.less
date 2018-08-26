@@ -177,6 +177,9 @@
 
     &#last-read {
         grid-area: last-read;
+        background: url('/static/redd-angelo-106907-unsplash.png');
+        background-position-y: 40%;
+        background-size: cover; 
 
         button {
             height: 2.5em;
@@ -188,19 +191,31 @@
 
         svg {
             margin-top: 1.5em;
+
+            .svg-fill-dark(35);
         }
     }
 
     &#theme-select {
         grid-area: theme;
+        background: url('/static/jason-leung-363958-unsplash.png');
+        background-size: cover;
+        background-repeat: no-repeat;
 
         .img-container {
-            margin-top: 2em;
+            margin-top: 5em;
+        }
+
+        svg {
+            .svg-fill-dark(45);
         }
     }
 
     &#app-config {
         grid-area: settings;
+        background: url('/static/settings.png');
+        background-size: cover; 
+        background-position-x: 97%;
 
         button {
             margin-top: 12em;
@@ -216,6 +231,8 @@
         svg {
             width: 4.5em;
             height: 4.5em;
+
+            .svg-fill-light(35);
         }
     }
 
