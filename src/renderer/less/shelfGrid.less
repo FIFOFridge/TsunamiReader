@@ -1,5 +1,6 @@
 @import './shared/common.less';
 @import './shared/colorhelpers.less';
+@import './shared/animations.less';
 
 .grid-container {
     display: grid;
@@ -37,6 +38,8 @@
         grid-template-columns: auto auto auto;
     }
 }
+
+@griditem-description-expanded: 3em;
 
 .grid-item {
     color: @griditem-foreground-color;
@@ -129,6 +132,59 @@
     border: none;
     // border-bottom: @griditem-decoration-color 0.084em solid;
     // border-right: lighten(@griditem-decoration-color, 2%) 0.056em solid;
+
+    .description-container {
+        position: absolute;
+
+        left: 0em;
+        bottom: 0em;
+        width: 100%;
+        padding-bottom: 0em;
+        //margin-bottom: 0.30em;
+
+        //background: rgba(0,0,0,0.65);
+        background-color: rgba(0,0,0,0.65);
+
+        transition: all @transition-time-medium;
+
+        h2, h5 {
+            font-weight: normal;
+        }
+
+        h2 {
+            margin-bottom: 0.8em;
+            margin-left: 1.25em;
+
+            padding-top: 0.8em;
+
+            letter-spacing: 0.09em;
+
+            &::first-letter {
+                font-weight: 550;
+            }
+        }
+
+        .expanded {
+            height: 100% !important;
+
+            bottom: @griditem-description-expanded;
+            padding-bottom: @griditem-description-expanded;
+        }
+
+        & > .description-long {
+            bottom: -1 * @griditem-description-expanded;
+            margin-bottom: 0.25em;
+        }
+
+        * {
+            margin: 0px;
+            color: white !important;
+        }
+
+        a {
+            color: white;
+        }
+    }
 }
 
 .grid-item.book {
@@ -152,6 +208,7 @@
     height: 100%;
 
     a {
+        position: relative;
         display: flex;
         flex-direction: column;
         height: 100%;

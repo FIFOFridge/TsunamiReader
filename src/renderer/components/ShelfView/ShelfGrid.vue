@@ -7,6 +7,8 @@
                 :link="tile.link"
                 :isSVG="tile.isSVG"
                 :id="tile.id"
+                :descriptionShort="tile.descriptionShort"
+                :descriptionLong="tile.descriptionLong"
             >
             </shelf-grid-item>
         </template>
@@ -28,7 +30,7 @@ export default {
         ShelfGridItem
     },
     props: {
-        tiles: []
+        tiles: Array
     },
     data: function() {
         return {

@@ -15,9 +15,18 @@
                         <path :fill="this.svgFill" :d="this.img"/>
                     </svg>
                 </div>
+
+                <div class="description-container">
+                    <h2>
+                        {{ this.descriptionShort }}
+                    </h2>
+                    <!-- TODO: long (interactive) description for books -->
+                    <!-- <h5 class="description-long" >
+                        {{ this.descriptionLong }}
+                    </h5> -->
+                </div>
             </router-link>
         </div>
-    
 </template>
 
 <style>
@@ -40,14 +49,15 @@
 <script>
 export default {
   props: {
-    img: "", //encoded as base64 || svg,
-    isSVG: false,
-    svgFill: "#000000",
+    img: String, //encoded as base64 || svg,
+    isSVG: Boolean,
+    svgFill: String,
     // imgPosition: '',
     // isBook: true,
     bookObject: null,
-    link: "",
-    label: "click meh!",
+    link: String,
+    descriptionShort: String,
+    descriptionLong: String,
     id: null
   },
   data: function() {
@@ -58,11 +68,14 @@ export default {
       defaultActionLink: "",
       removeActionLink: "", //only for book
       backgroundImage: "",
-      type: ""
+      type: "",
+      descriptionShortVisibility: ""
     };
-  },
+  },  
   //exectue before mount
   created: function() {
+    //this.descriptionShortVisibility = (this.descriptionShort == "") ? "visible" : "hidden";
+
     //update data
     if (this.bookObject == !null && this.bookObject == !undefined) {
       this.title = this.bookObject.title;
