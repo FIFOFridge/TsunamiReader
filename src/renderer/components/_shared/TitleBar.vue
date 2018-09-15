@@ -25,7 +25,7 @@ export default {
 
             let titlebar = new ElectronTitlebarWindows({
                 darkMode: false,
-                color: 'rgba(0, 0, 0, 0.3)',
+                color: 'rgba(255, 255, 255, 0.45)',
                 backgroundColor: 'rgba(0,0,0,0)',
                 draggable: true,
                 fullscreen: false
