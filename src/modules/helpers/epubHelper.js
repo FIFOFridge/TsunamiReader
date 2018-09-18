@@ -6,9 +6,7 @@ import util from 'util'
 
 class EpubHelper {
     constructor() {
-        this._valueDigger = this._valueDigger.bind(this);
-
-        this.setupEpub()
+        this._valueDigger = this._valueDigger.bind(this)
     }
 
     /**
