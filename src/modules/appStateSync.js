@@ -12,17 +12,17 @@ if (global.appStateSync === null || global.appStateSync === undefined) {
             this.appSyncPoints = {}
         }
 
-        createSyncPoint(name, ignoreExisting = true) {
+        createSyncPoint(name, defaultValue, ignoreExisting = true) {
             if(this.hasSyncPoint(name) && !(ignoreExisting)) {
                 con.error(`${name} already exists`)
                 throw TypeError(`${name} already exists`)
             } else if(this.hasSyncPoint(name)) {
-                return false
+                this.appSyncPoints.name.value = defaultValue
+                return true
             }
 
             this.appSyncPoints[name] = {
-                state: stateSync.created,
-                value: undefined
+                value: defaultValue
             }
 
             return true
@@ -42,12 +42,6 @@ if (global.appStateSync === null || global.appStateSync === undefined) {
             this._invalidPointExists(name)
 
             return this._getSyncPoint(name)
-        }
-        //
-        getPointState(name) {
-            this._invalidPointExists(name)
-
-            return this.appSyncPoints[name]['state']
         }
 
         reset(name) {
