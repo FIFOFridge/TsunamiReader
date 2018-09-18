@@ -35,7 +35,12 @@ if (global.appStateSync === null || global.appStateSync === undefined) {
         setPointValue(name, value) {
             this._invalidPointExists(name)
 
-            this.appSyncPoints[name]['value'] = value
+            var pointValue = this.appSyncPoints[name].value
+
+            if(pointValue !== value) {
+                pointValue = value
+                this._notifyPointStateChanged(name, pointValue)
+            }
         }
 
         getPointValue(name) {
