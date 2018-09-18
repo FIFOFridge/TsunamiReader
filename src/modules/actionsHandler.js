@@ -23,18 +23,8 @@ class ActionsHandler {
     }
 
     onBookAdd(params) {
-        var mainWindow = null
-
-        var windowsManager = electron.remote.getGlobal('windowsManager')
-        var bookManager = electron.remote.getGlobal('bookManager')
-
-        if (windowsManager ==! null && windowsManager ==! undefined) {
-            con.debug(`global.windowManager is defined`)
-            mainWindow = windowsManager.getWindow('main')
-        } else {
-            con.debug(`global.windowsManager isn't defined`)
-            console.log(windowsManager)
-        }
+        var mainWindow = electron.remote.getCurrentWindow()
+        console.log(mainWindow)
 
         con.debug('opening select dialog')
         var files = electron.remote.dialog.showOpenDialog(

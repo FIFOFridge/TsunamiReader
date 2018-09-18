@@ -54,7 +54,6 @@
   },
   "dependencies": {
     "electron-titlebar-windows": "^3.0.0",
-    "epub-metadata-parser": "^1.1.14",
     "extract-zip": "^1.6.7",
     "fullpage.js": "^3.0.1",
     "gulp": "^3.9.1",
