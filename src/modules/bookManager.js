@@ -162,64 +162,6 @@ class BookManager extends EventEmitter {
         this.emit('current', book)
     }
 
-    browseEPUBs() {
-        con.debug('opening select dialog')
-        var files = dialog.showOpenDialog(
-            {
-                options: {
-                    title: 'select epub file to read',
-                    properties: [
-                        'openFile',
-                        'multiSelections'
-                    ],
-                    filters: [
-                        { name: 'epubs', extensions: 'epub' }
-                    ]
-                }
-            }
-        )
-
-        if(util.isArray(files) && files.length > 0)
-            return files
-        else
-            return null
-    }
-
-    parseEPUB(filePath) {
-        return new Promise((res, rej) => {
-            new Promise((resolve, reject) => {
-                if(!(util.isString(filePath) && fs.existsSync(filePath))) {
-                    con.error('Wrong file path')
-                    reject('Wrong file path')
-                }
-
-                fs.readFile(filePath, (err, data) => {
-                    if(err) {
-                        reject(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
-                        // throw TypeError(`Unable to calculate MD5 of ${filePath}, err: ${err}`)
-                    }
-
-                    resolve(data)
-                })
-            }).then((data) => {
-                epubParser.parse(filePath, paths.extractedEpubs, book => {
-                    if(objectHelper.isPropertyDefined(book, 'title'))//successfully parsed
-                    {
-                        book['path'] = filePath
-                        book['md5'] = md5(data)
-                        
-                        res(book)
-                    }
-        
-                    rej(`unable to parse epub metadata: ${filePath}`)
-                })
-            }, (err) => {
-                con.error(err)
-                throw TypeError(err)
-            })
-        })
-    }
-
     save() {
         con.debug(`saving ${tihs.booksPath}`)
     //     fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))

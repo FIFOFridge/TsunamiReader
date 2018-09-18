@@ -55,6 +55,7 @@
   "dependencies": {
     "electron-titlebar-windows": "^3.0.0",
     "epub-metadata-parser": "^1.1.14",
+    "extract-zip": "^1.6.7",
     "fullpage.js": "^3.0.1",
     "gulp": "^3.9.1",
     "gulp-img-base64": "0.0.1",
@@ -68,7 +69,8 @@
     "vue-epub-reader": "0.0.9",
     "vue-fullpage.js": "0.0.1",
     "vue-router": "^2.5.3",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

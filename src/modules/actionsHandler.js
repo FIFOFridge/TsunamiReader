@@ -4,7 +4,9 @@ import objectHelper from './helpers/objectHelper'
 import electron from 'electron'
 import util from 'util'
 import events from 'events'
-import bookManager from './bookManager'
+import fs from 'fs'
+import epubHelper from './helpers/epubHelper'
+import path from 'path'
 
 let con = exconsole(logger, console)
 
@@ -23,11 +25,15 @@ class ActionsHandler {
     onBookAdd(params) {
         var mainWindow = null
 
-        if (objectHelper.isPropertyDefined(global.windowsManager)) {
+        var windowsManager = electron.remote.getGlobal('windowsManager')
+        var bookManager = electron.remote.getGlobal('bookManager')
+
+        if (windowsManager ==! null && windowsManager ==! undefined) {
             con.debug(`global.windowManager is defined`)
-            mainWindow = global.windowsManager.getWindow('main')
+            mainWindow = windowsManager.getWindow('main')
         } else {
             con.debug(`global.windowsManager isn't defined`)
+            console.log(windowsManager)
         }
 
         con.debug('opening select dialog')
@@ -37,29 +43,38 @@ class ActionsHandler {
                 title: 'select epub file to read',
                 properties: [
                     'openFile',
-                    'multiSelections'
+                    // 'multiSelections'
                 ],
                 filters: [
-                    { name: 'epubs', extensions: ['epub'] }
+                    { name: 'epub', extensions: ['epub'] }
                 ]
             }
         )
 
-        // con.debug(`selected file(s): ${files}`)
-        var promises = []
+        console.log(files)
+        con.debug(`selected file(s): ${files}`)
 
-        if (!((util.isArray(files) && files.length > 0) || util.isString(files)))
-            return //no files selected, so return
+        var extractionPath = path.join(electron.remote.app.getPath('userData'), '/extracted/')
+        extractionPath = path.join(extractionPath, path.basename(files[0]));
 
-        if(util.isString(files)) { //single file selected
-            bookManager.parseEpub()
-        } else { //array of files paths
-            //for(var i = 0; i < files; i++) {
-            //
-            //} 
-        }
+        console.log(`extraction path: ${extractionPath}`)
 
-        //bookManager.parseEpub
+        epubHelper.setupEpub(files[0], extractionPath).then((value) => {
+            con.debug(`successfully extracted epub: ${files[0]}`)
+            console.log(value)
+        }, (rejected) => {
+            con.error(`unable to extract epub: ${rejected}`)
+        })
+
+        // bookManager.extractEpubFromFile(files[0]).then(
+        //     (data) => {
+        //         con.debug(`successfully extracted: ${files}`)
+        //         console(`book metada:`, data)
+        //     },
+        //     (rejected) => {
+        //         con.error(`extraction failed: ${rejected}`)
+        //     }
+        // )
     }
 
     onBookContinue(params) {
