@@ -1,6 +1,7 @@
 @import './shared/common.less';
 @import './shared/colorhelpers.less';
 @import './shared/animations.less';
+@import './shared/fonts.less';
 
 .grid-container {
     display: grid;
@@ -157,11 +158,18 @@
 
             padding-top: 0.8em;
 
-            letter-spacing: 0.09em;
+            .font-description-header();
 
             &::first-letter {
-                font-weight: 550;
+                font-weight: 650;
             }
+        }
+
+        h5 {
+            .font-description-content();
+
+            padding-top: 0.3em;
+            padding-bottom: 0.8em;
         }
 
         .expanded {

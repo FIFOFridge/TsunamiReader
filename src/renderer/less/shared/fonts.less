@@ -12,12 +12,17 @@
 }
 
 @font-face {
-    font-family: 'Oranienbaum';
-    src: url("@{relative-fonts-directory}/Oranienbaum/Oranienbaum-Regular.ttf");
+    font-family: 'OpenSans';
+    src: url("@{relative-fonts-directory}/Open_Sans/OpenSans-Regular.ttf");
 }
 
-@font-face {
-    font-family: 'PlayfairDisplay';
-    src: url("@{relative-fonts-directory}/Playfair_Display/PlayfairDisplay-Regular.ttf");
+.font-description-header() {
+    font-family: 'OpenSans';
+    font-weight: 500;
+    letter-spacing: 0.016em;
 }
 
+.font-description-content() {
+    font-family: 'Merriweather';
+    font-weight: 400;
+}
