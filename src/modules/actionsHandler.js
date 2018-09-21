@@ -7,6 +7,7 @@ import events from 'events'
 import fs from 'fs'
 import epubHelper from './helpers/epubHelper'
 import path from 'path'
+import sharedAppStates from './../constants/sharedAppStates'
 
 let con = exconsole(logger, console)
 
@@ -25,6 +26,13 @@ class ActionsHandler {
     onBookAdd(params) {
         var mainWindow = electron.remote.getCurrentWindow()
         console.log(mainWindow)
+
+        var appStateSync = electron.remote.getGlobal('appStateSync')
+        console.log(appStateSync)
+
+        //somethings still processed
+        if(appStateSync.getPointValue(sharedAppStates.canAddBook) === false)
+            return
 
         con.debug('opening select dialog')
         var files = electron.remote.dialog.showOpenDialog(
@@ -49,11 +57,16 @@ class ActionsHandler {
 
         console.log(`extraction path: ${extractionPath}`)
 
+        //disable browser until current book will be processed
+        appStateSync.setPointValue(sharedAppStates.canAddBook, false)
+
         epubHelper.setupEpub(files[0], extractionPath).then((value) => {
             con.debug(`successfully extracted epub: ${files[0]}`)
+            appStateSync.setPointValue(sharedAppStates.canAddBook, true)
             console.log(value)
         }, (rejected) => {
             con.error(`unable to extract epub: ${rejected}`)
+            appStateSync.setPointValue(sharedAppStates.canAddBook, true)
         })
 
         // bookManager.extractEpubFromFile(files[0]).then(

@@ -1,5 +1,5 @@
 <template>
-        <div :id="[id]" class="grid-item" :class="[priority, type]">
+        <div :id="[id]" class="grid-item" :class="[priority, type, tileStateClass]">
             <router-link :to="{path: this.defaultActionLink}">
                 <!-- book -->
                 <div v-if="this.bookObject ==! null && this.bookObject ==! undefined"
@@ -58,7 +58,8 @@ export default {
     link: String,
     descriptionShort: String,
     descriptionLong: String,
-    id: null
+    id: null,
+    tileState: String
   },
   data: function() {
     return {
@@ -69,12 +70,16 @@ export default {
       removeActionLink: "", //only for book
       backgroundImage: "",
       type: "",
-      descriptionShortVisibility: ""
+      descriptionShortVisibility: "",
+      tileStateClass: "enabled"
     };
   },  
   //exectue before mount
   created: function() {
     //this.descriptionShortVisibility = (this.descriptionShort == "") ? "visible" : "hidden";
+    if(this.tileState === undefined) {
+        this.tileStateClass = 'enabled'//as default
+    }
 
     //update data
     if (this.bookObject == !null && this.bookObject == !undefined) {
@@ -109,6 +114,11 @@ export default {
       }
     }
   },
-  computed: {}
+  computed: {},
+  watch: {
+      tileState: function(_new, old) {
+          this.tileStateClass = _new
+      }
+  }
 };
 </script>

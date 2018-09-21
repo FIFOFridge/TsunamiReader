@@ -9,6 +9,7 @@
                 :id="tile.id"
                 :descriptionShort="tile.descriptionShort"
                 :descriptionLong="tile.descriptionLong"
+                :tileState="tile.tileState"
             >
             </shelf-grid-item>
         </template>
@@ -31,10 +32,6 @@ export default {
     },
     props: {
         tiles: Array
-    },
-    data: function() {
-        return {
-        }
     }
 }
 </script>

@@ -4,6 +4,8 @@ import WindowsManager from '../modules/windowsManager'
 import BookManager from '../modules/bookManager'
 import dataModels from '../modules/dataModels'
 import windowRouter from '../modules/windowRouter'
+import appStateSync from '../modules/appStateSync'
+import sharedAppStates from '../constants/sharedAppStates'
 
 /**
  * Set `__static` path to static files in production
@@ -39,6 +41,8 @@ function createWindow() {
 
     global.windowsManager.addWindow('main', mainWindow)
     //windowRouter.registerAction('book', processBook)
+
+    appStateSync.createSyncPoint(sharedAppStates.canAddBook, true, false)
 
     mainWindow.setMenu(null)
 

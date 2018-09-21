@@ -1,5 +1,4 @@
 import events from 'events'
-import stateSync from './../constants/stateSync'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 
@@ -37,22 +36,13 @@ if (global.appStateSync === null || global.appStateSync === undefined) {
 
             var pointValue = this.appSyncPoints[name].value
 
-            if(pointValue !== value) {
-                pointValue = value
-                this._notifyPointStateChanged(name, pointValue)
-            }
+            this._notifyPointStateChanged(name, pointValue)
         }
 
         getPointValue(name) {
             this._invalidPointExists(name)
 
             return this._getSyncPoint(name)
-        }
-
-        reset(name) {
-            this._invalidPointExists(name)
-
-            this.appSyncPoints[name]['state'] = stateSync.created
         }
 
         _invalidPointExists(name) {

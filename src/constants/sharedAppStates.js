@@ -1,5 +1,5 @@
 var states = {
-    canReadBook: 'canReadBook'
+    canAddBook: 'canAddBook'
 }
 
 Object.keys(states).forEach(object => {
