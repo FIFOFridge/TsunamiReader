@@ -24,11 +24,11 @@
 <script>
 import ShelfGrid from './ShelfView/ShelfGrid'
 import AppTitlebar from './_shared/TitleBar.vue'
-import { remote } from "electron"
+//import { remote } from "electron"
 import sharedAppStates from './../../constants/sharedAppStates'
 
-let bookManager = remote.getGlobal("bookManager")
-let dataModelLoader = remote.getGlobal("dataModelLoader")
+//let bookManager = remote.getGlobal("bookManager")
+//let dataModelLoader = remote.getGlobal("dataModelLoader")
 
 export default {
     components: {
@@ -38,7 +38,7 @@ export default {
     created: function() {
         this.appTiles = this.loadAppTiles()
 
-        remote.getGlobal('appStateSync').on(sharedAppStates.canAddBook, this.updateCanAddBook)
+        //remote.getGlobal('appStateSync').on(sharedAppStates.canAddBook, this.updateCanAddBook)
     },
     mounted: function() {
         this.$nextTick(function () 

@@ -1,11 +1,11 @@
 import { app, BrowserWindow, dialog } from 'electron'
 import Settings from '../modules/appSettings'
-import WindowsManager from '../modules/windowsManager'
 import BookManager from '../modules/bookManager'
 import dataModels from '../modules/dataModels'
 import windowRouter from '../modules/windowRouter'
 import appStateSync from '../modules/appStateSync'
 import sharedAppStates from '../constants/sharedAppStates'
+import appEventsHandler from './appEventsHandler'
 
 /**
  * Set `__static` path to static files in production
@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== 'development') {
     global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow
+var mainWindow = global.mainWindow
 const winURL = process.env.NODE_ENV === 'development'
     ? `http://localhost:9080`
     : `file://${__dirname}/index.html`
@@ -39,8 +39,7 @@ function createWindow() {
 
     mainWindow = new BrowserWindow(options)
 
-    global.windowsManager.addWindow('main', mainWindow)
-    //windowRouter.registerAction('book', processBook)
+    //global.windowsManager.addWindow('main', mainWindow)
 
     appStateSync.createSyncPoint(sharedAppStates.canAddBook, true, false)
 
@@ -57,9 +56,6 @@ function createWindow() {
 app.on('ready', function () {
     var settings = new Settings(app.platform)
     global.appSettings = settings;
-
-    var windowsManager = new WindowsManager()
-    global.windowsManager = windowsManager
 
     var bookManager = new BookManager()
     global.bookManager = bookManager
