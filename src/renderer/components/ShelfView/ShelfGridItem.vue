@@ -3,12 +3,12 @@
             <router-link :to="{path: this.defaultActionLink}">
                 <!-- book -->
                 <div v-if="this.bookObject ==! null && this.bookObject ==! undefined"
-                    class="book" :style="[backgroundImage]"
+                    :style="backgroundImageFix"
                 >
-                    <div class="book-title">{{ book.title }}</div>
+                    <div class="book-title">{{ bookTitle }}</div>
+                    <div class="book-details">{{ bookDetails }}</div>
                 </div>
                 <!-- app -->
-                <!-- <div class="app" v-else>for manual setup by external style sheet -->
                 <div class="img-container">
                     <img v-if="!this.isSVG" class="_img" :src="this.img"/>
                     <svg v-else class="_img _svg" viewBox="0 0 24 24">
@@ -20,10 +20,6 @@
                     <h2>
                         {{ this.descriptionShort }}
                     </h2>
-                    <!-- TODO: long (interactive) description for books -->
-                    <!-- <h5 class="description-long" >
-                        {{ this.descriptionLong }}
-                    </h5> -->
                 </div>
             </router-link>
         </div>
@@ -47,6 +43,8 @@
 </style>
 
 <script>
+import util from 'util'
+
 export default {
   props: {
     img: String, //encoded as base64 || svg,
@@ -57,7 +55,6 @@ export default {
     bookObject: null,
     link: String,
     descriptionShort: String,
-    descriptionLong: String,
     id: null,
     tileState: String
   },
@@ -68,15 +65,13 @@ export default {
       priority: "",
       defaultActionLink: "",
       removeActionLink: "", //only for book
-      backgroundImage: "",
+      backgroundImageFix: {},
       type: "",
-      descriptionShortVisibility: "",
       tileStateClass: "enabled"
     };
   },  
   //exectue before mount
   created: function() {
-    //this.descriptionShortVisibility = (this.descriptionShort == "") ? "visible" : "hidden";
     if(this.tileState === undefined) {
         this.tileStateClass = 'enabled'//as default
     }
@@ -114,7 +109,47 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    bookTitle: function() {
+      if(this.bookObject === null || this.bookObject === undefined)
+        return ''
+
+      return this.bookObject.title
+    },
+    bookDetails: function() {
+      if(this.bookObject === null || this.bookObject === undefined)
+        return ''
+
+      var dataExtractor = (arg, label, str, deep = true) => {
+        if(arg === undefined || arg === null)
+          return
+
+        if(util.isArray(arg)) {
+          if(arg.lenght > 1) {
+            if(deep) {
+              str = str + label + ': ' + arg.join(' ,') + '\n'
+            } else {
+              str = str + label + ': ' + arg[0] + '\n'
+            }
+          } else {
+            str = str + label + ': ' + arg[0] + '\n'
+          }
+        }
+      }
+
+      var details = ''
+      dataExtractor(bookObject.creator, 'author(s): ', details)
+      dataExtractor(bookObject.author, 'author(s): ', details)
+      dataExtractor(bookObject.contributor, 'contributor(s): ', details)
+      dataExtractor(bookObject.date, 'released: ', details, false)
+      dataExtractor(bookObject.publisher, 'publisher: ', details, false)
+      dataExtractor(bookObject.rights, 'rights: ', details, false)
+      dataExtractor(bookObject.identifier, 'identifier: ', details, false)
+      dataExtractor(bookObject.id, 'identifier: ', details, false)
+
+      return details
+    }
+  },
   watch: {
       tileState: function(_new, old) {
           this.tileStateClass = _new
