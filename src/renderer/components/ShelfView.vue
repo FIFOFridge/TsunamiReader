@@ -24,7 +24,7 @@
 <script>
 import ShelfGrid from './ShelfView/ShelfGrid'
 import AppTitlebar from './_shared/TitleBar.vue'
-//import { remote } from "electron"
+import { remote } from "electron"
 import sharedAppStates from './../../constants/sharedAppStates'
 
 //let bookManager = remote.getGlobal("bookManager")
@@ -38,7 +38,7 @@ export default {
     created: function() {
         this.appTiles = this.loadAppTiles()
 
-        //remote.getGlobal('appStateSync').on(sharedAppStates.canAddBook, this.updateCanAddBook)
+        remote.getGlobal('appStateSync').on(sharedAppStates.canAddBook, this.updateCanAddBook)
     },
     mounted: function() {
         this.$nextTick(function () 
@@ -54,6 +54,8 @@ export default {
     },
     methods: {
         updateCanAddBook: function(value) {
+            console.log(`recived: `, value)
+
             var addToShelfTileIndex = this.appTiles.findIndex(tile => {
                 return tile.link === "/action/book-add"
             })
