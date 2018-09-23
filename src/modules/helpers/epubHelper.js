@@ -3,6 +3,7 @@ import extractor from 'extract-zip'
 import path from 'path'
 import xml2js from 'xml2js'
 import util from 'util'
+import md5 from 'md5'
 
 class EpubHelper {
     constructor() {
@@ -21,6 +22,15 @@ class EpubHelper {
                 return
             }
 
+            var epubmd5
+
+            fs.readFile(filePath, (err, data) => {
+                if(err)
+                    reject(`error while reading file: ${filePath}`)
+
+                epubmd5 = md5(data)
+            })
+
             extractor(filePath, {dir: targetDirectory}, (err) => {
                 if(err) {
                     reject(`error during extraction: ${err.message}`)
@@ -30,6 +40,7 @@ class EpubHelper {
 
             this._processMetadata(targetDirectory).then((value) => {
                 value['unpackedPath'] = targetDirectory
+                value['md5'] = epubmd5
                 resolve(value)
                 return
             }, (rejected) => {
