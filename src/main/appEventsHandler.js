@@ -58,6 +58,7 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
             epubHelper.setupEpub(files[0], extractionPath).then((value) => {
                 con.debug(`successfully extracted epub: ${files[0]}`)
                 appStateSync.setPointValue(sharedAppStates.canAddBook, true)
+                appStateSync.setPointValue(sharedAppStates.registredBook, value)
                 console.log(value)
             }, (rejected) => {
                 con.error(`unable to extract epub: ${rejected}`)

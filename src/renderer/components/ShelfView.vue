@@ -8,7 +8,11 @@
                 :tiles="this.appTiles"
                 >
             </shelf-grid>
-            <shelf-grid id="books-tiles-grid">
+            <shelf-grid 
+                id="books-tiles-grid"
+                style="width=100%;"
+                :tiles="this.bookTiles"
+            >
             </shelf-grid>
         </div>
     </div>
@@ -39,6 +43,7 @@ export default {
         this.appTiles = this.loadAppTiles()
 
         remote.getGlobal('appStateSync').on(sharedAppStates.canAddBook, this.updateCanAddBook)
+        remote.getGlobal('appStateSync').on(sharedAppStates.registredBook, this.addBook)
     },
     mounted: function() {
         this.$nextTick(function () 
@@ -71,6 +76,18 @@ export default {
                 updatedClassName = 'disabled'
 
             this.$set(this.appTiles[addToShelfTileIndex], 'tileState', updatedClassName)
+        },
+        addBook: function(value) {
+            console.log(`addBook recived: `, value)
+
+            var bookTile = {}
+            bookTile.id = value.md5
+            bookTile.tileState = 'enabled'
+            bookTile.isSVG = false
+            bookTile.bookObject = value
+            bookTile.img = value.cover
+
+            this.bookTiles.push(bookTile)
         },
         //create app tiles
         loadAppTiles: function() {

@@ -42,6 +42,7 @@ function createWindow() {
     //global.windowsManager.addWindow('main', mainWindow)
 
     appStateSync.createSyncPoint(sharedAppStates.canAddBook, true, false)
+    appStateSync.createSyncPoint(sharedAppStates.registredBook, null, true)
 
     mainWindow.setMenu(null)
 

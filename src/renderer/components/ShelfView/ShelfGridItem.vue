@@ -86,7 +86,7 @@ export default {
       this.priority = "priority-high";
     }
 
-    if (this.bookObject == !null && this.bookObject == !undefined) {
+    if (this.bookObject !== null && this.bookObject !== undefined) {
       this.type = "book";
     } else {
       this.type = "app";
@@ -95,9 +95,9 @@ export default {
     this.makeActionLinks();
 
     //format for base64 src
-    if (!this.isSVG) {
-      this.img = `data:image/png;base64, ${this.img}`;
-    }
+    // if (!this.isSVG) {
+    //   this.img = `data:image/png;base64, ${this.img}`;
+    // }
   },
   methods: {
     makeActionLinks: function() {
