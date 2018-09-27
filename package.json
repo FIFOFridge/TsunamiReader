@@ -53,6 +53,7 @@
     }
   },
   "dependencies": {
+    "base64-img": "^1.0.4",
     "electron-titlebar-windows": "^3.0.0",
     "extract-zip": "^1.6.7",
     "fullpage.js": "^3.0.1",

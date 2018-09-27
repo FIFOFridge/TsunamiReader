@@ -4,6 +4,7 @@ import path from 'path'
 import xml2js from 'xml2js'
 import util from 'util'
 import md5 from 'md5'
+import base64img from 'base64-img'
 
 class EpubHelper {
     constructor() {
@@ -253,8 +254,7 @@ class EpubHelper {
             }
         }
 
-        return coverPath
-
+        return base64img.base64Sync(coverPath)
     }
 
     //diggers
