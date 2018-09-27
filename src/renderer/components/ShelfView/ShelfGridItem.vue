@@ -2,21 +2,26 @@
         <div :id="[id]" class="grid-item" :class="[priority, type, tileStateClass]">
             <router-link :to="{path: this.defaultActionLink}">
                 <!-- book -->
-                <div v-if="this.bookObject ==! null && this.bookObject ==! undefined"
+                <div v-if="this.bookObject != undefined"
                     :style="backgroundImageFix"
                 >
-                    <div class="book-title">{{ bookTitle }}</div>
-                    <div class="book-details">{{ bookDetails }}</div>
+                    <!-- <div class="book-details">{{ bookDetails }}</div> -->
+                </div>
+
+                <div v-if="this.bookObject != undefined" class="book-title">
+                  <p>
+                    {{ bookTitle }}
+                  </p>
                 </div>
                 <!-- app -->
-                <div class="img-container">
+                <div v-if="this.bookObject == undefined" class="img-container">
                     <img v-if="!this.isSVG" class="_img" :src="this.img"/>
                     <svg v-else class="_img _svg" viewBox="0 0 24 24">
                         <path :fill="this.svgFill" :d="this.img"/>
                     </svg>
                 </div>
 
-                <div class="description-container">
+                <div v-if="this.bookObject == undefined" class="description-container">
                     <h2>
                         {{ this.descriptionShort }}
                     </h2>
@@ -99,6 +104,20 @@ export default {
     //   this.img = `data:image/png;base64, ${this.img}`;
     // }
   },
+  mounted: function() {
+    if(this.bookObject !== null && this.bookObject !== undefined) {
+      var bgUrl = `url(${this.bookObject.cover})`
+
+      this.$el.style.backgroundImage = bgUrl
+      this.$el.style.backgroundSize = 'cover'
+      this.$el.style.backgroundRepeat = 'no-repeat'
+      this.$el.style.backgroundPosition = 'center center'
+
+      console.log(this.$el.style)
+      // console.log(bgUrl.length)
+      //console.log(this.$el.backgroundImage)
+    }
+  },
   methods: {
     makeActionLinks: function() {
       if (this.bookObject == !null && this.bookObject == !undefined) {
@@ -114,7 +133,7 @@ export default {
       if(this.bookObject === null || this.bookObject === undefined)
         return ''
 
-      return this.bookObject.title
+      return this.bookObject.title[0]
     },
     bookDetails: function() {
       if(this.bookObject === null || this.bookObject === undefined)
@@ -138,14 +157,14 @@ export default {
       }
 
       var details = ''
-      dataExtractor(bookObject.creator, 'author(s): ', details)
-      dataExtractor(bookObject.author, 'author(s): ', details)
-      dataExtractor(bookObject.contributor, 'contributor(s): ', details)
-      dataExtractor(bookObject.date, 'released: ', details, false)
-      dataExtractor(bookObject.publisher, 'publisher: ', details, false)
-      dataExtractor(bookObject.rights, 'rights: ', details, false)
-      dataExtractor(bookObject.identifier, 'identifier: ', details, false)
-      dataExtractor(bookObject.id, 'identifier: ', details, false)
+      dataExtractor(this.bookObject.creator, 'author(s): ', details)
+      dataExtractor(this.bookObject.author, 'author(s): ', details)
+      dataExtractor(this.bookObject.contributor, 'contributor(s): ', details)
+      dataExtractor(this.bookObject.date, 'released: ', details, false)
+      dataExtractor(this.bookObject.publisher, 'publisher: ', details, false)
+      dataExtractor(this.bookObject.rights, 'rights: ', details, false)
+      dataExtractor(this.bookObject.identifier, 'identifier: ', details, false)
+      dataExtractor(this.bookObject.id, 'identifier: ', details, false)
 
       return details
     }
