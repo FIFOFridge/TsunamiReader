@@ -1,41 +1,53 @@
 <template>
-    <BookReader
-      :epub-url="url"
-      :font-size="size"
-      :themes="themes"
-      :theme="currentTheme"
-      :progress.sync="readingProgress"
-      @toc="getContent"
-      :contentBookModify="90"
-    >
-      <!-- <template slot="progress-bar" slot-scope="props">
-        <input size="3" type="range" max="100" min="0" step="1"
-          @change="props.onChange($event.target.value)"
-          :value="readingProgress"
-        /> %
-        <input type="text"
-          @change="props.onChange($event.target.value)"
-          @mousedown="props.onMousedown"
-          @mouseup="props.onMouseup"
-          :value="readingProgress"
-        >
-      </template> -->
-    </BookReader>
+    <div>
+        <Controls>
+        </Controls>
+      <BookReader
+        :epub-url="url"
+        :font-size="size"
+        :themes="themes"
+        :theme="currentTheme"
+        :progress.sync="readingProgress"
+        @toc="getContent"
+        :contentBookModify="90"
+      >
+        <!-- <template slot="progress-bar" slot-scope="props">
+          <input size="3" type="range" max="100" min="0" step="1"
+            @change="props.onChange($event.target.value)"
+            :value="readingProgress"
+          /> %
+          <input type="text"
+            @change="props.onChange($event.target.value)"
+            @mousedown="props.onMousedown"
+            @mouseup="props.onMouseup"
+            :value="readingProgress"
+          >
+        </template> -->
+      </BookReader>
+    </div>
 </template>
 
 <style>
 /* background {
   position: initial !important;
 } */
+.controls-container {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  height: 5em;
+}
 </style>
 
 <script>
 // import { BookReader, TreeMenu } from 'vue-epub-reader'
 import BookReader from './ReaderView/Reader.vue'
+import Controls from './ReaderView/Controls.vue'
 
 export default {
   components: {
     BookReader,
+    Controls
     // TreeMenu
   },
   props: {
@@ -44,6 +56,7 @@ export default {
   },
   data: function() {
     return {
+      //TODO: custom request to support guttenberg books
       url: 'https://s3.amazonaws.com/epubjs/books/alice.epub',
       size: 80,
       currentTheme: 'beige',

@@ -1,0 +1,110 @@
+@import './shared/common.less';
+@import './shared/animations.less';
+
+@z-index-reader: 100;
+@z-index-controls: 200;
+@z-index-settings: 300;
+
+//
+// Controls
+//
+//TODO: a bit darker then current theme??
+@controls-container-background-color: rgba(0,0,0,0.2);
+@controls-container-height: 4.5em;
+
+.controls-container {
+    z-index: @z-index-reader;
+
+    left: 0px;
+    height: @controls-container-height;
+
+    background: @controls-container-background-color;
+}
+
+.left-container {
+    button {
+        margin: 0px;
+        padding: 2em;
+        width: auto;
+
+        background-color: rgba(0,0,0,0.0);
+        border: none;
+
+        cursor: pointer;
+
+        svg {
+            fill: rgba(0, 0, 0, 0.5);
+        }
+
+        &:hover {
+            svg {
+                fill: rgba(0, 0, 0, 0.7);
+            }
+        }
+    }
+}
+
+.right-container {
+    .search-container {
+        display: flex;
+
+        height: 100%;
+
+        &:hover {
+            #search-button {
+                left: 90%;
+            }
+        }
+
+        #book-search {
+            position: absolute;
+
+            padding: 0px;
+            margin: 0px;
+            width: 60%;
+            height: 100%;
+
+            background: darken(@controls-container-background-color, 5%);
+            border: none;
+
+            &:hover {
+                background: darken(@controls-container-background-color, 8%);
+            }
+
+            .typing {
+                background: darken(@controls-container-background-color, 12%);
+            }
+        }
+
+        #search-button {
+            position: absolute;
+            
+            height: 100%;
+            padding: 2em;
+            left: 40%;
+
+            background-color: rgba(0,0,0,0.0);
+            border: none;
+
+            cursor: pointer;
+
+            transition: left @transition-time-veryslow;
+
+            svg {
+                fill: rgba(0,0,0,0.5);
+            }
+        }
+    }
+}
+
+//
+// Reader
+//
+.epub-container {
+    position: fixed;
+
+    top: @controls-container-height;
+    left: 5%;
+    width: 90%;
+    height: 95%;
+}

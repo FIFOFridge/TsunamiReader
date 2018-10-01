@@ -26,7 +26,7 @@ var router = new Router({
             component: require('@/components/LandingPage').default
         },
         {
-            path: '/epub-reader/:filePath/:opt?',
+            path: '/epub-reader/:filePath/:bookConfig?',
             name: 'reader',
             component: require('@/components/ReaderView').default
         },
