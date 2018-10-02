@@ -1,5 +1,6 @@
 import { app, BrowserWindow, dialog } from 'electron'
 import Settings from '../modules/appSettings'
+import settingsStorage from '../constants/storage/settings'
 import BookManager from '../modules/bookManager'
 import windowRouter from '../modules/windowRouter'
 import appStateSync from '../modules/appStateSync'
@@ -20,7 +21,7 @@ const winURL = process.env.NODE_ENV === 'development'
     : `file://${__dirname}/index.html`
 
 function createWindow() {
-    var settings = global.appSettings.settingsObject
+    var settings = global.appSettings.storage
 
     var options = {
         width: 1200,
@@ -28,13 +29,14 @@ function createWindow() {
         height: 800,
         minHeight: 800,
         titlebar: 'hidden',
-        frame: false
+        frame: true
     }
 
-    if (!(settings.overrideTitleBar)) {
-        options.frame = true
-        options.titlebar = 'default'
-    }
+    //check is correction needed
+    if(settings.get('overrideTitleBar') === false)
+        options.titlebar = 'default'    
+    if(settings.get('frame') === false)
+        options.titlebar = false
 
     mainWindow = new BrowserWindow(options)
 
@@ -54,7 +56,7 @@ function createWindow() {
 
 //init
 app.on('ready', function () {
-    var settings = new Settings(app.platform)
+    var settings = new Settings(settingsStorage)
     global.appSettings = settings;
 
     var bookManager = new BookManager()

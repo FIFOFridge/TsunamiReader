@@ -23,7 +23,7 @@ class Settings {
             }
         })
 
-        this.settingsStorage = settingsStorage
+        this.storage = settingsStorage
     }
 
     _isSettingsFileExists() {
@@ -47,7 +47,7 @@ class Settings {
     }
 
     save() {
-        var jsonData = this.settingsStorage.copy()
+        var jsonData = this.storage.copy()
 
         fs.writeFile(paths.settingsFilePath, jsonData, {encoding: 'UTF-8'}, (err) => {
             if(err)
