@@ -3,87 +3,56 @@ import { app } from 'electron'
 import path from 'path'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
+import paths from './../constants/paths'
 
 let con = exconsole(logger, console)
 
 class Settings {
-    constructor(platformName) {
-        this.settingsPath = path.join(app.getPath('userData'), '/config.json')
-        this.tempExtension = ".old"
-        this.settingsObject = null
-
-        this.tempSettingsPath = path.join(app.getPath('userData'),
-            ('/config.json' + this.tempExtension)
-        )
-
-        var template = null
-
-        var fnIsOSX = (platform) => { platform === 'darwin' ? true : false }
-        var readSettings = (filePath) => { return JSON.parse(fs.readFileSync(filePath, 'utf8')) }
-
-        //handle config file
-        //
-        //tempConfig && !default 
-        if (fs.existsSync(this.tempSettingsPath) && !fs.existsSync(this.settingsPath)) {
-            con.log("settings ctr: temp && !default")
-            template = readSettings(this.tempSettingsPath)
-            fs.renameSync(this.tempSettingsPath, this.settingsPath)
-
-            template.isOSX = fnIsOSX(platformName)
-
-            //tempConfig && default
-        } else if (fs.existsSync(this.tempSettingsPath) && fs.existsSync(this.settingsPath)) {
-            con.log("settings ctr: temp && default")
-            template = readSettings(this.settingsPath)
-            fs.unlinkSync(this.tempSettingsPath)
-
-            template.isOSX = fnIsOSX(platformName)
-
-            //default
-        } else if (fs.existsSync(this.settingsPath)) {//[correct]
-            con.log("settings ctr: default file found")
-            //invalid os only
-            template = readSettings(this.settingsPath)
-
-            template.isOSX = fnIsOSX(platformName)
-
-            //none
-        } else {
-            con.log("settings ctr: no file found!")
-            template = this._initDefault(template, platformName)//init with default values
-
-            fs.writeFileSync(this.settingsPath, JSON.stringify(template))
+    constructor(settingsStorage) {
+        if(!(this._isSettingsFileExists())) {
+            _initWithDefaultValues(settingsStorage)
+            this.save()
         }
 
-        this.settingsObject = template;
+        fs.readFile(paths.settingsFilePath, {encoding: 'UTF-8'}, (err, data) => {
+            if(err) {
+                this._initWithDefaultValues()
+                this.save()
+            } else {
+                settingsStorage.loadFromString('data')
+            }
+        })
+
+        this.settingsStorage = settingsStorage
     }
 
-    _initDefault(settings, platformName) {
-        //var settings = this.settingsObject
+    _isSettingsFileExists() {
+        return fs.existsSync(paths.settingsFilePath)
+    }
 
-        settings.displayCustomScroll = true
-
-        if (platformName == 'darwin') {
-            settings.isOSX = true
-            settings.overrideTitleBar = false
+    /**
+     * 
+     * @param {Storage} storage 
+     */
+    _initWithDefaultValues(storage) {
+        if(storage.get('isOSX') === false) {
+            storage.set('frame', true) 
+            storage.set('overrideTitleBar', false) 
         } else {
-            settings.isOSX = false
-            settings.overrideTitleBar = true
+            storage.set('frame', false) 
+            storage.set('overrideTitleBar', true) 
         }
 
-        return settings;
+        storage.set('useImageCompressor', true) 
     }
 
     save() {
-        var content = JSON.stringify(this.settingsObject)
+        var jsonData = this.settingsStorage.copy()
 
-        fs.writeFileSync(tempSettingsPath, content)//write new content
-        fs.unlinkSync(this.settingsPath)//delete old one
-        fs.renameSync(tempSettingsPath, this.settingsPath)//rename to new one
-    }
-
-    settingsObject() {
-        return this.settingsObject
+        fs.writeFile(paths.settingsFilePath, jsonData, {encoding: 'UTF-8'}, (err) => {
+            if(err)
+                con.error(`unable to write settings file`)
+        }) 
     }
 }
 
