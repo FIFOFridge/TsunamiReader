@@ -11,6 +11,6 @@ var settingsStorage = storage(true,
 )
 
 settingsStorage.set('isOSX', (app.platform === 'darwin' ? true : false))
-Object.freeze(settingsStorage._props.isOSX)
+//Object.freeze(settingsStorage._props.isOSX)
 
-return settingsStorage
+export default settingsStorage

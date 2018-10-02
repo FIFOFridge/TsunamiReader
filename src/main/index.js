@@ -22,6 +22,7 @@ const winURL = process.env.NODE_ENV === 'development'
 
 function createWindow() {
     var settings = global.appSettings.storage
+    console.log(global.appSettings)
 
     var options = {
         width: 1200,

@@ -9,8 +9,10 @@ let con = exconsole(logger, console)
 
 class Settings {
     constructor(settingsStorage) {
+        this.storage = settingsStorage
+        
         if(!(this._isSettingsFileExists())) {
-            _initWithDefaultValues(settingsStorage)
+            this._initWithDefaultValues(settingsStorage)
             this.save()
         }
 
@@ -22,8 +24,6 @@ class Settings {
                 settingsStorage.loadFromString(data)
             }
         })
-
-        this.storage = settingsStorage
     }
 
     _isSettingsFileExists() {
@@ -34,24 +34,27 @@ class Settings {
      * 
      * @param {Storage} storage 
      */
-    _initWithDefaultValues(storage) {
-        if(storage.get('isOSX') === false) {
-            storage.set('frame', true) 
-            storage.set('overrideTitleBar', false) 
+    _initWithDefaultValues() {
+        if(this.storage.get('isOSX') === false) {
+            this.storage.set('frame', true) 
+            this.storage.set('overrideTitleBar', false) 
         } else {
-            storage.set('frame', false) 
-            storage.set('overrideTitleBar', true) 
+            this.storage.set('frame', false) 
+            this.storage.set('overrideTitleBar', true) 
         }
 
-        storage.set('useImageCompressor', true) 
+        this.storage.set('useImageCompressor', true) 
     }
 
     save() {
         var jsonData = this.storage.copy()
 
+        console.log(paths)
+        console.log(jsonData)
+
         fs.writeFile(paths.settingsFilePath, jsonData, {encoding: 'UTF-8'}, (err) => {
             if(err)
-                con.error(`unable to write settings file`)
+                con.error(`unable to write settings file: ${err.message}`)
         }) 
     }
 }

@@ -53,14 +53,6 @@ class Storage {
         return hash
     }
 
-    _setupKeys() {
-        var 
-
-        return {
-
-        }
-    }
-
     /**
      * 
      * @param {string} key 
