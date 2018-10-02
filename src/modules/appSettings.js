@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { app } from 'electron'
 import path from 'path'
-import { dataModels } from './dataModels'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 
@@ -51,7 +50,6 @@ class Settings {
             //none
         } else {
             con.log("settings ctr: no file found!")
-            template = dataModels.makeModel('settings')//load data template
             template = this._initDefault(template, platformName)//init with default values
 
             fs.writeFileSync(this.settingsPath, JSON.stringify(template))

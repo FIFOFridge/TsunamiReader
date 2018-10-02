@@ -1,7 +1,6 @@
 import { app, BrowserWindow, dialog } from 'electron'
 import Settings from '../modules/appSettings'
 import BookManager from '../modules/bookManager'
-import dataModels from '../modules/dataModels'
 import windowRouter from '../modules/windowRouter'
 import appStateSync from '../modules/appStateSync'
 import sharedAppStates from '../constants/sharedAppStates'
@@ -61,8 +60,6 @@ app.on('ready', function () {
     var bookManager = new BookManager()
     global.bookManager = bookManager
 
-    global.dataModelLoader = dataModels
-
     createWindow()
 })
 
@@ -71,7 +68,6 @@ function processBook(params) {
 }
 
 function loadBook() {
-    var template = dataModels.MakeModel('book', true)
     var owner = windowsManager.getWindow('main')
 
     console.log(dialog.showOpenDialog(owner, {
