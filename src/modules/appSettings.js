@@ -19,7 +19,7 @@ class Settings {
                 this._initWithDefaultValues()
                 this.save()
             } else {
-                settingsStorage.loadFromString('data')
+                settingsStorage.loadFromString(data)
             }
         })
 
