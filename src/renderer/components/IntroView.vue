@@ -71,7 +71,7 @@
 
 <script>
 //components
-import FullPage from './../../../node_modules/vue-fullpage.js/src/fullpage.vue'
+// import FullPage from './../../../node_modules/vue-fullpage.js/src/fullpage.vue'
 import AppTitlebar from './_shared/TitleBar.vue'
 
 //logs
@@ -83,7 +83,7 @@ let con = exconsole(logger, console)
 export default {
     name: 'intro-view',
     components: {
-        FullPage,
+        // FullPage,
         AppTitlebar
     },
     props: {

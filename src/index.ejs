@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>tsunamireader</title>
 
-    <link rel="stylesheet" href="static/lib/fullPage/jquery.fullpage.min.css">
-    <script src="static/lib/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" href="static/lib/fullPage/jquery.fullpage.min.css"> -->
+    <!-- <script src="static/lib/jquery.min.js"></script> -->
 
     <% if (htmlWebpackPlugin.options.nodeModules) { %>
       <!-- Add `node_modules/` to global paths so `require` works properly in development -->
@@ -21,10 +21,12 @@
       if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
     </script>
 
-    <script src="static/lib/jquery.min.js"></script>
-    <script src="static/lib/fullPage/jquery.fullpage.js"></script>
-    <script src="static/lib/fullPage/mixin.min.js"></script>
-    <script src="static/lib/fullPage/build.min.js"></script>
+    <!-- disabled -->
+    <!-- <script src="static/lib/jquery.min.js"></script> -->
+    <!-- <script src="static/lib/fullPage/jquery.fullpage.js"></script> -->
+    <!-- <script src="static/lib/fullPage/mixin.min.js"></script> -->
+    <!-- <script src="static/lib/fullPage/build.min.js"></script> -->
+
     <!-- webpack builds are automatically injected -->
   </body>
 </html>
