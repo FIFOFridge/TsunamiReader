@@ -6,12 +6,12 @@
 import { remote } from 'electron'
 import ElectronTitlebarWindows from 'electron-titlebar-windows'
 
-var settings = remote.getGlobal('appSettings').settingsObject
+var settings = remote.getGlobal('appSettings').storage
 
 export default {
     name: 'app-titlebar',
     data: {
-        display: settings.overrideTitleBar 
+        display: settings.get('overrideTitleBar') 
     },
     props: {
         isFixed: false
