@@ -28,6 +28,7 @@
 </template>
 
 <style>
+@import "/static/css/reader.css";
 /* background {
   position: initial !important;
 } */

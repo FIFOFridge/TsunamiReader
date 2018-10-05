@@ -18,7 +18,8 @@
     left: 0px;
     height: @controls-container-height;
 
-    background: @controls-container-background-color;
+    background: rgba(0,0,0,0.0);
+    // background: @controls-container-background-color;
 }
 
 .left-container {
@@ -30,6 +31,7 @@
         background-color: rgba(0,0,0,0.0);
         border: none;
 
+        transition: all @transition-time-medium; 
         cursor: pointer;
 
         svg {
@@ -101,10 +103,46 @@
 // Reader
 //
 .epub-container {
-    position: fixed;
+    // position: fixed;
+
+    // top: @controls-container-height;
+    // left: 5%;
+    // width: 90%;
+    // height: 95%;
 
     top: @controls-container-height;
-    left: 5%;
+    left: 10%;
     width: 90%;
-    height: 95%;
 }
+
+#area {
+    z-index: @z-index-reader;
+}
+
+#prev-btn, #next-btn {
+    position: fixed;
+    z-index: calc(@z-index-reader + 1);
+
+    top: calc(@controls-container-height + 5em);
+
+    height: 75%;
+    width: 5%;
+
+    margin: 0em;
+    padding: 0em;
+    border: none;
+
+    svg {
+        width: 5em;
+        height: 5em;
+    }
+}
+
+#prev-btn {
+    left: 0%;
+}
+
+#next-btn {
+    left: 95%;
+}
+
