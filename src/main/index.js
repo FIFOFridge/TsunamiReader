@@ -47,7 +47,6 @@ function createWindow() {
     appStateSync.createSyncPoint(sharedAppStates.registredBook, null, true)
 
     mainWindow.setMenu(null)
-
     mainWindow.loadURL(winURL)
 
     mainWindow.on('closed', () => {
@@ -65,20 +64,6 @@ app.on('ready', function () {
 
     createWindow()
 })
-
-function processBook(params) {
-    console.log(params)
-}
-
-function loadBook() {
-    var owner = windowsManager.getWindow('main')
-
-    console.log(dialog.showOpenDialog(owner, {
-        filters: [
-            { name: 'EPub', extensions: ['epub'] }
-        ]
-    }))
-}
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
