@@ -51,6 +51,8 @@ function createWindow() {
 
     mainWindow.on('closed', () => {
         mainWindow = null
+
+        global.appSettings.save()
     })
 }
 
