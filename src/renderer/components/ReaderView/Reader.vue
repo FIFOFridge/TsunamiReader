@@ -57,7 +57,7 @@ export default {
     },
     progress: {
       type: Number,
-      required: true
+      default: 0
     },
     bookArea: {
       type: String,
@@ -65,7 +65,11 @@ export default {
     },
     contentBookModify: {
       type: Number,
-      default: 0
+      default: 20
+    },
+    flow: {
+      type: String,
+      default: 'paginated'
     }
   },
   data () {

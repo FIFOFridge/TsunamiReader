@@ -9,7 +9,7 @@
         :theme="currentTheme"
         :progress.sync="readingProgress"
         @toc="getContent"
-        :contentBookModify="90"
+        :contentBookModify="20"
       >
         <!-- <template slot="progress-bar" slot-scope="props">
           <input size="3" type="range" max="100" min="0" step="1"
@@ -44,6 +44,7 @@
 // import { BookReader, TreeMenu } from 'vue-epub-reader'
 import BookReader from './ReaderView/Reader.vue'
 import Controls from './ReaderView/Controls.vue'
+import util from 'util'
 
 export default {
   components: {
@@ -91,10 +92,19 @@ export default {
       searchContent: [],
       toc: [],
       epubCtrMethod: 'default',
-      flow: ''
+      flow: 'paginated'
     }
   },
   created: function() {
+    //https://stackoverflow.com/a/14314836
+    var urlCheck = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
+
+    if(urlCheck.test(this.filePath)) { //url
+      this.url = this.filePath 
+    } else {
+      //todo check is file exists
+    }
+
     console.log(`reader recived url: ${this.url}`)
     console.log(`epubCtrMethod: ${this.epubCtrMethod}`)
     console.log(`flow: ${this.flow}`)
