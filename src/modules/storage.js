@@ -104,10 +104,29 @@ class Storage {
 
     /**
      * 
-     * @param {string} key 
+     * @param {string | Array} key
      */
     has(key) {
-        return this._keyExists(key)
+        if(util.isString(key))
+            return this._keyExists(key)
+        if(util.isArray(key)) {
+            var has = true
+
+            try {
+                key.forEach(element => {
+                    if(!has) {
+                        let hasElement = this._keyExists(element)
+                        
+                        if(!hasElement)
+                            has = false
+                    }
+                })
+            } catch(err) {
+                throw TypeError(`error while checking existing keys: ${err.message}`)
+            }
+
+            return has
+        }
     }
 
     /**
