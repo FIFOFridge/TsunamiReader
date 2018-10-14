@@ -2,11 +2,10 @@ import storage from './../../modules/storage'
 
 return storage(true, 
     [
-        'url',
-        'urlMode',
-        'size',
+        'lastUrl',
+        'lastCFI',
+        'lastProgress',//%
         'currentTheme',
-        'themes',
-        'progress'
+        'themes'
     ]
 )
