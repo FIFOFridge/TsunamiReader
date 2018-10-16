@@ -55,6 +55,8 @@ if (process.env.NODE_ENV !== 'production') {
       '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
     })
   )
+
+  mainConfig['devtool'] = 'eval-source-map'
 }
 
 /**
