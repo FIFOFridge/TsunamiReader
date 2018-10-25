@@ -1,31 +1,26 @@
 "use strict"
 import fs from 'fs'
-import { app, dialog } from 'electron'
-import path from 'path'
 import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 import util from "util"
 import objectHelper from './helpers/objectHelper'
 import events from 'events'
-import md5 from 'md5'
-//import paths from './../constants/paths.js'
+import paths from './../constants/paths'
+import bookStorage from './../constants/storage/book'
 
-const EventEmitter = events.EventEmitter
 let con = exconsole(logger, console)
 
-class BookManager extends EventEmitter {
+class BookManager extends events.EventEmitter {
     constructor() {
         super()
 
-        this.booksPath = path.join(app.getPath('userData'), '/books.json')
+        this.booksPath =  paths.booksCollectionFilePath //path.join(app.getPath('userData'), '/books.json')
         this.currentBook = null
         this.bookCollection = {}
         
         this.settings = {
-            readEpubAsyncThreshold: 10, //mb
-            readEpubAsyncTimeout: 10000 //in ms
+            readEpubAsyncTimeout: 20000 //20seconds
         }
-        // this.hooks = []
 
         if (fs.existsSync(this.booksPath)) {
             con.debug(`reading ${this.booksPath}`)
@@ -36,10 +31,6 @@ class BookManager extends EventEmitter {
             fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
         }
     }
-
-    // _getKeyFromBook(book) {
-    //     return book.path.toLowerCase()
-    // }
 
     _getKeyFromBook(book) {
         if(!(objectHelper.isPropertyDefined(book, 'md5'))) {
@@ -66,21 +57,6 @@ class BookManager extends EventEmitter {
         }
     }
 
-    // addHook(fn) {
-    //     if (!(util.isFunction(fnOnBookChange))) {
-    //         con.error(`onBookChange has to be function`)
-    //         TypeError(`onBookChange has to be function`)
-    //     }
-
-    //     this.hooks.push(fn)
-    // }
-
-    // _callHooks(book, eventName) {
-    //     this.hooks.forEach(fn => {
-    //         fn(book, eventName)
-    //     });
-    // }
-
     addBook(book) {
         if (!(_invalidBookProps(book))) {
             con.error('book.tile or book.path is undefined')
@@ -97,7 +73,7 @@ class BookManager extends EventEmitter {
         }
 
         this.bookCollection[key] = book
-        //this._callHooks(book, 'added')
+        this.bookCollection[key]['settings'] = bookStorage
         this.emit('added', book)
     }
 
@@ -117,7 +93,6 @@ class BookManager extends EventEmitter {
         }
 
         this.bookCollection[key] = null
-        //this._callHooks(book, 'removed')
         this.emit('removed', book)
     }
 
@@ -133,7 +108,6 @@ class BookManager extends EventEmitter {
         Object.keys(this.bookCollection).forEach(ownedBook => {
             if(this.bookCollection[ownedBook]['md5'] == key) {
                 found = true
-                //break //rly js??
             }
         })
 
@@ -150,20 +124,19 @@ class BookManager extends EventEmitter {
         return this.bookCollection.slice()
     }
 
-    get getCurrentBook() {
+    get CurrentBook() {
         return this.currentBook
     }
 
-    set setCurrentBook(book) {
+    set CurrentBook(book) {
         con.debug(`changing current book to ${book}`)
         this.currentBook = book
-        //this._callHooks(book, 'current')
+
         this.emit('current', book)
     }
 
     save() {
         con.debug(`saving ${tihs.booksPath}`)
-    //     fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
 
         return new Promise((resolve, reject) => {
             fs.writeFile(this.booksPath, JSON.stringify(this.bookCollection), (err) => {
@@ -178,27 +151,10 @@ class BookManager extends EventEmitter {
         })
     }
 
-    //settings
-    getSetting($var) {
-        if(!(objectHelper.isPropertyDefined(this.settings, $var))) {
-            con.error(`unable to get setting: ${$var} from: ${this.settings}`)
-            throw TypeError(`unable to get setting: ${$var} from: ${this.settings}`)
-        }
+    getBookSettings(book) {
+        var key = this._getKeyFromBook(book)
 
-        return this.settings[$var]
-    }
-
-    setSetting($var, $value) {
-        if(!(objectHelper.isPropertyDefined(this.settings, $var))) {
-            con.error(`unable to get setting: ${$var} from: ${this.settings}`)
-            throw TypeError(`unable to get setting: ${$var} from: ${this.settings}`)
-        }
-
-        this.settings[$var] = $value
-    }
-
-    getSettingsKeys() {
-        return Object.keys(this.settings)
+        return this.bookCollection[key]['settings']
     }
 }
 
