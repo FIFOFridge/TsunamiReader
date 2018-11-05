@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog } from 'electron'
 import Settings from '../modules/appSettings'
 import settingsStorage from '../constants/storage/settings'
+import readerStorage from '../constants/storage/reader'
 import BookManager from '../modules/bookManager'
 import windowRouter from '../modules/windowRouter'
 import appStateSync from '../modules/appStateSync'
@@ -61,6 +62,10 @@ app.on('ready', function () {
     var settings = new Settings(settingsStorage)
     global.appSettings = settings;
 
+    global.readerStorage = readerStorage
+
+    setupThemes()
+
     var bookManager = new BookManager()
     global.bookManager = bookManager
 
@@ -78,6 +83,48 @@ app.on('activate', () => {
         createWindow()
     }
 })
+
+function setupThemes()
+{
+    //default themes
+    global.readerStorage.set('themes', 
+        {
+            light: {
+                body: {
+                    color: '#333333',
+                    background: '#fafafa'
+                },
+                name: 'light'
+            },
+            lightsea: {
+                body: {
+                    color: '#313a40',
+                    background: '#bdd9f5'
+                },
+                name: 'lightsea'
+            },
+            dark: {
+                body: {
+                    color: '#ede8e5',
+                    dark: '#1f1f1f'
+                },
+                name: 'dark'
+            },
+            darksea: {
+                body: {
+                    color: '#cbdaec',
+                    background: '#1f262d'
+                },
+                name: 'darksea'
+            }
+        }
+    )
+    
+    global.readerStorage.set('currentTheme', 'darksea')
+
+    //todo:
+    //Add custom themes loading
+}
 
 /**
  * Auto Updater

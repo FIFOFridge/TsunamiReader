@@ -1,6 +1,6 @@
 import storage from './../../modules/storage'
 
-return storage(true, 
+var readerStorage = storage(true, 
     [
         'lastUrl',
         'lastCFI',
@@ -9,3 +9,5 @@ return storage(true,
         'themes'
     ]
 )
+
+export default readerStorage
