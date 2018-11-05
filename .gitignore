@@ -12,8 +12,10 @@ thumbs.db
 !.gitkeep
 
 #vs & vscode
-.vscode/
 .vs/
+.vscode/*
+#keep debug file
+!.vscode/!launch.json
 vscode.json
 
 #logger
