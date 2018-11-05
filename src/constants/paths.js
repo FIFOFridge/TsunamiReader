@@ -8,8 +8,9 @@ const userDataPath = app.getPath('userData')
 const appStorageDirectory = userDataPath /*path.join(userDataPath, '/TsunamiReader/')*/
 const extractedEpubsDirectory = path.join(appStorageDirectory, '/extracted/')
 const settingsDirectory = path.join(appStorageDirectory, '/settings/')
-const settingsFilePath = path.join(settingsDirectory, '/appSettings.json')
-const booksCollectionFilePath = path.join(appStorageDirectory, '/booksCollectionPath.json')
+const settingsFilePath = path.join(settingsDirectory, '/app.json')
+const readSettingsFilePath = path.join(settingsDirectory, '/reader.json')
+const booksCollectionFilePath = path.join(appStorageDirectory, '/books.json')
 
 
 var ensureDirExists = _path => {
@@ -26,5 +27,6 @@ export default {
     extractedEpubsDirectory,
     settingsDirectory,
     settingsFilePath,
+    readSettingsFilePath,
     booksCollectionFilePath
 }
