@@ -63,8 +63,10 @@
     "md5": "^2.2.1",
     "translucent": "^1.0.12",
     "vue": "^2.3.3",
+    "vue-drawer-layout": "^0.3.2",
     "vue-epub-reader": "0.0.9",
     "vue-router": "^2.5.3",
+    "vue-slider-component": "^2.8.0",
     "winston": "^3.0.0",
     "xml2js": "^0.4.19"
   },
