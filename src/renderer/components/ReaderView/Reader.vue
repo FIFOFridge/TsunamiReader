@@ -30,7 +30,7 @@
 
 <script>
 import readerController from './../../../modules/readerController.js'
-import debounce from 'debounce'
+// import debounce from 'debounce'
 
 export default {
     name: 'BookReader',
@@ -61,7 +61,7 @@ export default {
                 'view'
             )
 
-            this.wrapper.on('initialized', this.display)
+            this.wrapper.on('initialized', this.display.bind(this))
 
             this.initHooks()
         })
