@@ -67,7 +67,8 @@ class ReaderController extends events.EventEmitter {
                 { 
                     flow: this.flow, 
                     width: this.width, 
-                    height: this.height
+                    height: this.height,
+                    contained: true
                 }
             )
             
@@ -216,7 +217,7 @@ class ReaderController extends events.EventEmitter {
         var widthFix = this.document.querySelector('#next-btn').clientWidth * 2 //calc buttons size
 
         this.width = Math.max(this.document.documentElement.clientWidth, window.innerWidth || 0) - widthFix
-        this.height = Math.max(this.document.documentElement.clientHeight, window.innerHeight || 0) - this.contentBottomMargin
+        this.height = Math.max(this.document.documentElement.clientHeight, window.innerHeight || 0) - (this.contentBottomMargin + 300)
     }
 
     updateRendentionSize() {
