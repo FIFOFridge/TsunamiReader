@@ -102,8 +102,10 @@ export default {
             console.log('window resized')
             console.log('rendention size', this.wrapper.RendentionSize)
 
-            if(this.wrapper !== undefined)
+            if(this.wrapper !== undefined) {
+                this.wrapper.calcRendentionSize()
                 this.wrapper.updateRendentionSize()
+            }
         }
     },
     watch: {

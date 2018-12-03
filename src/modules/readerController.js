@@ -14,7 +14,7 @@ class ReaderController extends events.EventEmitter {
             renderToId,
             // bookSettingsFilePath,
             flow = 'paginated',
-            contentBottomMargin = 25
+            contentBottomMargin = 55
         )
     {
         super()
@@ -47,7 +47,7 @@ class ReaderController extends events.EventEmitter {
         
         //init
         this._processBookUrl(this.url)
-        this.adjustRendentionSize()
+        this.calcRendentionSize(false)
         // this._invalidHTMLElementExists(renderToId)
 
         this.book = new epubjs(this.url, {})
@@ -213,16 +213,26 @@ class ReaderController extends events.EventEmitter {
     // set BackgroundImageOpacity() {
     //
     // }
-    adjustRendentionSize() {
-        var widthFix = this.document.querySelector('#next-btn').clientWidth * 2 //calc buttons size
+    calcRendentionSize(calcDocumentDependencies) {
+        let widthFix = calcDocumentDependencies ? (this.document.querySelector('#next-btn').clientWidth * 2) : 0 //calc buttons size
+        let topMargin = calcDocumentDependencies ? (this.document.querySelector('.controls-container').clientHeight) : 0
 
         this.width = Math.max(this.document.documentElement.clientWidth, window.innerWidth || 0) - widthFix
-        this.height = Math.max(this.document.documentElement.clientHeight, window.innerHeight || 0) - (this.contentBottomMargin + 300)
+        this.height = Math.max(this.document.documentElement.clientHeight, window.innerHeight || 0) - (topMargin + this.contentBottomMargin)
     }
 
-    updateRendentionSize() {
-        this.adjustRendentionSize()
-        this.rendention.resize(this.width, this.height)
+    updateRendentionSize(force) {
+        this.rendention.resize(this.width, this.height) //trigger resize
+
+        if(force) {
+            let rendentionEl = this.document.querySelector('#view').children[0]
+
+            //resize rendention manually
+            if(rendentionEl !== null && rendentionEl !== undefined) {
+                rendentionEl.style.height = this.height + 'px'
+                rendentionEl.style.width = this.width + 'px'
+            }
+        }
     }
 
     get RendentionSize() {
