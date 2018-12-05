@@ -103,8 +103,8 @@ export default {
             console.log('rendention size', this.wrapper.RendentionSize)
 
             if(this.wrapper !== undefined) {
-                this.wrapper.calcRendentionSize()
-                this.wrapper.updateRendentionSize()
+                this.wrapper.calcRendentionSize(true)
+                this.wrapper.updateRendentionSize(true)
             }
         }
     },
