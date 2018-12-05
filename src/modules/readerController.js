@@ -3,6 +3,7 @@ import events from 'events'
 import epubjs from 'epubjs'
 import fs from 'fs'
 import util from 'util'
+import { throws } from 'assert';
 
 if(global.ePub === undefined)
     global.ePub = epubjs
@@ -128,6 +129,40 @@ class ReaderController extends events.EventEmitter {
 
     set Theme(value) {
         this.rendention.themes.select(value)
+
+        //applay theme to rest elements of ui
+        let currentName = this.rendention.themes._current
+
+        let backgroundColor = this.rendention.themes._themes[currentName].rules.body.background
+        let foregroundColor = this.rendention.themes._themes[currentName].rules.body.color
+
+        if(backgroundColor !== null && backgroundColor !== undefined) {
+            let setSVGStyle = (el, fill, opacity) => {
+                el.style.fill = fill
+                el.style.opacity = opacity
+            }
+
+            this.document.body.style.backgroundColor = backgroundColor
+            
+            let BtnPrev = this.document.getElementById('prev-btn')
+            let BtnNext = this.document.getElementById('next-btn')
+
+            BtnPrev.style.backgroundColor = 'rgba(0,0,0,0.0)'
+            BtnPrev.style.fill = foregroundColor
+
+            BtnNext.style.backgroundColor = 'rgba(0,0,0,0.0)'
+            BtnNext.style.fill = foregroundColor
+
+            let ControlButtons = this.document.querySelector('.left-container')
+
+            for(let i = 0; i < ControlButtons.children.length; i++) {
+                var element = ControlButtons.children[i]
+
+                if(element.tagName == 'BUTTON') {
+                    setSVGStyle(element, foregroundColor, '0.5')
+                }
+            }
+        }
     }
 
     // get Themes() {
