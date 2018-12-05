@@ -35,9 +35,9 @@ function createWindow() {
     }
 
     //check is correction needed
-    if(settings.get('overrideTitleBar') === false)
+    //if(settings.get('overrideTitleBar') === false)
         options.titlebar = 'default'    
-    if(settings.get('frame') === false)
+    //if(settings.get('frame') === false)
         options.titlebar = false
 
     mainWindow = new BrowserWindow(options)

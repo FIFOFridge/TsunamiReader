@@ -11,15 +11,15 @@ var settings = remote.getGlobal('appSettings').storage
 export default {
     name: 'app-titlebar',
     data: {
-        display: settings.get('overrideTitleBar') 
+        display: true//settings.get('overrideTitleBar') 
     },
     props: {
         isFixed: false
     },
     mounted: function () {
         this.$nextTick(function () {
-            if(!(settings.overrideTitleBar))
-                return
+            //if(!(settings.overrideTitleBar))
+                //return
 
             var _this = this
 
