@@ -7,6 +7,7 @@
         ref="drawer"
         :content-drawable="true"
         :drawer-width="300"
+        @slide-end="drawerSlideEnd"
       >
         <div slot="content">
           <BookReader
@@ -69,6 +70,8 @@ export default {
     }
   },
   created: function() {
+    this.$refs.drawer.style
+
     //https://stackoverflow.com/a/14314836
     var urlCheck = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
 
@@ -83,6 +86,9 @@ export default {
     console.log(`reader recived url: ${this.url}`)
   },
   mounted: function() {
+    this.$nextTick(function() {
+      document.querySelector('.drawer-wrap').style.visibility = 'hidden'//fixes alvays visible drawer content
+    })
     /*
     this.$root.$on('toc', (toc) => {
       console.log(`[mounted] updated toc: ${this.toc}`)
@@ -90,6 +96,14 @@ export default {
     })*/
   },
   methods: {
+    //fixes alvays visible drawer content
+    drawerSlideEnd(visible) {
+      if(!visible)
+        document.querySelector('.drawer-wrap').style.visibility = 'hidden'
+      else
+        document.querySelector('.drawer-wrap').style.visibility = 'visible'
+    },
+
     toggleSearchWidget () {
       this.openSearch = !this.openSearch
     },
