@@ -1,6 +1,8 @@
 <template>
     <div>
-        <Controls>
+        <Controls
+        :is-drawer-open="isDrawerOpen"
+        >
         </Controls>
       
       <DrawerLayout
