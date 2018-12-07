@@ -140,7 +140,9 @@ class ReaderController extends events.EventEmitter {
         if(backgroundColor !== null && backgroundColor !== undefined) {
             let setSVGStyle = (el, fill, opacity) => {
                 el.style.fill = fill
-                el.style.opacity = opacity
+                
+                if(opacity !== null && opacity !== undefined)
+                    el.style.opacity = opacity
             }
 
             this.document.body.style.backgroundColor = backgroundColor
@@ -160,7 +162,7 @@ class ReaderController extends events.EventEmitter {
                 let element = ControlButtons.children[i]
 
                 if(element.tagName == 'BUTTON') {
-                    setSVGStyle(element, foregroundColor, '0.5')
+                    setSVGStyle(element, foregroundColor, null)
                 }
             }
 
@@ -171,7 +173,7 @@ class ReaderController extends events.EventEmitter {
                 let element = ConfigElements[i]
 
                 element.style.color = foregroundColor
-                setSVGStyle(element, foregroundColor, 1)
+                setSVGStyle(element, foregroundColor, null)
             }
         }
     }
