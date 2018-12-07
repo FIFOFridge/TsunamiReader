@@ -1,5 +1,6 @@
 @import './shared/common.less';
 @import './shared/animations.less';
+@import './shared/fonts.less';
 
 @z-index-reader: 100;
 @z-index-controls: 200;
@@ -131,6 +132,13 @@
     padding: 0em;
     border: none;
 
+    transition: @transition-time-fast;
+    opacity: 0.6;
+
+    &:hover, &:active {
+        opacity: 0.8;
+    }
+
     svg {
         width: 5em;
         height: 5em;
@@ -139,9 +147,66 @@
 
 #prev-btn {
     left: 0%;
+    transition: all @transition-time-veryfast;
+}
+
+#prev-btn.drawer-mode {
+    transform: translateX(3.5em) scale(1.5, 1.5);
+    opacity: 0.9;
+    z-index: 900;
 }
 
 #next-btn {
     left: 95%;
 }
 
+//
+// Drawer
+//
+.drawer-content-container {
+    .font-description-header();
+    font-size: 120%;
+    margin-top: calc(@controls-container-height + 1em);
+}
+
+.config-option:first-child {
+    border-top: none;
+}
+
+.config-option {
+    border-top: 0.1em solid rgba(0,0,0,0.3);
+
+    p {
+        text-align: center;
+        width: 90%;
+        margin: 5% 0%;
+        padding: 0% 2%;
+    }
+}
+
+[class^="toggle-group-"] {
+    * {
+        transition: all @transition-time-medium;
+        display: inline-block;
+    }
+
+    button.toggled {
+        background-color: rgba(0,0,0,0.3) !important;
+        border: none !important;
+    }
+
+    button:not(.toggled) {
+        border: 0.05em rgba(0,0,0,0.3);
+        background-color: rgba(0,0,0,0.0);
+    }
+}
+
+::selection {
+    background-color: rgb(255, 251, 2); /* WebKit/Blink Browsers */
+    color: white;
+}
+
+//TODO: Add alternative accessibility style.
+* {
+    outline: none;
+}

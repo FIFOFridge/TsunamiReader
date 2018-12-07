@@ -136,6 +136,7 @@ class ReaderController extends events.EventEmitter {
         let backgroundColor = this.rendention.themes._themes[currentName].rules.body.background
         let foregroundColor = this.rendention.themes._themes[currentName].rules.body.color
 
+        //TODO: call user function to override manualy objects   
         if(backgroundColor !== null && backgroundColor !== undefined) {
             let setSVGStyle = (el, fill, opacity) => {
                 el.style.fill = fill
@@ -156,11 +157,21 @@ class ReaderController extends events.EventEmitter {
             let ControlButtons = this.document.querySelector('.left-container')
 
             for(let i = 0; i < ControlButtons.children.length; i++) {
-                var element = ControlButtons.children[i]
+                let element = ControlButtons.children[i]
 
                 if(element.tagName == 'BUTTON') {
                     setSVGStyle(element, foregroundColor, '0.5')
                 }
+            }
+
+            let ConfigElements = this.document.querySelectorAll('.config-option')
+
+            for(let i = 0; i < ConfigElements.length; i++)
+            {
+                let element = ConfigElements[i]
+
+                element.style.color = foregroundColor
+                setSVGStyle(element, foregroundColor, 1)
             }
         }
     }

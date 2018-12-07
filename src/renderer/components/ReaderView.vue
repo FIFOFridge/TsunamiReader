@@ -12,6 +12,7 @@
         <div slot="content">
           <BookReader
             :epub-url="url"
+            :is-drawer-open="isDrawerOpen"
           >
           </BookReader>
         </div>
@@ -65,8 +66,7 @@ export default {
       url: 'https://s3.amazonaws.com/epubjs/books/alice.epub',
       serchQuery: '',
       readingProgress: 0,
-      openSearch: false,
-      openContent: false
+      isDrawerOpen: false
     }
   },
   created: function() {
@@ -98,10 +98,15 @@ export default {
   methods: {
     //fixes alvays visible drawer content
     drawerSlideEnd(visible) {
-      if(!visible)
+      if(!visible) {
+        this.isDrawerOpen = false
         document.querySelector('.drawer-wrap').style.visibility = 'hidden'
-      else
+      }
+      else {
+        this.isDrawerOpen = true
         document.querySelector('.drawer-wrap').style.visibility = 'visible'
+      }
+        
     },
 
     toggleSearchWidget () {
