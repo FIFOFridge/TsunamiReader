@@ -168,20 +168,24 @@ class ReaderController extends events.EventEmitter {
 
             let ConfigElements = this.document.querySelectorAll('.config-option')
 
-            for(let i = 0; i < ConfigElements.length; i++)
-            {
-                let element = ConfigElements[i]
+            if(ConfigElements != null) {
+                for(let i = 0; i < ConfigElements.length; i++)
+                {
+                    let element = ConfigElements[i]
 
-                element.style.color = foregroundColor
-                setSVGStyle(element, foregroundColor, null)
+                    element.style.color = foregroundColor
+                    setSVGStyle(element, foregroundColor, null)
+                }
             }
 
             let List = this.document.querySelector('.list-component')
 
-            for(let i = 0; i < List.children.length; i++) {
-                let element = List.children[i]
+            if(List != null) {
+                for(let i = 0; i < List.children.length; i++) {
+                    let element = List.children[i]
 
-                element.style.color = foregroundColor
+                    element.style.color = foregroundColor
+                }
             }
         }
     }
