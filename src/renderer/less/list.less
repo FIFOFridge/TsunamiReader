@@ -1,0 +1,67 @@
+@import "./shared/common.less";
+@import "./shared/animations.less";
+@import "./shared/fonts.less";
+
+ol.list-component, ul.list-component {
+    li {
+        transition: all @transition-time-medium;
+    //    transition: height @transition-time-medium opacity @transition-time-fast visibility @transition-time-fast;
+
+        &:hover {
+            background-color: rgba(0,0,0,0.12);
+        }
+
+        &.hide-me {
+            opacity: 0;
+        }
+    }
+
+    button {
+        cursor: pointer;
+
+        &.remove {
+            fill: #e36b62;
+
+            float: right;
+            clear: both;
+        }
+    }
+
+    [class^="interactive-button"] {
+        transition: all @transition-time-medium;
+        opacity: 0.5;
+
+        border: none;
+        background-color: rgba(0,0,0,0.0);
+
+        &:hover {
+            opacity: 0.85;
+            background-color: rgba(0,0,0,0.20);
+        }
+    }
+
+    .content-button {
+        vertical-align: bottom;
+        border: none;
+        margin-bottom: 0.5em;
+        
+        color: inherit;
+        background: rgba(0,0,0,0.0);
+
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .interactive-button-hidden {
+        opacity: 0;
+    }
+
+    &:hover {
+        .interactive-button-hidden {
+            opacity: 0.6;
+        }
+    }
+}

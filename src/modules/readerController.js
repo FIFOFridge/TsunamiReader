@@ -175,6 +175,14 @@ class ReaderController extends events.EventEmitter {
                 element.style.color = foregroundColor
                 setSVGStyle(element, foregroundColor, null)
             }
+
+            let List = this.document.querySelector('.list-component')
+
+            for(let i = 0; i < List.children.length; i++) {
+                let element = List.children[i]
+
+                element.style.color = foregroundColor
+            }
         }
     }
 
