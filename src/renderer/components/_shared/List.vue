@@ -66,7 +66,7 @@ export default {
             return document.querySelector(el)
         },
         _emitItemClick(index) {
-            this.$emit('item-click')
+            this.$emit('item-click', this.index)
         },
         _emitCollectionChange() {
             this.$emit('items-changed', this.renderItems)
