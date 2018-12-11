@@ -2,14 +2,14 @@
     <div class="controls-container">
         <div class="left-container">
             <!-- Hamburger -->
-            <button v-on:click="$emit('clicked-hamburger')">
+            <button v-on:click="$emit('ctrl-clicked', 'hamburger')">
                 <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                     <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
                 </svg>
             </button>
 
             <!-- Shelf -->
-            <button v-on:click="$emit('clicked-shelf')">
+            <button v-on:click="$emit('ctrl-clicked', 'shelf')">
                 <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                     <path d="M19.5,9V1.5H16.5V9H13.5V1.5H10.5V9H7.5V1.5H4.65V9H3V10.5H21V9H19.5M19.5,13.5H16.5V21H13.5V13.5H10.5V21H7.5V13.5H4.65V21H3V22.5H21V21H19.5V13.5Z" />
                     <!-- <path d="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z" /> -->
@@ -17,14 +17,14 @@
             </button>
             
             <!-- Bookmark -->
-            <button v-on:click="$emit('clicked-bookmark')" :style="{visibility: drawerActionVisibility}">
+            <button v-on:click="$emit('ctrl-clicked', 'bookmark')" :style="{visibility: drawerActionVisibility}">
                 <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                     <path d="M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z" />
                 </svg>
             </button>
 
             <!-- Chapters -->
-            <button v-on:click="$emit('clicked-chapters')" :style="{visibility: drawerActionVisibility}">
+            <button v-on:click="$emit('ctrl-clicked', 'chapters')" :style="{visibility: drawerActionVisibility}">
                 <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                     <path d="M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z" />
                 </svg>
