@@ -206,6 +206,10 @@ class ReaderController extends events.EventEmitter {
     //     return this.chapters
     // }
 
+    getChapters() {
+        return this.chapters
+    }
+
     get Chapter() {
         if(this.chapters !== undefined && this.chapters !== null && this.chapters.length > 0)
             return this.chapters[this.currentChapterIndex]

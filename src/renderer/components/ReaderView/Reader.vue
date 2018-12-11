@@ -90,6 +90,8 @@ export default {
         display() {
             this.loaded = true
             this.wrapper.display()
+
+            this.$emit('chapters', this.wrapper.getChapters())
         },
         // ------------------
         //  window hooks

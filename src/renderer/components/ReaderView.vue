@@ -2,6 +2,7 @@
     <div>
         <Controls
         :is-drawer-open="isDrawerOpen"
+        @ctrl-clicked="handleCtrlButtonClick"
         >
         </Controls>
       
@@ -15,15 +16,20 @@
           <BookReader
             :epub-url="url"
             :is-drawer-open="isDrawerOpen"
+            @chapters="handleChaptersChanged"
           >
           </BookReader>
         </div>
         <div slot="drawer">
           <DrawerContent
+            ref="drawerContent"
             :bookFontSize="100"
             :bookFlowType="'paginated'"
-            :bookChapters="[]"
-            :bookBookmarks="[]"
+            :bookChapters="chapters"
+            :bookBookmarks="bookmarks"
+            :is-visible="isDrawerOpen"
+            @list-collection-change="handleCollectionChange"
+            @list-item-click="handleCollectionElementClick"
           >
           </DrawerContent>
         </div>
@@ -68,7 +74,9 @@ export default {
       url: 'https://s3.amazonaws.com/epubjs/books/alice.epub',
       serchQuery: '',
       readingProgress: 0,
-      isDrawerOpen: false
+      isDrawerOpen: false,
+      bookmarks: [],
+      chapters: []
     }
   },
   created: function() {
@@ -110,7 +118,38 @@ export default {
       }
         
     },
+    handleCtrlButtonClick(name) {
+      switch(name) {
+        case 'hamburger':
+          this.$refs.drawer.toggle(!(this.isDrawerOpen))
+          break
 
+        case 'shelf':
+          //TODO: navigation
+          break
+
+        case 'bookmark':
+          //TODO:  
+          break
+
+        case 'chapters':
+          this.$refs.drawerContent.showChapters()
+          this.$refs.drawer.toggle(true)
+          break
+
+        default:
+          break
+      }
+    },
+    handleChaptersChanged(chapters) {
+      this.chapters = chapters.map(chapter => chapter.label)
+    },
+    handleCollectionChange() {
+      //TODO:
+    },
+    handleCollectionElementClick() {
+      //TODO: this -> Reader -> epubJsWrapper -> NavigateToCFI(cfi)
+    },
     toggleSearchWidget () {
       this.openSearch = !this.openSearch
     },

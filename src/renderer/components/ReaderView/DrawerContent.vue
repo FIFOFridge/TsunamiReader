@@ -1,7 +1,7 @@
 <template>
     <div class="drawer-content-container">
         <!-- https://youtu.be/64JTcZk8i8w?t=20 -->
-        <div v-if="layout === 'settings'">
+        <div v-if="canShowSettings">
             <div class="config-option">
                 <p style="padding-bottom: 1.5em;">Font size in %:</p>
                 <vue-slider ref="fontSlider" 
@@ -30,11 +30,15 @@
             </div>
         </div>
         <!-- Navigation table --> 
-        <!--
-        <div v-if="layout === 'chapters' || layout === 'bookmarks'">
-
+        <div v-if="listItemsType === 'chapters' || listItemsType === 'bookmarks'">
+            <list
+                :items="listItems"
+                :removable="listItemsCanRemove"
+                @items-changed="_handleListCollectionChange"
+                @item-click="_handleListItemClick" 
+            >
+            </list>
         </div>
-        -->
     </div>
 </template>
 
@@ -43,10 +47,12 @@
 
 <script>
 import vueSlider from 'vue-slider-component'
+import List from './../_shared/List.vue'
 
 export default {
     components: {
-        vueSlider
+        vueSlider,
+        List
     },
     props: {
         bookFontSize: {
@@ -64,47 +70,84 @@ export default {
         bookBookmarks: {
             type: Array,
             required: true
+        },
+        isVisible: {
+            type: Boolean,
+            required: true
         }
     },
     data: function() {
         return {
-            isVisible: false,
             fontSize: 100,
             flow: undefined,
-            layout: 'settings',
-            toggles: [false, false]
+            toggles: [false, false],
+            canShowSettings: true,
+            listItems: [],
+            listItemsType: '',
+            listItemsCanRemove: false
         }
     },
     methods: {
-        getLayout: function() {
-            return this.layout
+        getListItemsType: function() {
+            return this.listItemsType
         },
         showSettings: function() {
-            this.layout = 'settings'
+            this.listItemsType = '' 
+            this.canShowSettings = true
         },
         showChapters: function() {
-            this.layout = 'chapters'
+            this._setupListCollection('chapters')
         },
         showBookmarks: function() {
-            this.layout = 'bookmarks'
+            this._setupListCollection('bookmarks')
         },
         _updateFontSize: function() {
             this.$emit('set:fontSize', this.fontSize)
         },
-        _updateBookmarks: function(bookmarks) {
-
+        _setupListCollection(type) {
+            if(type == 'bookmarks') {
+                this.listItemsType = 'bookmarks'
+                this.listItems = this.bookBookmarks
+                this.listItemsCanRemove = true
+                this.canShowSettings = false
+            }
+            else if(type == 'chapters') {
+                this.listItemsType = 'chapters'
+                this.listItems = this.bookChapters
+                this.listItemsCanRemove = false
+                this.canShowSettings = false
+            } else {
+                throw TypeError('unknown data')
+            }
         },
-        _setupContentList() {
-
+        _handleListCollectionChange(newCollection) {
+            this.$emit('list-collection-change', this.listItemsType, newCollection)
         },
-
-        handleToggleGroup(obj, i) {
+        _handleListItemClick(index) {
+            if(this.listItemsType == 'chapters' || this.listItemsType == 'bookmarks') {
+                this.$emit('list-item-click', this.listItemsType, index)
+            }
+        },
+        handleToggleGroup(obj, i) { 
             for(let j = 0; j < obj.length; j++) {
                 if(i == j) {
                     this.$set(obj, j, true)
                 } else {
                     this.$set(obj, j, false)
                 }
+            }
+        }
+    },
+    watch: {
+        isVisible(newValue) {
+            //on hide:
+            //clear list visibility (if set)
+            //and display settings
+            if(!(newValue)) { 
+                this.listItemsType = ''
+                this.listItems = []
+                this.listItemsCanRemove = false
+                this.canShowSettings = true
             }
         }
     }
