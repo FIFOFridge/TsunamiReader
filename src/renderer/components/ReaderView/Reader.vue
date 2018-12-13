@@ -115,7 +115,7 @@ export default {
         },
         handlePreviousButton() {
             if(!this.isDrawerOpen && this.loaded)
-                wrapper.previousPage()
+                this.wrapper.previousPage()
             else if(this.isDrawerOpen) {
                 //TODO: emit drawer close
             }
