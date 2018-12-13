@@ -178,15 +178,10 @@ class ReaderController extends events.EventEmitter {
                 }
             }
 
-            let List = this.document.querySelector('.list-component')
+            let drawerCC = this.document.querySelector('.drawer-content-container')
 
-            if(List != null) {
-                for(let i = 0; i < List.children.length; i++) {
-                    let element = List.children[i]
-
-                    element.style.color = foregroundColor
-                }
-            }
+            drawerCC.style.color = foregroundColor
+            setSVGStyle(drawerCC, foregroundColor, null)
         }
     }
 
