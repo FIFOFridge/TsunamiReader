@@ -1,5 +1,6 @@
 import util from 'util'
 import { randomBytes } from 'crypto'
+import fs from 'fs'
 
 const freezer = o => {
     if(util.isArray(o))
@@ -25,7 +26,7 @@ class Storage {
                 if(!(util.isString(key)))
                     throw TypeError(`unable to import strictList key: ${key}, key have to be string`)
 
-                this._props[key] = undefined
+                this._props[key] = null
             })
 
             Object.preventExtensions(this._props)
@@ -61,6 +62,9 @@ class Storage {
     set(key, value) {
         if(this.strict && !(this._keyExists(key)))
             throw ReferenceError(`unabled to find: ${key}`)
+
+        if(value === undefined)
+            throw TypeError(`cannot assign "undefined" to: ${key}, becouse "undefined" isnt supported value`)
 
         this._props[key] = value
     }
@@ -157,6 +161,28 @@ class Storage {
      */
     copy() {
         return JSON.stringify(this._props)
+    }
+
+    toFile(path) {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(path, this.copy(), {encoding: 'UTF-8'}, (err) => {
+                if(err)
+                    reject(`error during writing file: ${path}, error: ${err}`)
+                else
+                    resolve()
+            })
+        })
+    }
+
+    fromFile(path) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(path, {encoding: 'UTF-8'}, (err, data) => {
+                if(err)
+                    reject(`error during reading file: ${path}, error: ${err}`)
+                else
+                    resolve(data)
+            })
+        })
     }
 
     toLocaleString() {
