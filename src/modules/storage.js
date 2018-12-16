@@ -1,6 +1,7 @@
 import util from 'util'
 import { randomBytes } from 'crypto'
 import fs from 'fs'
+import { EventEmitter } from 'electron';
 
 const freezer = o => {
     if(util.isArray(o))
@@ -13,8 +14,10 @@ const freezer = o => {
 
 let tmpCtrKey = randomBytes(1024) 
 
-class Storage {
+class Storage extends EventEmitter {
     constructor(__ctrKey, strict, strictList) {
+        super()
+
         if(__ctrKey !== tmpCtrKey) { //prevent extending
             throw TypeError(`Storage could be only created by exported method`)
         }
@@ -67,6 +70,8 @@ class Storage {
             throw TypeError(`cannot assign "undefined" to: ${key}, becouse "undefined" isnt supported value`)
 
         this._props[key] = value
+
+        this._emitKeyStateChange(key)
     }
 
     /**
@@ -90,6 +95,8 @@ class Storage {
 
         if(this._keyExists(key))
             throw TypeError(`prop already exists: ${key}`)
+
+        this._emitKeyStateChange(key)
     }
 
     /**
@@ -104,6 +111,8 @@ class Storage {
             throw ReferenceError(`unabled to find: ${key}`)
 
         delete this._props[key]
+
+        this._emitKeyStateChange(key)
     }
 
     /**
@@ -133,6 +142,10 @@ class Storage {
         }
     }
 
+    _emitKeyStateChange(key) {
+        this.emit(key, 'changed')
+    }
+
     /**
      * 
      * @param {string} data 
@@ -152,7 +165,7 @@ class Storage {
         if(!(util.isBuffer(buffer)))
             throw TypeError(`buffer isn't Buffer`)
 
-        this.load(buffer.toString())
+        this.loadFromString(buffer.toString())
     }
 
     /**
@@ -174,13 +187,19 @@ class Storage {
         })
     }
 
-    fromFile(path) {
+    loadfromFile(path) {
         return new Promise((resolve, reject) => {
             fs.readFile(path, {encoding: 'UTF-8'}, (err, data) => {
                 if(err)
                     reject(`error during reading file: ${path}, error: ${err}`)
-                else
-                    resolve(data)
+                else {
+                    try {
+                        this._props = JSON.parse(data)
+                        resolve()
+                    } catch {
+                        reject(`unable to parse data: ${data}`)
+                    }
+                }
             })
         })
     }
