@@ -10,20 +10,6 @@ let con = exconsole(logger, console)
 class Settings {
     constructor(settingsStorage) {
         this.storage = settingsStorage
-        
-        if(!(this._isSettingsFileExists())) {
-            this._initWithDefaultValues(settingsStorage)
-            this.save()
-        }
-
-        fs.readFile(paths.settingsFilePath, {encoding: 'UTF-8'}, (err, data) => {
-            if(err) {
-                this._initWithDefaultValues()
-                this.save()
-            } else {
-                settingsStorage.loadFromString(data)
-            }
-        })
     }
 
     _isSettingsFileExists() {
@@ -34,7 +20,9 @@ class Settings {
      * 
      * @param {Storage} storage 
      */
-    _initWithDefaultValues() {
+    initWithDefaultValues() {
+        let isOSX = this.storage.get('isOSX')
+
         if(this.storage.get('isOSX') === false) {
             this.storage.set('frame', true) 
             this.storage.set('overrideTitleBar', false) 
@@ -46,16 +34,32 @@ class Settings {
         this.storage.set('useImageCompressor', true) 
     }
 
+    tryLoad() {
+        return new Promise((resolve, reject) => {
+            let _this = this
+
+            if(!(this._isSettingsFileExists()))
+                reject('unable to find settings file')
+            
+            console.log(this.storage)
+            console.log(this.storage.loadfromFile)
+
+            this.storage.loadfromFile(paths.settingsFilePath)
+                .then(() => {resolve()})
+                .catch((err) => {reject(`unable to read settings file: ${err}`)})
+        })
+    }
+
     save() {
-        var jsonData = this.storage.copy()
-
-        console.log(paths)
-        console.log(jsonData)
-
-        fs.writeFile(paths.settingsFilePath, jsonData, {encoding: 'UTF-8'}, (err) => {
-            if(err)
-                con.error(`unable to write settings file: ${err.message}`)
-        }) 
+        return new Promise((resolve, reject) => {
+            this.storage.toFile(paths.settingsFilePath)
+            .then((result) => {
+                resolve()
+            }).catch((err) => {
+                con.error(`unable to write settings file: ${err}`)
+                reject(`unable to write settings file: ${err}`)
+            })
+        })
     }
 }
 

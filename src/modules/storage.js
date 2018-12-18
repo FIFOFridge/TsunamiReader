@@ -1,7 +1,7 @@
 import util from 'util'
 import { randomBytes } from 'crypto'
 import fs from 'fs'
-import { EventEmitter } from 'electron';
+import { EventEmitter } from 'events'
 
 const freezer = o => {
     if(util.isArray(o))
@@ -170,15 +170,15 @@ class Storage extends EventEmitter {
 
     /**
      * 
-     * @param {Buffer} buffer 
+     * @returns {Array} props
      */
     copy() {
-        return JSON.stringify(this._props)
+        return JSON.parse(JSON.stringify(this._props))
     }
 
     toFile(path) {
         return new Promise((resolve, reject) => {
-            fs.writeFile(path, this.copy(), {encoding: 'UTF-8'}, (err) => {
+            fs.writeFile(path, JSON.stringify(this._props), {encoding: 'UTF-8'}, (err) => {
                 if(err)
                     reject(`error during writing file: ${path}, error: ${err}`)
                 else
@@ -194,10 +194,23 @@ class Storage extends EventEmitter {
                     reject(`error during reading file: ${path}, error: ${err}`)
                 else {
                     try {
-                        this._props = JSON.parse(data)
+                        let parsedData = JSON.parse(data)
+
+                        if(this.strict) {
+                            if(Object.keys(parsedData).length != Object.keys(this._props).length)
+                                throw TypeError(`keys aren't matching`)
+
+                            for(let i = 0; i < Object.keys(this._props).length; i++) {
+                                if(Object.keys(this._props)[i] !== Object.keys(parsedData)[i])
+                                    throw TypeError(`keys aren't matching`)
+                            }
+                        }
+
+                        this._props = parsedData
+
                         resolve()
-                    } catch {
-                        reject(`unable to parse data: ${data}`)
+                    } catch(erro) {
+                        reject(`unable to parse data: ${data}, error: ${erro}`)
                     }
                 }
             })
