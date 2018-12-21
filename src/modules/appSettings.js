@@ -24,11 +24,11 @@ class Settings {
         let isOSX = this.storage.get('isOSX')
 
         if(this.storage.get('isOSX') === false) {
-            this.storage.set('frame', true) 
-            this.storage.set('overrideTitleBar', false) 
-        } else {
             this.storage.set('frame', false) 
             this.storage.set('overrideTitleBar', true) 
+        } else {
+            this.storage.set('frame', true)
+            this.storage.set('overrideTitleBar', false)
         }
 
         this.storage.set('useImageCompressor', true) 
