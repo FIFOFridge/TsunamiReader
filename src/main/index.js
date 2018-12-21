@@ -52,25 +52,60 @@ function createWindow() {
 
     mainWindow.on('closed', () => {
         mainWindow = null
+        console.log(`closing main window`)
 
         global.appSettings.save()
+        .then(() => {
+            app.quit()
+        })
+        .catch((err) => {
+            console.error(err)
+            app.quit()
+        }) 
     })
 }
 
 //init
 app.on('ready', function () {
+    let debugAttachDelay = true
+    let initDelay = 0
+    
+    //allow to (re)attach debugger to main process at app startup
+    //change debugAttachDelay to false to skip it
+    if(process.env.NODE_ENV === 'development' && debugAttachDelay) 
+        initDelay = 5000
+
+    console.log(`[Init delay: ${initDelay}]`)
+    setTimeout(onReady, initDelay)
+})
+
+function onReady() {
     var settings = new Settings(settingsStorage)
-    global.appSettings = settings;
+    global.appSettings = settings
 
     global.readerStorage = readerStorage
-
     setupThemes()
 
     var bookManager = new BookManager()
     global.bookManager = bookManager
-
-    createWindow()
-})
+    
+    settings.tryLoad()
+    .then(() => {
+        createWindow()
+    })
+    .catch((err) => {
+        console.log(`unable to load settings from file, creating new one: ${err}`)
+        settings.initWithDefaultValues()
+        settings.save()
+        .then(() => {
+            createWindow()
+        })
+        .catch((err) => {
+            console.error(`unable to create new settings file: ${err}`)
+            createWindow()
+        })
+    })
+}
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
