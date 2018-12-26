@@ -1,13 +1,11 @@
 import storage from './../../modules/storage'
 
-var readerStorage = storage(true, 
+export default storage.create.predefined.typeRestricted(
     [
-        'lastUrl',
-        'lastCFI',
-        'lastProgress',//%
-        'currentTheme',
-        'themes'
+        {key: 'lastUrl', type: storage.dataTypes.String},
+        {key: 'lastCFI', type: storage.dataTypes.String},
+        {key: 'lastProgress', type: storage.dataTypes.Number},
+        {key: 'currentTheme', type: storage.dataTypes.String},
+        {key: 'themes', type: storage.dataTypes.Object}
     ]
 )
-
-export default readerStorage

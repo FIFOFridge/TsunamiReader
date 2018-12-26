@@ -1,16 +1,15 @@
 import storage from './../../modules/storage'
 import { app } from 'electron'
 
-var settingsStorage = storage(true, 
+var settingsStorage = storage.create.predefined.typeRestricted( 
     [
-        'isOSX',
-        'overrideTitleBar',
-        'useImageCompressor',
-        'frame'
+        {key: 'isOSX', type: storage.dataTypes.Boolean},
+        {key: 'overrideTitleBar', type: storage.dataTypes.Boolean},
+        {key: 'useImageCompressor', type: storage.dataTypes.Boolean},
+        {key: 'frame', type: storage.dataTypes.Boolean}
     ]
 )
 
 settingsStorage.set('isOSX', (app.platform === 'darwin' ? true : false))
-//Object.freeze(settingsStorage._props.isOSX)
 
 export default settingsStorage
