@@ -49,9 +49,9 @@ class Storage extends EventEmitter {
 
         this.underConstruction = true //helper for internal class/factory function usage
         this.mode = mode
-        this.forcedType = forcedType !== undefined ? forcedType : null
-
         this.defaultEmptyValue = this.overrideEmptyValue !== undefined ? this.overrideEmptyValue : null
+
+        this.forcedType = forcedType !== undefined ? forcedType : this.defaultEmptyValue
 
         this._overrides = []
 
@@ -59,37 +59,64 @@ class Storage extends EventEmitter {
             this._overrides.push({name: name, set: false, fn: null, default: _default, returnType: returnType})
         } 
 
-        _createOverride('isSet', (v) => { v !== defaultEmptyValue }, dataTypes.String)
+        _createOverride('isSet', (v) => { return v !== this.defaultEmptyValue }, dataTypes.String)
         _createOverride('serializeFormatter', (d) => { return JSON.stringify(d) }, dataTypes.String)
-        _createOverride('deserializeFormatter', (d) => { return JSON.parse(d) }, dataTypes.String)
+        _createOverride('deserializeFormatter', (d) => { return JSON.parse(d) }, dataTypes.Object)
         _createOverride('copyFormatter', (d) => { return JSON.parse(JSON.stringify(d)) }, dataTypes.Object) 
 
         if(strict === true) {
             this.strict = true
-            this.forcedType = null
+            this.forcedType = this.defaultEmptyValue
         }
 
-        this._props = []
+        this._props = {}
 
         if(strict) {
             this._loadItems(strictList)
         }
-        /*
-        if(util.isArray(strictList)) {
-            strictList.forEach(key => {
-                if(!(util.isString(key)))
-                    throw TypeError(`unable to import strictList key: ${key}, key have to be string`)
-
-                this._props[key] = null
-            })
-
-            Object.preventExtensions(this._props)
-        }*/
     }
 
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // :::                  internal helpers                     :::
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    _asyncTaskWrapper(index, task) {
+        this._assertIsPromise(task)
+
+        return new Promise((resolve) => {
+            target.then(v => {
+                resolve({index: index, value: v})
+            }).catch(e => {
+                if(_handlePromiseError !== undefined)
+                    _handlePromiseError(this._props[index]._key, e).bind(thisArg)
+                
+                resolve({index: index, value: false})
+            })
+        })
+    }
+
+    _assertIsPromise(value) {
+        if(!(value instanceof Promise))
+            throw TypeError(`function did not returned Promise: ${value}`)
+    }
+
+    _assertLockFalse() {
+        if(this.lock !== false)
+            throw TypeError('unable to do operation until last asynchronous operation will be completed')
+    }
+
+    _setLock(value) {
+        this.lock = value
+    }
+
+    static _dataFormatterAssertInputType(arg, type) {
+        if(typeof(arg) !== type)
+            throw TypeError(`unable to format data, wrong input type. expected: ${type}, got: ${typeof(arg)}`)
+    }
+
+    _executeDataFormatter( _function, input) {
+        return _function.apply(null, [input])
+    }
+
     _executeOverrideFunction(name, data) {
         let names = this._overrides.map(o => o.name)
 
@@ -106,22 +133,23 @@ class Storage extends EventEmitter {
         return value
     }
 
-    _createItem(_key, type, _default) {
-        if(!(util.isString(_key)))
-            throw TypeError(`internal storage error during creating item, _key have to be string value`)
+    _createItem(key, type, _default, dataFormatter) {
+        if(!(util.isString(key)))
+            throw TypeError(`internal storage error during creating item, key have to be string value`)
 
         if((this.mode === 1) && (!util.isString(type)))
-            throw TypeError(`item (with key: ${key}) "type" has to be string`)
+            throw TypeError(`item key: ${key} "type" has to be string`)
 
         let item = {
-            key: _key, 
+            _key: key,
             value: this.defaultEmptyValue, 
             default: _default !== undefined ? _default : null, 
-            type: this.mode === 0 ? this.forcedType : type
+            type: this.mode === 0 ? this.forcedType : type,
+            dataFormatter: dataFormatter
         }
 
         Object.preventExtensions(item)
-        freezer(item.key)
+        freezer(item._key)
         freezer(item.type)
         freezer(item.default)
 
@@ -129,17 +157,7 @@ class Storage extends EventEmitter {
     }
 
     _getItemByKey(key) {
-        let keys = this._props.map(i => i.key)
-        let index = -1
-
-        for(let i = 0; i < keys.length; i++) {
-            if(keys[i] === key) {
-                index = i
-                break
-            }
-        }
-
-        return this._props[index]
+        return this._props[key]
     }
 
     _loadItems(items) {
@@ -148,7 +166,7 @@ class Storage extends EventEmitter {
 
         if(this.mode === 0) {
             if(!(util.isArray(items))) {
-                throw TypeError(`wrong items format, has to be array of strings(keys names)`)
+                throw TypeError(`wrong items format, has to be array of keys: [sampleKey, sampleKey2] )`)
             }
 
             for(let i = 0; i < items.length; i++) {
@@ -156,12 +174,11 @@ class Storage extends EventEmitter {
                     throw TypeError(`wrong items: ${items[i]} value, has to be string (key name)`)
                 }
 
-                let newItem = this._createItem(items[i])
-                this._setItem(newItem)
+                this._props[_items[i]] = this._createItem(items[i])
             }
         } else if(this.mode === 1) {
             if(!(util.isArray(items))) {
-                throw TypeError(`wrong items format, has to be array of objects(items) [{key: <string_key>, type: <string_type>[,[OPTIONAL] default: <default_value>]}]`)
+                throw TypeError(`wrong items format, has to be array of objects(items) [{_key: <string_key>, type: <string_type>[,[OPTIONAL] default: <default_value>]}]`)
             }
 
             for(let i = 0; i < items.length; i++) {
@@ -169,8 +186,8 @@ class Storage extends EventEmitter {
                     throw TypeError(`wrong item: ${items[i]} object should be string which contains: {key: <string_key>, type: <string_type>[,[OPTIONAL] default: <default_value>]}`)
                 }
 
-                let newItem = this._createItem(items[i].key, items[i].type, items[i].default)
-                this._setItem(newItem)
+                console.log(items[i])
+                this._props[items[i].key] = this._createItem(items[i].key, items[i].type, items[i].default)
             }
         } else {
             throw TypeError(`wrong mode type: ${this.mode} has to be int`)
@@ -178,35 +195,15 @@ class Storage extends EventEmitter {
     }
 
     _keyExists(key) {
-        return this._props.map(i => i.key).includes(key) && util.isString(key)
+        return this._props.hasOwnProperty(key) && util.isString(key)
     }
 
-    _setItem(object) {
-        if(this._keyExists(object.key)) {
-            let keys = this._props.map(i => i.key)
-            let index = -1
-
-            for(let i = 0; i < keys.length; i++) {
-                if(keys[i] === object.key) {
-                    index = i
-                    break
-                }
-            }
-
-            let item = this._props[index]
-
-            if(!(_areTypesEqual(item.value, object.value))) {
-                throw TypeError(`incorrect type ${item.key}, expected is: ${item.type}`)
-            } 
-
-            item.value = object.value
-        } else {
-            this._props.push(object)
-        }
+    _areValueTypesEqual(value, value2) {
+        return typeof(value) === typeof(value2) || value === this.defaultEmptyValue || value2 === this.defaultEmptyValue
     }
 
     _areTypesEqual(value, value2) {
-        return typeof(value) === typeof(value2) || value === null || value2 === null
+        return value === value2 || value === this.defaultEmptyValue || value2 === this.defaultEmptyValue
     }
     
     // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -229,9 +226,18 @@ class Storage extends EventEmitter {
         if(!(this._areTypesEqual(typeof(value), currentItem.type)))
             throw TypeError(`current value type: ${typeof(value)} isn't same as declarated: ${currentItem.type} `)
 
-        currentItem.value = value
+        currentItem.value = currentItem.dataFormatter === undefined ? value : this._executeDataFormatter(currentItem.dataFormatter, value)
 
         this._emitKeyStateChange(key, 'set')
+    }
+
+    setDataFormatter(key, dataFormatter) {
+        if(!(this._keyExists(key)))
+            throw ReferenceError(`unabled to find: ${key}`)
+
+        let currentItem = this._getItemByKey(key)
+
+        currentItem.dataFormatter = dataFormatter
     }
 
     /**
@@ -242,21 +248,27 @@ class Storage extends EventEmitter {
         if(!this._keyExists(key))
             throw ReferenceError(`unabled to find: ${key}`)
 
-        return this._getItemByKey(key).value
+        let item = this._getItemByKey(key)
+
+        if(item.value === this.defaultEmptyValue) {
+            return item.default !== null ? item.default : this.defaultEmptyValue
+        } else {
+            return item.value
+        }
     }
 
     /**
      * 
      * @param {string} key 
      */
-    add(key, type, _default) {
+    add(key, type, _default, dataFormatter) {
         if(!Object.isExtensible(this._props))
             throw TypeError(`props are locked becouse they were loaded from 'strictList'`)
 
         if(this._keyExists(key))
             throw TypeError(`prop already exists: ${key}`)
 
-        this._setItem(this._createItem(key, type, _default))
+        this._props[key] = this._createItem(key, type, _default, dataFormatter)
 
         this._emitKeyStateChange(key, 'added')
     }
@@ -297,12 +309,11 @@ class Storage extends EventEmitter {
                 reject(`unabled to find: ${key}`)
 
             try {
-                let value = this._executeOverrideFunction('copyFormatter', this._props)
+                let value = this._executeOverrideFunction('isSet', this._props[key])
                 resolve(value)
             } catch(err) {
                 reject(err)
             }
-            this.overrideIsSet === undefined ? this._getItemByKey(key).value !== null : this.overrideIsSet(this._getItemByKey(key).value)
         })
     }
 
@@ -319,17 +330,6 @@ class Storage extends EventEmitter {
             throw TypeError(`data isn't String`)
 
         this._props = JSON.parse(data)
-    }
-
-    /**
-     * 
-     * @param {Buffer} buffer 
-     */
-    loadFromBuffer(buffer) {
-        if(!(util.isBuffer(buffer)))
-            throw TypeError(`buffer isn't Buffer`)
-
-        this.loadFromString(buffer.toString())
     }
 
     /**
@@ -371,14 +371,11 @@ class Storage extends EventEmitter {
                     reject(`error during reading file: ${path}, error: ${err}`)
                 else {
                     try {
-                        let parsedData = this._executeOverrideFunction('serializeFormatter', data)
+                        let parsedData = this._executeOverrideFunction('deserializeFormatter', data)
 
                         if(this.strict) {
-                            if(parsedData.length != this._props.length)
-                                throw TypeError(`keys aren't matching`)
-
                             for(let i = 0; i < this._props.length; i++) {
-                                if(this._props[i].key !== parsedData[i].key)
+                                if(this._props[i]._key !== parsedData[i]._key)
                                     throw TypeError(`keys aren't matching`)
 
                                 if(this._areTypesEqual(this._props[i].type, parsedData[i].type))
@@ -453,10 +450,10 @@ let _factory = function(_strict = false, _strictList = null, mode = 0, forcedTyp
             [
                 storage._createItem,
                 storage._executeOverrideFunction,
+                storage._executeDataFormatter,
                 storage._getItemByKey,
                 storage._loadItems,
                 storage._keyExists,
-                storage._setItem,
                 storage._createOverride,
                 storage.override,
                 storage.isSet,
@@ -475,13 +472,22 @@ let _factory = function(_strict = false, _strictList = null, mode = 0, forcedTyp
         )
     }
 
-    Object.preventExtensions(storage)
+    //Object.preventExtensions(storage)
 
     return storage
 }
 
 export default {
     dataTypes: dataTypes,
+    dataFormatters: {
+        numberFormatAppendPercent: (n) => { Storage._dataFormatterAssertInputType(dataTypes.Number); return "" + n + "%" },
+        numberToInt: (n) => { Storage._dataFormatterAssertInputType(dataTypes.Number); return Math.trunc(n) },
+        numberFormatToFloat2: (n) => { Storage._dataFormatterAssertInputType(dataTypes.Number); return Math.toFixed(n, 2) },
+        numberFormatToFloat4: (n) => { Storage._dataFormatterAssertInputType(dataTypes.Number); return Math.toFixed(n, 4) },
+        numberFormatToFloat8: (n) => { Storage._dataFormatterAssertInputType(dataTypes.Number); return Math.toFixed(n, 8) },
+        stringToLower: (s) => { Storage._dataFormatterAssertInputType(dataTypes.String); return s.toLowerCase() },
+        stringToUpper: (s) => { Storage._dataFormatterAssertInputType(dataTypes.String); return s.toUpperCase() }
+    },
     create: {
         predefined: {
             typeRestricted: (list, defaultEmptyValue = null) => {
