@@ -54,14 +54,19 @@ function createWindow() {
         mainWindow = null
         console.log(`closing main window`)
 
-        global.appSettings.save()
+        let dataSaveSyncPromises = [
+            global.appSettings.save(),
+            global.bookManager.save()
+        ]
+
+        Promise.all(dataSaveSyncPromises)
         .then(() => {
             app.quit()
         })
         .catch((err) => {
             console.error(err)
             app.quit()
-        }) 
+        })
     })
 }
 
@@ -73,37 +78,41 @@ app.on('ready', function () {
     //allow to (re)attach debugger to main process at app startup
     //change debugAttachDelay to false to skip it
     if(process.env.NODE_ENV === 'development' && debugAttachDelay) 
-        initDelay = 5000
+        initDelay = 0
 
     console.log(`[Init delay: ${initDelay}]`)
     setTimeout(onReady, initDelay)
 })
 
 function onReady() {
-    var settings = new Settings(settingsStorage)
-    global.appSettings = settings
-
+    let settings = global.appSettings = new Settings(settingsStorage)
+    let bookmanager = global.bookManager = new BookManager()
     global.readerStorage = readerStorage
+
     setupThemes()
 
-    var bookManager = new BookManager()
-    global.bookManager = bookManager
-    
-    settings.tryLoad()
-    .then(() => {
-        createWindow()
-    })
-    .catch((err) => {
-        console.log(`unable to load settings from file, creating new one: ${err}`)
-        settings.initWithDefaultValues()
-        settings.save()
-        .then(() => {
-            createWindow()
+    bookmanager.load()
+    .catch(err => {
+        console.log(`unable to read bookmanager data, creating new one, err: ${err}`)
+
+        bookmanager.save()
+        .catch(err => {
+            console.log(`unable to save default bookmanager data: ${err}`)
         })
+    })
+
+    settings.tryLoad()
+    .catch((err) => {
+        console.log(`unable to load settings from file, creating new one, err: ${err}`)
+        settings.initWithDefaultValues()
+        
+        settings.save()
         .catch((err) => {
             console.error(`unable to create new settings file: ${err}`)
-            createWindow()
         })
+    })
+    .finally(() => {
+        createWindow()
     })
 }
 
