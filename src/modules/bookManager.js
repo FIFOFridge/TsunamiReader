@@ -6,7 +6,9 @@ import util from "util"
 import objectHelper from './helpers/objectHelper'
 import events from 'events'
 import paths from './../constants/paths'
-import bookStorage from './../constants/storage/book'
+//import bookStorage from './../constants/storage/book'
+import bookManagerStorage from './../constants/storage/bookManager'
+import eventForwarder from './helpers/eventForwarder'
 
 let con = exconsole(logger, console)
 
@@ -15,21 +17,15 @@ class BookManager extends events.EventEmitter {
         super()
 
         this.booksPath =  paths.booksCollectionFilePath //path.join(app.getPath('userData'), '/books.json')
-        this.currentBook = null
-        this.bookCollection = {}
-        
-        this.settings = {
-            readEpubAsyncTimeout: 20000 //20seconds
-        }
+        this.storage = bookManagerStorage
 
-        if (fs.existsSync(this.booksPath)) {
-            con.debug(`reading ${this.booksPath}`)
-            var booksContent = fs.readFileSync(this.booksPath, 'UTF8')
-            this.bookCollection = JSON.parse(booksContent)
-        } else {
-            con.warn(`unable to find: ${this.booksPath}, writing new one`)
-            fs.writeFileSync(this.booksPath, JSON.stringify(this.bookCollection))
-        }
+        this.currentBook = null
+
+        this.storage.set('books', [])
+        this.bookCollection = this.storage.get('books')
+        console.log(`book collection => ${this.bookCollection}`)
+
+        eventForwarder(this.storage, this, false)//forward storage events
     }
 
     _getKeyFromBook(book) {
@@ -44,6 +40,17 @@ class BookManager extends events.EventEmitter {
         }
 
         return book.md5
+    }
+
+    _getBookByKey(key) {
+        let books = this.storage.get('books')
+
+        let book = books.find(b => this._getKeyFromBook(b) == key)
+
+        if(book === undefined)
+            throw ReferenceError(`unable to find book with key: ${key}`)
+
+        return book[0]
     }
 
     _invalidBookProps(book) {
@@ -65,15 +72,14 @@ class BookManager extends events.EventEmitter {
 
         var key = this._getKeyFromBook(book)
 
-        con.debug('adding book: ' + book.title + ' (' + book.path + ')')
-
         if (this.hasBook) {
             con.error('unable to add book, its already exists: ' + book.path)
             throw TypeError('unable to add book, its already exists: ' + book.path)
         }
 
-        this.bookCollection[key] = book
-        this.bookCollection[key]['settings'] = bookStorage
+        this.bookCollection.push(book)
+        console.log(`after book add [bookCollection]    ==> ${this.bookCollection}`)
+        console.log(`after book add [storage]           ==> ${this.storage.get('books')}`)
         this.emit('added', book)
     }
 
@@ -85,14 +91,19 @@ class BookManager extends events.EventEmitter {
 
         var key = this._getKeyFromBook(book)
 
-        con.debug('removing book: ' + book.title + ' (' + book.path + ')')
-
         if (!(this.hasBook)) {
             con.error('unable to remove book, its not exists: ' + book.path)
             throw TypeError('unable to remove book, its not exists: ' + book.path)
         }
 
-        this.bookCollection[key] = null
+        let found = this.bookCollection.findIndex(b => {
+            return this._getKeyFromBook(b) === this._getBookByKey(book)
+        })
+
+        if(found < 0)
+            throw ReferenceError(`unable to find book: ${book.key}`)
+
+        this.storage.set('books', this.bookCollection.splice(found, 1))
         this.emit('removed', book)
     }
 
@@ -125,36 +136,40 @@ class BookManager extends events.EventEmitter {
     }
 
     get CurrentBook() {
-        return this.currentBook
+        return this.storage.get('currentBook')
     }
 
     set CurrentBook(book) {
         con.debug(`changing current book to ${book}`)
-        this.currentBook = book
+        this.storage.set('currentBook', book)
 
         this.emit('current', book)
     }
 
     save() {
-        con.debug(`saving ${tihs.booksPath}`)
+        con.debug(`saving ${this.booksPath}`)
 
         return new Promise((resolve, reject) => {
-            fs.writeFile(this.booksPath, JSON.stringify(this.bookCollection), (err) => {
-                if (err) {
-                    con.error(`error occured while saving: ${this.booksPath}, error: ${err}`)
-                    reject(err)
-                } else {
-                    con.debug(`successfully saved: ${this.booksPath}`)
-                    resolve()
-                }
-            })
+            this.storage.toFile(this.booksPath)
+            .then(() => resolve())
+            .catch((err) => reject(err))
         })
     }
 
-    getBookSettings(book) {
-        var key = this._getKeyFromBook(book)
+    load() {
+        con.debug(`loading ${this.booksPath}`)
 
-        return this.bookCollection[key]['settings']
+        return new Promise((resolve, reject) => {
+            this.storage.loadfromFile(this.booksPath)
+            .then(() => resolve())
+            .catch((err) => reject(err))
+        })
+    }
+
+
+
+    getBook(key) {
+        return this._getBookByKey(key)
     }
 }
 
