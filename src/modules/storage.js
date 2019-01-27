@@ -59,7 +59,16 @@ class Storage extends EventEmitter {
             this._overrides.push({name: name, set: false, fn: null, default: _default, returnType: returnType})
         } 
 
-        _createOverride('isSet', (v) => { return v !== this.defaultEmptyValue }, dataTypes.String)
+        _createOverride('isSet', (a) => { 
+            if(a[1] === true) {
+                if(a[0].default !== null)
+                    return true
+                else
+                    return a[0].value !== this.defaultEmptyValue
+            } else {
+                return a[0].value !== this.defaultEmptyValue
+            }
+         }, dataTypes.Boolean)
         _createOverride('serializeFormatter', (d) => { return JSON.stringify(d) }, dataTypes.String)
         _createOverride('deserializeFormatter', (d) => { return JSON.parse(d) }, dataTypes.Object)
         _createOverride('copyFormatter', (d) => { return JSON.parse(JSON.stringify(d)) }, dataTypes.Object) 
@@ -300,15 +309,16 @@ class Storage extends EventEmitter {
     /**
      * 
      * @param {string} key 
-     * @returns {boolean}
+     * @param {boolean} acceptDefault
+     * @returns {Promise<boolean>}
      */
-    isSet(key) {
+    isSet(key, acceptDefault) {
         return new Promise((resolve, reject) => {
             if(!this._keyExists(key))
                 reject(`unabled to find: ${key}`)
 
             try {
-                let value = this._executeOverrideFunction('isSet', this._props[key])
+                let value = this._executeOverrideFunction('isSet', [this._props[key], acceptDefault])
                 resolve(value)
             } catch(err) {
                 reject(err)
