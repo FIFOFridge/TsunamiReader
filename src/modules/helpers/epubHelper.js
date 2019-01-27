@@ -7,30 +7,25 @@ import md5 from 'md5'
 import base64img from 'base64-img'
 
 class EpubHelper {
-    constructor() {
-        this._valueDigger = this._valueDigger.bind(this)
-    }
-
     /**
      * Extract epub and return its metadata
      * @param {string} filePath
      * @param {string} targetDirectory 
      */
-    setupEpub(filePath, targetDirectory) {
+    static extractAndParse(filePath, targetDirectory, useMD5AsTargetDirectory = true) {
         return new Promise((resolve, reject) => {
             if(!(fs.existsSync(filePath))) {
                 reject(`unable to find: ${filePath}`)
                 return
             }
 
-            var epubmd5
+            let fileBuffer = fs.readFileSync(filePath)
+            let epubmd5 = md5(fileBuffer)
 
-            fs.readFile(filePath, (err, data) => {
-                if(err)
-                    reject(`error while reading file: ${filePath}`)
+            if(useMD5AsTargetDirectory === true)
+                targetDirectory = path.join(targetDirectory, '/' + epubmd5)
 
-                epubmd5 = md5(data)
-            })
+            console.log(targetDirectory)
 
             extractor(filePath, {dir: targetDirectory}, (err) => {
                 if(err) {
@@ -39,7 +34,7 @@ class EpubHelper {
                 }
             })
 
-            this._processMetadata(targetDirectory).then((value) => {
+            EpubHelper._processMetadata(targetDirectory).then((value) => {
                 value['unpackedPath'] = targetDirectory
                 value['md5'] = epubmd5
                 resolve(value)
@@ -51,7 +46,7 @@ class EpubHelper {
         })
     }
 
-    _processMetadata(baseDir) 
+    static _processMetadata(baseDir) 
     {
         return new Promise((resolve, reject) => {
 
@@ -116,7 +111,7 @@ class EpubHelper {
         
                             //console.log('package file ===> ', packageResult)
 
-                            var metadata = this._metadataDigger(packageResult, path.dirname(packageDocumentFilePath))
+                            var metadata = EpubHelper._metadataDigger(packageResult, path.dirname(packageDocumentFilePath))
                             resolve(metadata)
                             return
                         })
@@ -126,7 +121,7 @@ class EpubHelper {
         })
     }
 
-    _metadataDigger(packageRoot, opfDirectory) {
+    static _metadataDigger(packageRoot, opfDirectory) {
         var metadataNode = null
         var values = {}
 
@@ -137,11 +132,11 @@ class EpubHelper {
                 return false
         }
 
-        var metadataParentNode = this._keyNodeDigger(packageRoot, 'metadata')
+        var metadataParentNode = EpubHelper._keyNodeDigger(packageRoot, 'metadata')
 
         if(metadataParentNode === null) {//not found in package root
             Object.keys(packageRoot).forEach(rootNodes => {
-                var fixedMetadataNode = this._keyNodeDigger(packageRoot[rootNodes], 'metadata')
+                var fixedMetadataNode = EpubHelper._keyNodeDigger(packageRoot[rootNodes], 'metadata')
 
                 if(fixedMetadataNode !== null) {
                     metadataParentNode = fixedMetadataNode
@@ -199,10 +194,10 @@ class EpubHelper {
         ]
 
         keys.forEach(key => {
-            var keyNode = this._keyNodeDigger(metadataNode, key)
+            var keyNode = EpubHelper._keyNodeDigger(metadataNode, key)
 
             if(keyNode !== null) {
-                var value = this._valueDigger(keyNode)
+                var value = EpubHelper._valueDigger(keyNode)
 
                 if(value !== null) { //if value fond assign it to key
                     values[key] = value
@@ -211,7 +206,7 @@ class EpubHelper {
         })
 
         //todo
-        var coverPath = this._coverExtractor(packageRoot, metadataNode, opfDirectory)
+        var coverPath = EpubHelper._coverExtractor(packageRoot, metadataNode, opfDirectory)
 
         if(coverPath !== null && coverPath !== undefined) {
             values['cover'] = coverPath
@@ -222,9 +217,9 @@ class EpubHelper {
         return values
     }
 
-    _coverExtractor(packageRoot, metadataNode, opfDirectory) {
+    static _coverExtractor(packageRoot, metadataNode, opfDirectory) {
         //try find cover
-        var metaNode = this._keyNodeDigger(metadataNode, 'meta')
+        var metaNode = EpubHelper._keyNodeDigger(metadataNode, 'meta')
         var coverResourceId = null
         var coverPath = null
         var manifestNode = null
@@ -242,7 +237,7 @@ class EpubHelper {
         if(coverResourceId !== null) {
             Object.keys(packageRoot).forEach(rootNodes => {
                 if(manifestNode === null) {
-                    var tmp = this._keyNodeDigger(packageRoot[rootNodes], 'manifest')
+                    var tmp = EpubHelper._keyNodeDigger(packageRoot[rootNodes], 'manifest')
 
                     if(tmp !== null)
                         manifestNode = tmp
@@ -250,7 +245,7 @@ class EpubHelper {
             })
 
             if(manifestNode !== null) {
-                coverPath = this._getResourceLink(manifestNode, opfDirectory, coverResourceId)
+                coverPath = EpubHelper._getResourceLink(manifestNode, opfDirectory, coverResourceId)
             }
         }
 
@@ -259,7 +254,7 @@ class EpubHelper {
 
     //diggers
     //TODO: prop check
-    _keyNodeDigger(metadataRoot, key, prop = null) {
+    static _keyNodeDigger(metadataRoot, key, prop = null) {
         var query = new RegExp(key, 'i')
         var found = null
 
@@ -287,12 +282,12 @@ class EpubHelper {
     }
 
     //TODO: prop check
-    _valueDigger(node, prop = null) {
+    static _valueDigger(node, prop = null) {
         var values = []
 
         if(util.isArray(node)) {
             node.forEach(element => {
-                var subnode = this._valueDigger(element, prop)
+                var subnode = EpubHelper._valueDigger(element, prop)
 
                 if(subnode !== null)
                     values.push(subnode)
@@ -308,7 +303,7 @@ class EpubHelper {
             }
 
             if(node._ !== undefined) {
-                return this._valueDigger(node._, prop)
+                return EpubHelper._valueDigger(node._, prop)
             }
 
             //console.log(`ValueDigger, object without value ==> `, node)
@@ -321,7 +316,7 @@ class EpubHelper {
         }
     }
 
-    _getResourceLink(manifestNode, opfDirectory, resourceId) {
+    static _getResourceLink(manifestNode, opfDirectory, resourceId) {
         var idValue = null
         var itemsNode = manifestNode["0"].item
 
@@ -348,4 +343,4 @@ class EpubHelper {
     }
 }
 
-export default new EpubHelper()
+export default EpubHelper

@@ -45,7 +45,7 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
             //disable browser until current book will be processed
             appStateSync.setPointValue(sharedAppStates.canAddBook, false)
     
-            epubHelper.setupEpub(files[0], extractionPath, true).then((value) => {
+            epubHelper.extractAndParse(files[0], extractionPath, true).then((value) => {
                 con.debug(`successfully extracted epub: ${files[0]}`)
                 appStateSync.setPointValue(sharedAppStates.canAddBook, true)
                 appStateSync.setPointValue(sharedAppStates.registredBook, value)
