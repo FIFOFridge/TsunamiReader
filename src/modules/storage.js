@@ -186,7 +186,6 @@ class Storage extends EventEmitter {
                     throw TypeError(`wrong item: ${items[i]} object should be string which contains: {key: <string_key>, type: <string_type>[,[OPTIONAL] default: <default_value>]}`)
                 }
 
-                console.log(items[i])
                 this._props[items[i].key] = this._createItem(items[i].key, items[i].type, items[i].default)
             }
         } else {

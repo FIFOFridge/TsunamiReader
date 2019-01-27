@@ -18,18 +18,14 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
         }
 
         async addBook(event, args) {
-            console.log(`appEventsHandler recived addBook`)
-
             var mainWindow = global.mainWindow
 
             var appStateSync = global.appStateSync
-            console.log(appStateSync)
     
             //somethings still processed
             if(appStateSync.getPointValue(sharedAppStates.canAddBook) === false)
                 return
     
-            con.debug('opening select dialog')
             var files = electron.dialog.showOpenDialog(
                 mainWindow,
                 {
@@ -44,22 +40,16 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
                 }
             )
     
-            console.log(files)
-            con.debug(`selected file(s): ${files}`)
-    
             var extractionPath = path.join(electron.app.getPath('userData'), '/extracted/')
-            extractionPath = path.join(extractionPath, path.basename(files[0]));
-    
-            console.log(`extraction path: ${extractionPath}`)
     
             //disable browser until current book will be processed
             appStateSync.setPointValue(sharedAppStates.canAddBook, false)
     
-            epubHelper.setupEpub(files[0], extractionPath).then((value) => {
+            epubHelper.setupEpub(files[0], extractionPath, true).then((value) => {
                 con.debug(`successfully extracted epub: ${files[0]}`)
                 appStateSync.setPointValue(sharedAppStates.canAddBook, true)
                 appStateSync.setPointValue(sharedAppStates.registredBook, value)
-                console.log(value)
+                // console.log(value)
             }, (rejected) => {
                 con.error(`unable to extract epub: ${rejected}`)
                 appStateSync.setPointValue(sharedAppStates.canAddBook, true)

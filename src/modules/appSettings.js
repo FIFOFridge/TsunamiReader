@@ -40,9 +40,6 @@ class Settings {
 
             if(!(this._isSettingsFileExists()))
                 reject('unable to find settings file')
-            
-            console.log(this.storage)
-            console.log(this.storage.loadfromFile)
 
             this.storage.loadfromFile(paths.settingsFilePath)
                 .then(() => {resolve()})
