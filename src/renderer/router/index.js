@@ -8,7 +8,7 @@ var router = new Router({
     routes: [
         {
             path: '*',
-            redirect: '/'
+            redirect: '/shelf'
         },
         {
             path: '/intro',
@@ -26,7 +26,7 @@ var router = new Router({
             component: require('@/components/LandingPage').default
         },
         {
-            path: '/epub-reader/:filePath/:bookConfig?',
+            path: '/epub-reader/:bookKey',
             name: 'reader',
             component: require('@/components/ReaderView').default
         },
@@ -41,6 +41,6 @@ router.beforeEach((to, from, next) => {
     windowRouter.beforeEach(to, from, next)
 })
 
-router.push({path: '/epub-reader/test'})
+router.push({path: '/shelf'})
 
 export default router;

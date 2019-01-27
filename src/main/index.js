@@ -4,9 +4,7 @@ import settingsStorage from '../constants/storage/settings'
 import readerStorage from '../constants/storage/reader'
 import BookManager from '../modules/bookManager'
 import windowRouter from '../modules/windowRouter'
-import appStateSync from '../modules/appStateSync'
-import sharedAppStates from '../constants/sharedAppStates'
-import appEventsHandler from './appEventsHandler'
+import appEventsManager from './appEventsManager'
 
 /**
  * Set `__static` path to static files in production
@@ -41,11 +39,6 @@ function createWindow() {
         options.titlebar = false
 
     mainWindow = new BrowserWindow(options)
-
-    //global.windowsManager.addWindow('main', mainWindow)
-
-    appStateSync.createSyncPoint(sharedAppStates.canAddBook, true, false)
-    appStateSync.createSyncPoint(sharedAppStates.registredBook, null, true)
 
     mainWindow.setMenu(null)
     mainWindow.loadURL(winURL)
