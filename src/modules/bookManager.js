@@ -21,8 +21,7 @@ class BookManager extends events.EventEmitter {
 
         this.currentBook = null
 
-        this.storage.set('books', [])
-        this.bookCollection = this.storage.get('books')
+        this.bookCollection = []
         console.log(`book collection => ${this.bookCollection}`)
 
         eventForwarder(this.storage, this, false)//forward storage events
@@ -56,8 +55,8 @@ class BookManager extends events.EventEmitter {
     _invalidBookProps(book) {
         var isPropDefined = (o, p) => { o.hasOwnProperty(p) && (o[p] !== null && o[p] !== undefined) }
 
-        if (isPropDefined(book, 'title') &&
-            isPropDefined(book, 'path')) {
+        if (!(isPropDefined(book, 'title') &&
+            isPropDefined(book, 'path'))) {
             return true
         } else {
             return false
@@ -65,39 +64,30 @@ class BookManager extends events.EventEmitter {
     }
 
     addBook(book) {
-        if (!(_invalidBookProps(book))) {
-            con.error('book.tile or book.path is undefined')
-            throw TypeError('book.tile or book.path is undefined')
+        if (!(this._invalidBookProps(book))) {
+            con.error('book.title or book.path is undefined')
+            throw TypeError('book.title or book.path is undefined')
         }
 
         var key = this._getKeyFromBook(book)
 
-        if (this.hasBook) {
+        if (this.hasBook(key)) {
             con.error('unable to add book, its already exists: ' + book.path)
             throw TypeError('unable to add book, its already exists: ' + book.path)
         }
 
         this.bookCollection.push(book)
-        console.log(`after book add [bookCollection]    ==> ${this.bookCollection}`)
-        console.log(`after book add [storage]           ==> ${this.storage.get('books')}`)
         this.emit('added', book)
     }
 
-    removeBook(book) {
-        if (!(_invalidBookProps(book))) {
-            con.error('book.tile or book.path is undefined')
-            throw TypeError('book.tile or book.path is undefined')
-        }
-
-        var key = this._getKeyFromBook(book)
-
-        if (!(this.hasBook)) {
+    removeBook(key) {
+        if (!(this.hasBook(key))) {
             con.error('unable to remove book, its not exists: ' + book.path)
             throw TypeError('unable to remove book, its not exists: ' + book.path)
         }
 
         let found = this.bookCollection.findIndex(b => {
-            return this._getKeyFromBook(b) === this._getBookByKey(book)
+            return key === this._getKeyFromBook(b)
         })
 
         if(found < 0)
@@ -107,13 +97,7 @@ class BookManager extends events.EventEmitter {
         this.emit('removed', book)
     }
 
-    hasBook(book) {
-        if (!(_invalidBookProps(book))) {
-            con.error('book.tile or book.path is undefined')
-            throw TypeError('book.tile or book.path is undefined')
-        }
-
-        var key = this._getKeyFromBook(book)
+    hasBook(key) {
         var found = false
 
         Object.keys(this.bookCollection).forEach(ownedBook => {
@@ -150,6 +134,7 @@ class BookManager extends events.EventEmitter {
         con.debug(`saving ${this.booksPath}`)
 
         return new Promise((resolve, reject) => {
+            this.storage.set('books', this.bookCollection)
             this.storage.toFile(this.booksPath)
             .then(() => resolve())
             .catch((err) => reject(err))
@@ -161,7 +146,16 @@ class BookManager extends events.EventEmitter {
 
         return new Promise((resolve, reject) => {
             this.storage.loadfromFile(this.booksPath)
-            .then(() => resolve())
+            .then(() => {
+                this.storage.isSet('books', false).then(() => {
+                    this.bookCollection = this.storage.get('books').slice()
+                    resolve()
+                })
+                .catch((err) => {
+                    console.log(`unable to get isSet result: ${err}`)
+                    resolve()
+                })
+            })
             .catch((err) => reject(err))
         })
     }

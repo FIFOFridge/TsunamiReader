@@ -31,8 +31,7 @@ import AppTitlebar from './_shared/TitleBar.vue'
 import { remote } from "electron"
 import sharedAppStates from './../../constants/sharedAppStates'
 
-//let bookManager = remote.getGlobal("bookManager")
-//let dataModelLoader = remote.getGlobal("dataModelLoader")
+let bookManager = remote.getGlobal("bookManager")
 
 export default {
     components: {
@@ -42,13 +41,12 @@ export default {
     created: function() {
         this.appTiles = this.loadAppTiles()
 
-        remote.getGlobal('appStateSync').on(sharedAppStates.canAddBook, this.updateCanAddBook)
-        remote.getGlobal('appStateSync').on(sharedAppStates.registredBook, this.addBook)
+        bookManager.on('added', this.addBook)
     },
     mounted: function() {
         this.$nextTick(function () 
         {
-            this.bookTiles = this.loadBooksFromManager();
+            this.loadBooksFromManager()
         })
     },
     data: function () {
@@ -81,6 +79,7 @@ export default {
             console.log(`addBook recived: `, value)
 
             var bookTile = {}
+            bookTile.link = `/epub-reader/${value.md5}`
             bookTile.id = value.md5
             bookTile.tileState = 'enabled'
             bookTile.isSVG = false
@@ -136,7 +135,11 @@ export default {
             ]
         },
         loadBooksFromManager: function() {
-            return [] //TODO: handle loading from books manager
+            let books = remote.getGlobal("bookManager").getBooks()
+            
+            books.forEach(book => {
+                this.addBook(book)
+            })
         }
     }
 }
