@@ -9,6 +9,8 @@ export default storage.create.predefined.typeRestricted(
         {key: 'progress', type: storage.dataTypes.Number, default: 0},
         {key: 'isLocal', type: storage.dataTypes.Boolean},
         {key: 'md5', type: storage.dataTypes.String},
-        {key: 'cover', type: storage.dataTypes.String} //base64
+        {key: 'cover', type: storage.dataTypes.String}, //base64
+        {key: 'metadata', type: storage.dataTypes.Object}, //title, author, rights etc
+        {key: 'filePath', type: storage.dataTypes.String}
     ]
 )

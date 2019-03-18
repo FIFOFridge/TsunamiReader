@@ -9,6 +9,7 @@ import paths from './../constants/paths'
 //import bookStorage from './../constants/storage/book'
 import bookManagerStorage from './../constants/storage/bookManager'
 import eventForwarder from './helpers/eventForwarder'
+import bookStorage from './../constants/storage/book'
 
 let con = exconsole(logger, console)
 
@@ -28,52 +29,35 @@ class BookManager extends events.EventEmitter {
     }
 
     _getKeyFromBook(book) {
-        if(!(objectHelper.isPropertyDefined(book, 'md5'))) {
-            con.error(`Unable to find md5 property in: ${book}`)
-            throw TypeError(`Unable to find md5 property in: ${book}`)
-        }
-
-        if(!(util.isString(book.md5))) {
-            con.error(`MD5 has wrong format: ${book.md5}`)
-            throw TypeError(`MD5 has wrong format: ${book.md5}`)
-        }
-
-        return book.md5
+        return book.get('md5')
     }
 
     _getBookByKey(key) {
-        let books = this.storage.get('books')
+        // let books = this.storage.get('books')
+        let books = this.bookCollection
 
-        let book = books.find(b => this._getKeyFromBook(b) == key)
+        let book = books.find(b => this._getKeyFromBook(b) === key)
 
         if(book === undefined)
             throw ReferenceError(`unable to find book with key: ${key}`)
 
-        return book[0]
+        return book
     }
 
-    _invalidBookProps(book) {
-        var isPropDefined = (o, p) => { o.hasOwnProperty(p) && (o[p] !== null && o[p] !== undefined) }
+    addBook(url, cover, md5, isLocal, metadata) {
+        let book = bookStorage //get new bookStorage
 
-        if (!(isPropDefined(book, 'title') &&
-            isPropDefined(book, 'path'))) {
-            return true
-        } else {
-            return false
-        }
-    }
+        book.set('url', url)
+        book.set('isLocal', isLocal)
+        book.set('md5', md5)
+        book.set('cover', cover)
+        book.set('metadata', metadata)
 
-    addBook(book) {
-        if (!(this._invalidBookProps(book))) {
-            con.error('book.title or book.path is undefined')
-            throw TypeError('book.title or book.path is undefined')
-        }
-
-        var key = this._getKeyFromBook(book)
+        let key = this._getKeyFromBook(book)
 
         if (this.hasBook(key)) {
-            con.error('unable to add book, its already exists: ' + book.path)
-            throw TypeError('unable to add book, its already exists: ' + book.path)
+            con.error('unable to add book, its already exists: ' + book.get('url'))
+            throw TypeError('unable to add book, its already exists: ' + book.get('url'))
         }
 
         this.bookCollection.push(book)
@@ -101,7 +85,9 @@ class BookManager extends events.EventEmitter {
         var found = false
 
         Object.keys(this.bookCollection).forEach(ownedBook => {
-            if(this.bookCollection[ownedBook]['md5'] == key) {
+            let bookKey = this._getKeyFromBook(this.bookCollection[ownedBook])
+
+            if(bookKey == key) {
                 found = true
             }
         })
@@ -109,12 +95,6 @@ class BookManager extends events.EventEmitter {
         return found
     }
 
-    /*
-        return copy of books collection (if returned reference will
-        be overriden, this not affect to bookManager.bookCollection reference)
-        but object references defined in returned array could be overriden and
-        affect to original collection change
-    */
     getBooks() {
         return this.bookCollection.slice()
     }
@@ -148,7 +128,19 @@ class BookManager extends events.EventEmitter {
             this.storage.loadfromFile(this.booksPath)
             .then(() => {
                 this.storage.isSet('books', false).then(() => {
-                    this.bookCollection = this.storage.get('books').slice()
+                    let books = this.storage.get('books').slice()
+                    let processedBooks = []
+
+                    for(let i = 0; i < books.length; i++) {
+                        let book = bookStorage
+                        //console.log(`book: ${book}`)
+                        let bookProps = JSON.stringify(books[i]._props)
+                        book.loadFromString(bookProps) //re-create embedded storage model @TODO: implement feture for storage.js to auto re-create embedded storages
+
+                        processedBooks.push(book)
+                    }
+
+                    this.bookCollection = processedBooks
                     resolve()
                 })
                 .catch((err) => {
