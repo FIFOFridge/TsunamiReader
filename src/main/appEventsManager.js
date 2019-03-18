@@ -6,6 +6,7 @@ import exconsole from './../modules/helpers/loggerConsole'
 import logger from './../modules/helpers/logger'
 import storage from './../modules/storage'
 import util from 'util'
+import fs from 'fs'
 
 var con = exconsole(logger, console)
 
@@ -18,7 +19,9 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
             let handlerConstructor = (handler, callback, onFail, onSuccess) => {
                 let assertIsFunc = (f, fn) => { if(!util.isFunction(f) && f !== undefined) throw new TypeError(`${fn} is not a function`) }
                 
-                assertIsFunc(handler, 'handler')
+                if(!(util.isFunction(handler)))
+                    throw TypeError(`each event handler have to define "handler" function`)
+
                 assertIsFunc(callback, 'callback')
                 assertIsFunc(onFail, 'onFail')
                 assertIsFunc(onSuccess, 'onSuccess')
@@ -27,8 +30,10 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
             }
 
             let events = [
-                { name: 'book-add', value: handlerConstructor(this.addBook) }
-                // { name: 'book-remove', value: handlerConstructor(this.bookRemove, undefined) },
+                { name: 'book-add', value: handlerConstructor(this.addBook) },
+                { name: 'book-open', value: handlerConstructor(this.openBook) },
+                // { name: 'book-close', value: handlerConstructor(this.closeBook) }
+                // { name: 'book-remove', value: handlerConstructor(this.bookRemove, undefine d) },
                 // { name: 'app-settings-edit', value: handlerConstructor(this.appSettingsEdit, undefined) },
                 // { name: 'reader-settings-edit', value: handlerConstructor(this.readerSettingsEdit, undefined) }
                 // { name: 'send-logs', value: handlerConstructor(this.readerSettingsEdit, undefined) }
@@ -56,7 +61,7 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
                 isSuccessed = true
 
                 if(value !== undefined)
-                    event.send(value)
+                    event.sender.send(eventName + '-reply', value)
 
                 if(fns.onSuccess !== undefined)
                     fns.onSuccess(value)
@@ -95,9 +100,26 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
                 
                 let extractionPath = path.join(electron.app.getPath('userData'), '/extracted/')
         
+                if(files === undefined)
+                    reject(`no file selected`)
+
                 epubHelper.extractAndParse(files[0], extractionPath, true)
                 .then(value => {
-                    global.bookManager.addBook(value)
+                    //copy and remove non metadata props
+                    let metadata = Object.assign({}, value)
+
+                    delete metadata["md5"]
+                    delete metadata["unpackedPath"]
+                    delete metadata["cover"]
+                    
+                    global.bookManager.addBook(
+                        files[0],
+                        // value.unpackedPath,
+                        value.cover,
+                        value.md5,
+                        true,
+                        metadata
+                    )
                     con.debug(`successfully extracted and parsed epub: ${files[0]}`)
                     resolve()
                 })
