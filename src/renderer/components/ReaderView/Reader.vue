@@ -29,14 +29,17 @@
 </template>
 
 <script>
-import readerController from './../../../modules/readerController.js'
+import fs from 'fs'
+// import readerController from './../../../modules/readerController.js'
+import { ipcRenderer } from 'electron'
+import readerController from '@modules/readerController.js'
 // import debounce from 'debounce'
 
 export default {
     name: 'BookReader',
     props: {
-        epubUrl: {
-            type: String,
+        bookStorage: {
+            type: Object,
             required: true
         },
         isDrawerOpen: {
@@ -46,6 +49,7 @@ export default {
     },
     data () {
         return {
+            bookData: undefined,
             wrapper: undefined,
             progress: undefined,
             chapters: undefined,
@@ -56,21 +60,55 @@ export default {
             areHooksInitialized: false
         }
     },
-    mounted () {
+    created: () => {
+    },
+    mounted: function() {
         this.$nextTick(function () 
         {
-            this.wrapper = new readerController(
-                this.epubUrl,
-                document,
-                'view'
-            )
+            if(this.bookStorage.get('isLocal')) {
+                fs.readFile(this.bookStorage.get('url'), {encoding: null}, (err, data) => {
+                    if(err)
+                        console.error(`unable to read: ${this.bookStorage.get('url')}`)
 
-            this.wrapper.on('initialized', this.display.bind(this))
+                    let arrayBuffer = new ArrayBuffer(data.length)
+                    let view = new Uint8Array(arrayBuffer)
 
-            this.initHooks()
+                    for(let i = 0; i < data.length; ++i) {
+                        view[i] = data[i]
+                    }
+
+                    this.bookData = arrayBuffer
+                    this.initWrapper(arrayBuffer)
+                })
+            } else {
+                this.bookData = this.bookStorage.get('url')
+                this.initWrapper()
+            }
         })
+
+        // ipcRenderer.send('book-open', [this.bookStorage.get('md5')])
+        // ipcRenderer.on('book-open-reply', (event, value) => {
+        //     this.initWrapper(value)
+        // })
+
+        // this.initWrapper()
     },
     methods: {
+        initWrapper(bookAsBinary) {
+            try {
+                this.wrapper = new readerController(
+                    bookAsBinary/*this.bookStorage.get('url')*/,
+                    document,
+                    'view',
+                    'binary'
+                )
+
+                this.wrapper.on('initialized', this.display.bind(this))
+                this.initHooks()
+            } catch(err) {
+                console.log(`errur`)
+            }
+        },
         initHooks() {
             if(!(this.areHooksInitialized)) {
                 window.addEventListener('resize', this.onWindowResize)

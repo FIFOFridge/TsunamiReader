@@ -14,7 +14,7 @@
       >
         <div slot="content">
           <BookReader
-            :epub-url="url"
+            :book-storage="bookStorage"
             :is-drawer-open="isDrawerOpen"
             @chapters="handleChaptersChanged"
           >
@@ -55,6 +55,7 @@ import BookReader from './ReaderView/Reader.vue'
 import Controls from './ReaderView/Controls.vue'
 import DrawerContent from './ReaderView/DrawerContent.vue'
 import DrawerLayout from 'vue-drawer-layout'
+import electron from 'electron'
 
 import util from 'util'
 
@@ -65,35 +66,36 @@ export default {
     DrawerLayout:DrawerLayout.DrawerLayout,
     DrawerContent
   },
+  // props: ['id'],
   props: {
-    filePath: String
+    id: {
+      required: true,
+      type: String
+    }
   },
   data: function() {
     return {
       //TODO: custom request to support guttenberg books
-      url: 'https://s3.amazonaws.com/epubjs/books/alice.epub',
+      url: '',
       serchQuery: '',
       readingProgress: 0,
       isDrawerOpen: false,
       bookmarks: [],
-      chapters: []
+      chapters: [],
+      bookManager: null,
+      bookStorage: undefined
     }
   },
   created: function() {
-    this.$refs.drawer.style
+    this.bookManager = electron.remote.getGlobal('bookManager')
+    
+    console.log(`passed id (props): ${this.id}`)
+    console.log(`passed route params:`, this.$route.params)
 
-    //https://stackoverflow.com/a/14314836
-    var urlCheck = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
+    if(!this.bookManager.hasBook(this.id))
+      throw ReferenceError(`unable to find book with key: ${this.id}`)
 
-    if(urlCheck.test(this.filePath)) { //url
-      this.url = this.filePath 
-    } else {
-      //todo check is file exists
-    }
-
-    console.log(DrawerLayout)
-    console.log(Controls)
-    console.log(`reader recived url: ${this.url}`)
+    this.bookStorage = this.bookManager.getBook(this.id)
   },
   mounted: function() {
     this.$nextTick(function() {

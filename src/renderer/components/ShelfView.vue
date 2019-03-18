@@ -78,13 +78,18 @@ export default {
         addBook: function(value) {
             console.log(`addBook recived: `, value)
 
+            let md5 = value.get('md5')
+            let bookObject = value.get('metadata')
+            bookObject.cover = value.get('cover')
+
             var bookTile = {}
-            bookTile.link = `/epub-reader/${value.md5}`
-            bookTile.id = value.md5
+            bookTile.link = `/epub-reader/${md5}`
+            bookTile.id = md5
             bookTile.tileState = 'enabled'
             bookTile.isSVG = false
-            bookTile.bookObject = value
-            bookTile.img = value.cover
+            bookTile.bookObject = bookObject
+            bookTile.img = null // value.get('cover')
+            // bookTile.urlProps = { id: value.md5 }
 
             this.bookTiles.push(bookTile)
         },

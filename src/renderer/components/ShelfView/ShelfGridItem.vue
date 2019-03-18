@@ -83,8 +83,9 @@ export default {
 
     //update data
     if (this.bookObject == !null && this.bookObject == !undefined) {
+      console.log('getting a book')
       this.title = this.bookObject.title;
-      this.isFavourite = this.bookObject.isFavourite;
+      this.isFavourite = this.bookObject.isFavourite; 
 
       this.priority = this.isFavourite ? "priority-medium" : "priority-low";
     } else {

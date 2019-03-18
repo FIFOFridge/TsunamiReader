@@ -13,6 +13,7 @@ class ReaderController extends events.EventEmitter {
             bookUrl, 
             document, 
             renderToId,
+            encoding,
             // bookSettingsFilePath,
             flow = 'paginated',
             contentBottomMargin = 55
@@ -47,11 +48,11 @@ class ReaderController extends events.EventEmitter {
         this.fontSize = '100%'
         
         //init
-        this._processBookUrl(this.url)
+        //this._processBookUrl(this.url)
         this.calcRendentionSize(false)
         // this._invalidHTMLElementExists(renderToId)
 
-        this.book = new epubjs(this.url, {})
+        this.book = new epubjs(this.url, {encoding: 'binary'})
 
         //process chapters 
         this.book.loaded.navigation.then((navi) => {
@@ -129,6 +130,7 @@ class ReaderController extends events.EventEmitter {
 
     set Theme(value) {
         this.rendention.themes.select(value)
+        console.error(`wolololololololo`)
 
         //applay theme to rest elements of ui
         let currentName = this.rendention.themes._current
@@ -276,7 +278,7 @@ class ReaderController extends events.EventEmitter {
         let widthFix = calcDocumentDependencies ? (this.document.querySelector('#next-btn').clientWidth * 2) : 0 //calc buttons size
         let topMargin = calcDocumentDependencies ? (this.document.querySelector('.controls-container').clientHeight) : 0
 
-        this.width = Math.max(this.document.documentElement.clientWidth, window.innerWidth || 0) - widthFix
+        this.width = Math.max(this.document.documentElement.clientWidth, window.innerWidth || 0) //- widthFix
         this.height = Math.max(this.document.documentElement.clientHeight, window.innerHeight || 0) - (topMargin + this.contentBottomMargin)
     }
 
