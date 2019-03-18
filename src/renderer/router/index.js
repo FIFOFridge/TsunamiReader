@@ -26,9 +26,10 @@ var router = new Router({
             component: require('@/components/LandingPage').default
         },
         {
-            path: '/epub-reader/:bookKey',
+            path: '/epub-reader/:id',
             name: 'reader',
-            component: require('@/components/ReaderView').default
+            component: require('@/components/ReaderView').default,
+            props: true
         },
         {
             path: '/action/:name/:params?'
