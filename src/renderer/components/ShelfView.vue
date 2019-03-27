@@ -30,18 +30,25 @@ import ShelfGrid from './ShelfView/ShelfGrid'
 import AppTitlebar from './_shared/TitleBar.vue'
 import { remote } from "electron"
 import sharedAppStates from './../../constants/sharedAppStates'
+import appStateSynchronization from './appStateSynchronization'
 
 let bookManager = remote.getGlobal("bookManager")
 
 export default {
+    mixins: [appStateSynchronization],
     components: {
         ShelfGrid,
         AppTitlebar
     },
     created: function() {
-        this.appTiles = this.loadAppTiles()
-
-        bookManager.on('added', this.addBook)
+        this.changeAppState('shelf')
+        .catch(err => {
+            console.error(`unable to synchronize app state (ShelfView): ${err}`)
+        })
+        .finally(() => {
+            this.appTiles = this.loadAppTiles()
+            bookManager.on('added', this.addBook)
+        })
     },
     mounted: function() {
         this.$nextTick(function () 

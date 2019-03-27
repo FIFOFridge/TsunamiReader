@@ -34,6 +34,16 @@ class Settings {
         this.storage.set('useImageCompressor', true) 
     }
 
+    setAppState(state) {
+        return new Promise((resolve, reject) => {
+            this.storage.set('appState', state)
+
+            this.save()
+            .then(resolve())
+            .catch(err => reject(err))
+        })
+    }
+
     tryLoad() {
         return new Promise((resolve, reject) => {
             let _this = this

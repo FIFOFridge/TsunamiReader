@@ -6,7 +6,8 @@ var settingsStorage = storage.create.predefined.typeRestricted(
         {key: 'isOSX', type: storage.dataTypes.Boolean},
         {key: 'overrideTitleBar', type: storage.dataTypes.Boolean},
         {key: 'useImageCompressor', type: storage.dataTypes.Boolean},
-        {key: 'frame', type: storage.dataTypes.Boolean}
+        {key: 'frame', type: storage.dataTypes.Boolean},
+        {key: 'appState', type: storage.dataTypes.String, default: 'init'}
     ]
 )
 

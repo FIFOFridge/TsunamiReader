@@ -7,6 +7,7 @@ import logger from './../modules/helpers/logger'
 import storage from './../modules/storage'
 import util from 'util'
 import fs from 'fs'
+import timeoutPromise from '@helpers/timeoutPromise'
 
 var con = exconsole(logger, console)
 
@@ -31,7 +32,8 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
 
             let events = [
                 { name: 'book-add', value: handlerConstructor(this.addBook) },
-                { name: 'book-open', value: handlerConstructor(this.openBook) },
+                { name: 'sync-appstate', value: handlerConstructor(this.syncAppState, undefined, this.syncAppStateFailed) }
+                // { name: 'book-open', value: handlerConstructor(this.openBook) },
                 // { name: 'book-close', value: handlerConstructor(this.closeBook) }
                 // { name: 'book-remove', value: handlerConstructor(this.bookRemove, undefine d) },
                 // { name: 'app-settings-edit', value: handlerConstructor(this.appSettingsEdit, undefined) },
@@ -48,8 +50,15 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
         }
 
         async executeEventHandler(event, args, fns, eventName) {
+            let finallArgs
+
+            if(!(util.isArray(args)))
+                finallArgs = [args]
+            else
+                finallArgs = args
+
             fns.isRunning = true
-            let fn = fns.handler.apply(this, args)
+            let fn = fns.handler.apply(this, finallArgs)
             let isSuccessed = undefined
 
             if(!(fn instanceof Promise)) {
@@ -64,7 +73,7 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
                     event.sender.send(eventName + '-reply', value)
 
                 if(fns.onSuccess !== undefined)
-                    fns.onSuccess(value)
+                    fns.onSuccess(event, value)
             })
             .catch(err => {
                 isSuccessed = false
@@ -72,11 +81,11 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
                 con.error(`event: ${eventName} error: ${err}`)
 
                 if(fns.onFail !== undefined)
-                    fns.onFail(err)
+                    fns.onFail(event, err)
             })
             .finally(() => {
                 if(fns.callback !== undefined)
-                    fns.callback(isSuccessed)
+                    fns.callback(event, isSuccessed)
             })
         }
 
@@ -137,9 +146,26 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
                 resolve()
             })
         }
+
+        syncAppState(state) {
+            return new timeoutPromise(750, new Promise((resolve, reject) => {
+                if(state !== 'reading' && state !== 'shelf' && state !== 'loading')
+                    throw TypeError(`wrong state`)
+
+                let appSettings = global.appSettings
+
+                appSettings.setAppState(state)
+                .then(resolve(true))
+                .catch(err => reject(err))
+            }), 'app state synchronization operation timed out')
+        }
+
+        syncAppStateFailed(event, error) {
+            event.sender.send(eventName + '-reply', false)
+        }
     }
 
-    global.appEventsHandler = new appEventsHandler()
+    global.appEventsHandler = new appEventsHandler() 
 }
 
 export default global.appEventsHandler

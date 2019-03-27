@@ -56,10 +56,12 @@ import Controls from './ReaderView/Controls.vue'
 import DrawerContent from './ReaderView/DrawerContent.vue'
 import DrawerLayout from 'vue-drawer-layout'
 import electron from 'electron'
+import appStateSynchronization from './appStateSynchronization'
 
 import util from 'util'
 
 export default {
+  mixins: [appStateSynchronization],
   components: {
     BookReader,
     Controls,
@@ -87,15 +89,19 @@ export default {
     }
   },
   created: function() {
-    this.bookManager = electron.remote.getGlobal('bookManager')
-    
-    console.log(`passed id (props): ${this.id}`)
-    console.log(`passed route params:`, this.$route.params)
+    this.changeAppState('reader')
+    .catch(err => console.error(`unable to synchronize app state (ReaderView): ${err}`))
+    .finally(() => {
+      this.bookManager = electron.remote.getGlobal('bookManager')
+      
+      console.log(`passed id (props): ${this.id}`)
+      console.log(`passed route params:`, this.$route.params)
 
-    if(!this.bookManager.hasBook(this.id))
-      throw ReferenceError(`unable to find book with key: ${this.id}`)
+      if(!this.bookManager.hasBook(this.id))
+        throw ReferenceError(`unable to find book with key: ${this.id}`)
 
-    this.bookStorage = this.bookManager.getBook(this.id)
+      this.bookStorage = this.bookManager.getBook(this.id)
+    })
   },
   mounted: function() {
     this.$nextTick(function() {
