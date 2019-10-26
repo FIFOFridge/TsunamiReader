@@ -149,7 +149,7 @@ if (global.appEventsHandler === null || global.appEventsHandler === undefined) {
 
         syncAppState(state) {
             return new timeoutPromise(750, new Promise((resolve, reject) => {
-                if(state !== 'reading' && state !== 'shelf' && state !== 'loading')
+                if(state !== 'reader' && state !== 'shelf' && state !== 'loading')
                     throw TypeError(`wrong state`)
 
                 let appSettings = global.appSettings

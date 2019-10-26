@@ -72,19 +72,14 @@
 <script>
 //components
 // import FullPage from './../../../node_modules/vue-fullpage.js/src/fullpage.vue'
-import AppTitlebar from './_shared/TitleBar.vue'
-
 //logs
-import exconsole from './../../modules/helpers/loggerConsole'
-import logger from './../../modules/helpers/logger'
-
-let con = exconsole(logger, console)
+import log from 'electron-log'
 
 export default {
     name: 'intro-view',
     components: {
         // FullPage,
-        AppTitlebar
+        // AppTitlebar
     },
     props: {
         displayTitleBar: true
@@ -109,7 +104,7 @@ export default {
     },
     methods: {
         onSectionLoad: function(origin, destination, direction) {
-            con.debug('IntroView loaded section: ' + destination + ' from ' + origin)
+            log.debug('IntroView loaded section: ' + destination + ' from ' + origin)
 
             if(destination == '1' || destination == 'intro')
                 this.getBackgroundElement.classList.add('intro')
@@ -121,7 +116,7 @@ export default {
                 this.getBackgroundElement.classList.add('about')
         },
         onSectionLeave: function(origin, destination, direction) {
-            con.debug('IntroView leaving section: ' + origin + ' to ' + destination)
+            log.debug('IntroView leaving section: ' + origin + ' to ' + destination)
             if(origin == '1' || origin == 'intro')
                 this.getBackgroundElement.classList.remove('intro')
             else if(origin == '2' || origin == 'shelf')

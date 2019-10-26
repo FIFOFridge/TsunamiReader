@@ -15,8 +15,23 @@ thumbs.db
 .vs/
 .vscode/*
 #keep debug file
-!.vscode/!launch.json
-vscode.json
+!.vscode/launch.json
+
+#old copies
+*.ojs
+
+#webstorm
+#!/.idea
+/.idea/*
+#keep debug files
+!/.idea/runConfigurations/
+
+#old copies
+*.osc
+*.ovue
+
+#webstorm
+.idea/
 
 #logger
 *.log

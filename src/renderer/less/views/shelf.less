@@ -1,0 +1,214 @@
+@import "./../base/colors";
+@import "./../base/layers";
+@import "./../components/titlebar";
+@import "./../components/modal";
+@import "./../base/shapes";
+@import "./../base/fonts";
+
+@e-left-panel-width: 18%;
+
+#left-panel {
+    position: absolute;
+    z-index: @layer-leftbar;
+
+    left: 0;
+    top: 0;
+    width: @e-left-panel-width;
+    height: 100%;
+
+    border-right: 0.15em solid;
+    background: @ui-primary-background;
+
+    .content {
+        color: @ui-primary-foreground;
+    }
+
+    .content-main {
+        color: @ui-primary-foreground;
+        fill: @ui-primary-foreground;
+        font-size: 18pt;
+    }
+
+    .content-second {
+        color: @ui-secondary-foreground;
+        fill: @ui-secondary-foreground;
+        font-size: 12pt;
+    }
+
+    .content, .content-main, .content-second {
+        .font-ui-main();
+    }
+}
+
+@e-search-height: 0.5em;
+@e-search-panel-width: 1.25em;
+
+input#book-search {
+    position: absolute;
+
+    left: 28%;
+    top: 10%;
+    width: 45%;
+    height: 1.75em;
+    padding: 0;
+    margin: 0;
+    text-indent: 1em;
+
+    font-family: @ui-button-font;
+    font-size: 16pt;
+    -webkit-appearance: none;
+    border: 1px solid #575756;
+    transition: all 250ms ease-in-out;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    .ui-separated-element-border();
+    .ui-separated-element-round();
+
+    //hide "x" button to clear search value
+    &::-webkit-search-cancel-button {
+        visibility: hidden;
+    }
+
+    &::placeholder {
+        color: #575756;
+        font-style: italic;
+    }
+
+    &:hover,
+    &:focus {
+        outline: 0;
+        border: 1px solid transparent;
+        border-bottom: 1px solid #575756;
+        border-radius: 0;
+        background-position: 100% center;
+    }
+}
+
+#search-container {
+    position: absolute;
+
+    left: 28%;
+    top: 10%;
+    width: 45%;
+    height: 3.5em;
+    padding: 0;
+    margin: 0;
+    text-indent: 1em;
+
+    //.search-bar {
+    //    content: '';
+    //    width: 100%;
+    //    height: 1px;
+    //    border-bottom: 2px solid transparent;
+    //    transition: border-bottom-color 0.3s ease-out;
+    //}
+
+    //&.active {
+    //    .search-bar {
+    //        border-bottom-color: currentColor;
+    //    }
+    //
+    //    input[type="search"] {
+    //        border-color: transparent;
+    //    }
+    //}
+}
+
+#search {
+    position: absolute;
+    z-index: @layer-search-bar;
+
+    left: 28%;
+    top: 10%;
+
+    .ui-separated-element-border();
+    .ui-separated-element-round();
+
+    border-width: 0.08em;
+
+    width: 45%;
+    height: 2em;
+}
+
+#book-grid {
+    position: relative;
+    z-index: @layer-bookgrid;
+
+    left: @e-left-panel-width + 0.75em;
+    top: @e-title-bar-height + @e-search-height + 0.50em;
+    width: @e-search-height + 0.50em;
+    height: 100%;
+}
+
+#modal-book-actions {
+    .ui-separated-element-generator(3em, 4em, 0em, 0em);
+}
+
+.modal-titlebar {
+    //position: absolute;
+    //width: 90%;
+    //left: 5%;
+
+    background: @ui-modal-titlebar-background;
+    color: @ui-modal-titlebar-foreground;
+    fill: @ui-modal-titlebar-foreground;
+
+    //.ui-separated-element-border();
+    //.ui-separated-element-round();
+}
+
+.modal-search-options {
+    //background: @ui-primary-background;
+    //position: absolute;
+    //left: 75%;
+    //top: 10%;
+    //
+    //width: 24%;
+    //
+    //display: block;
+    //margin: 0;
+    //
+    //.ui-separated-element-round();
+    //.ui-separated-element-border();
+
+    label {
+        margin: 1.5em 0;
+        padding: 0.8em 0;
+        text-indent: 1.5em;
+        //width: 65%;
+        display: block;
+        text-align: left;
+        color: @ui-options-non-active-foreground;
+        background-color: @ui-options-non-active-background;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        transition: color 200ms ease-in;
+        overflow: hidden;
+
+        .ui-separated-element-round();
+    }
+
+    input:checked + label {
+        color: rgb(255, 255, 255);
+        background-color: rgb(57, 114, 247);
+    }
+
+    input:hover + label {
+        color: darken(@ui-modal-titlebar-foreground, 20%);
+    }
+
+    input:checked:hover + label {
+        color: inherit;
+    }
+
+    input {
+        width: 0;
+        height: 0;
+        order: 1;
+        z-index: 2;
+        position: absolute;
+        cursor: pointer;
+        visibility: hidden;
+    }
+}

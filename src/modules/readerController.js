@@ -3,7 +3,6 @@ import events from 'events'
 import epubjs from 'epubjs'
 import fs from 'fs'
 import util from 'util'
-import { throws } from 'assert';
 
 if(global.ePub === undefined)
     global.ePub = epubjs
@@ -48,11 +47,13 @@ class ReaderController extends events.EventEmitter {
         this.fontSize = '100%'
         
         //init
-        //this._processBookUrl(this.url)
+        // this._processBookUrl(this.url)
         this.calcRendentionSize(false)
         // this._invalidHTMLElementExists(renderToId)
 
         this.book = new epubjs(this.url, {encoding: 'binary'})
+
+        this.book = epubjs.Book
 
         //process chapters 
         this.book.loaded.navigation.then((navi) => {
@@ -102,8 +103,6 @@ class ReaderController extends events.EventEmitter {
     set BookProgress(value) {
         if(value < 0 || !util.isString(value))
             throw TypeError(`incorrect progress value`)
-        
-        this.bookProgress
 
         let cfi = this.book.locations.cfiFromPercentage(value)
         this._navigateToCfi(cfi)
@@ -130,7 +129,6 @@ class ReaderController extends events.EventEmitter {
 
     set Theme(value) {
         this.rendention.themes.select(value)
-        console.error(`wolololololololo`)
 
         //applay theme to rest elements of ui
         let currentName = this.rendention.themes._current
@@ -163,7 +161,7 @@ class ReaderController extends events.EventEmitter {
             for(let i = 0; i < ControlButtons.children.length; i++) {
                 let element = ControlButtons.children[i]
 
-                if(element.tagName == 'BUTTON') {
+                if(element.tagName === 'BUTTON') {
                     setSVGStyle(element, foregroundColor, null)
                 }
             }
@@ -220,12 +218,17 @@ class ReaderController extends events.EventEmitter {
         if(value !== 'paginated' && vaue !== 'scrolled-continuous')
             throw TypeError('invalud flow value')
 
-        this.flow = value
-        this.rendention.flow = this.flow
+        //this.flow = value
+        this.rendention.flow = flow
     }
 
     get Flow() {
-        return this.flow
+        if(this.rendention.flow === undefined ||
+           this.rendention.flow === null)
+            throw TypeError(`rendention flow`)
+
+        return this.rendention.flow
+        //return this.flow
     }
 
     get FontSize() {
@@ -241,7 +244,7 @@ class ReaderController extends events.EventEmitter {
     }
 
     increaseFontSize() {
-        var newValue = parseInt(this.fontSize) + 25
+        const newValue = parseInt(this.fontSize) + 25;
 
         if(newValue < 50 || newValue > 300)
             return
@@ -250,7 +253,7 @@ class ReaderController extends events.EventEmitter {
     }
 
     decreaseFontSize() {
-        var newValue = this.FontSize = parseInt(this.fontSize) - 25
+        const newValue = this.FontSize = parseInt(this.fontSize) - 25;
 
         if(newValue < 50 || newValue > 300)
             return
@@ -275,7 +278,7 @@ class ReaderController extends events.EventEmitter {
     //
     // }
     calcRendentionSize(calcDocumentDependencies) {
-        let widthFix = calcDocumentDependencies ? (this.document.querySelector('#next-btn').clientWidth * 2) : 0 //calc buttons size
+        //let widthFix = calcDocumentDependencies ? (this.document.querySelector('#next-btn').clientWidth * 2) : 0 //calc buttons size
         let topMargin = calcDocumentDependencies ? (this.document.querySelector('.controls-container').clientHeight) : 0
 
         this.width = Math.max(this.document.documentElement.clientWidth, window.innerWidth || 0) //- widthFix
@@ -360,7 +363,7 @@ class ReaderController extends events.EventEmitter {
     //  private
     // ------------------------------------------------
     _processBookUrl(url) {
-        var urlCheck = new RegExp(/(https|http):\/\//ig)
+        const urlCheck = new RegExp(/(https|http):\/\//ig);
 
         if(urlCheck.test(url)) {
             //is web url
@@ -380,12 +383,12 @@ class ReaderController extends events.EventEmitter {
 
     // hooks
     _handleRelocated(location) {
-        var relocatedDetails = {
+        const relocatedDetails = {
             atEnd: false,
             atStart: false,
             progress: 0,
             cfi: undefined
-        }
+        };
 
         if(location.start === undefined)
             return //ignore when start isn't defined 

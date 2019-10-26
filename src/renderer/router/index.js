@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import windowRouter from '../../modules/windowRouter'
+import { RouteController } from '@modules/routeController'
 
 Vue.use(Router)
 
-var router = new Router({
+let router = new Router({
     routes: [
         {
             path: '*',
@@ -13,35 +13,36 @@ var router = new Router({
         {
             path: '/intro',
             name: 'intro-view',
-            component: require('@/components/IntroView').default
+            component: require('@views/IntroView').default
         },
         {
             path: "/shelf",
             name: "shelf-view",
-            component: require("@/components/ShelfView").default
+            component: require("@views/ShelfView").default
         },
-        {
-            path: '/',
-            name: 'landing-page',
-            component: require('@/components/LandingPage').default
-        },
+        // {
+        //     path: '/',
+        //     name: 'landing-page',
+        //     component: require('@views/LandingPage').default
+        // },
         {
             path: '/epub-reader/:id',
             name: 'reader',
-            component: require('@/components/ReaderView').default,
+            component: require('@views/ReaderView').default,
             props: true
-        },
-        {
-            path: '/action/:name/:params?'
         }
+        // ,
+        // {
+        //     path: '/action/:name/:params?'
+        // }
     ]
 })
 
+const Controller = new RouteController()
 
-router.beforeEach((to, from, next) => {
-    windowRouter.beforeEach(to, from, next)
-})
+router.beforeEach(Controller.beforeEach.bind(Controller))
+router.onError(Controller.onRouteError.bind(Controller))
 
 router.push({path: '/shelf'})
 
-export default router;
+export default router

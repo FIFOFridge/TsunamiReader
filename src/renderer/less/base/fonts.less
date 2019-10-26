@@ -1,0 +1,42 @@
+@relative-fonts-directory: './../assets/fonts';
+
+@ui-main-font: 'Varela';
+@ui-button-font: 'Roboto';
+@ui-description: '';
+@ui-book-titles: '';
+
+//source: https://medium.com/@curttimson/managing-font-face-definitions-with-less-14a7ae936e49
+.font-face(@font-family, @filepath, @font-weight, @font-style){
+    @font-face {
+        font-family: @font-family;
+        src: url('@{filepath}.eot');
+        src: url('@{filepath}.eot?#iefix') format('embedded-opentype'),
+        url('@{filepath}.woff2') format('woff2'),
+        url('@{filepath}.woff') format('woff'),
+        url('@{filepath}.ttf') format('truetype'),
+        url('@{filepath}.svg#svgFontName') format('svg');
+        font-weight:@font-weight;
+        font-style:@font-style;
+    }
+}
+
+.font-face(@ui-main-font, "@{relative-fonts-directory}/Varela-Regular.ttf", normal, normal);
+
+.font-ui-main {
+    font-family: @ui-main-font;
+    //font-size: 24pt;
+}
+
+.font-ui-button {
+    font-family: @ui-button-font;
+}
+
+.font-ui-description {
+    //TODO: find a font
+    font-family: @ui-main-font;
+}
+
+.font-book-titles {
+    //TODO: find a font
+    font-family: @ui-main-font;
+}

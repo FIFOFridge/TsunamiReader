@@ -5,8 +5,6 @@ import exconsole from './helpers/loggerConsole'
 import logger from './helpers/logger'
 import paths from './../constants/paths'
 
-let con = exconsole(logger, console)
-
 class Settings {
     constructor(settingsStorage) {
         this.storage = settingsStorage
@@ -15,36 +13,17 @@ class Settings {
     _isSettingsFileExists() {
         return fs.existsSync(paths.settingsFilePath)
     }
+    // setAppState(state) {
+    //     return new Promise((resolve, reject) => {
+    //         this.storage.set('appState', state)
+    //
+    //         this.save()
+    //         .then(resolve())
+    //         .catch(err => reject(err))
+    //     })
+    // }
 
-    /**
-     * 
-     * @param {Storage} storage 
-     */
-    initWithDefaultValues() {
-        let isOSX = this.storage.get('isOSX')
-
-        if(this.storage.get('isOSX') === false) {
-            this.storage.set('frame', false) 
-            this.storage.set('overrideTitleBar', true) 
-        } else {
-            this.storage.set('frame', true)
-            this.storage.set('overrideTitleBar', false)
-        }
-
-        this.storage.set('useImageCompressor', true) 
-    }
-
-    setAppState(state) {
-        return new Promise((resolve, reject) => {
-            this.storage.set('appState', state)
-
-            this.save()
-            .then(resolve())
-            .catch(err => reject(err))
-        })
-    }
-
-    tryLoad() {
+    load() {
         return new Promise((resolve, reject) => {
             let _this = this
 

@@ -1,0 +1,18 @@
+@import "./../base/layers";
+@import "./../base/colors";
+
+@modal-titlebar-height: 1.30em;
+
+.ui-separated-element-generator(@width, @height, @left, @top) {
+    position: absolute;
+
+    z-index: @layer-modal;
+
+    left: @left;
+    top: @top;
+
+    width: @width;
+    height: @height + @modal-titlebar-height;
+
+    color: @ui-modal-titlebar-foreground;
+}

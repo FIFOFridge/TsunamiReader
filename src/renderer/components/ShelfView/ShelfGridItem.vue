@@ -1,27 +1,32 @@
+<!--suppress EqualityComparisonWithCoercionJS, CheckEmptyScriptTag -->
 <template>
         <div :id="[id]" class="grid-item" :class="[priority, type, tileStateClass]">
             <router-link :to="{path: this.defaultActionLink}">
                 <!-- book -->
-                <div v-if="this.bookObject != undefined"
+                <div v-if="this.isBook"
                     :style="backgroundImageFix"
                 >
+                    <!-- TODO: book details, slide in, or whatever -->
                     <!-- <div class="book-details">{{ bookDetails }}</div> -->
                 </div>
 
-                <div v-if="this.bookObject != undefined" class="book-title">
+                <div v-if="this.isBook" class="book-title">
                   <p>
                     {{ bookTitle }}
                   </p>
                 </div>
                 <!-- app -->
-                <div v-if="this.bookObject == undefined" class="img-container">
-                    <img v-if="!this.isSVG" class="_img" :src="this.img"/>
-                    <svg v-else class="_img _svg" viewBox="0 0 24 24">
-                        <path :fill="this.svgFill" :d="this.img"/>
+<!--            ?? <div v-if="isBook()" class="img-container">-->
+                <div class="img-container">
+<!--                   <img v-if="!this.isSVG" class="_img" :src="this.img"/>-->
+                    <!--suppress HtmlUnknownAttribute -->
+<!--             ?? <svg class="_img _svg" viewBox="0 0 24 24">-->
+                    <svg class="_img _svg" viewBox="0 0 24 24">
+                        <path :fill="this.svgFill" :d="this.icon"/>
                     </svg>
                 </div>
 
-                <div v-if="this.bookObject == undefined" class="description-container">
+                <div class="description-container">
                     <h2>
                         {{ this.descriptionShort }}
                     </h2>
@@ -52,11 +57,8 @@ import util from 'util'
 
 export default {
   props: {
-    img: String, //encoded as base64 || svg,
-    isSVG: Boolean,
+    icon: String, //encoded as base64 || svg,
     svgFill: String,
-    // imgPosition: '',
-    // isBook: true,
     bookObject: null,
     link: String,
     descriptionShort: String,
@@ -82,23 +84,23 @@ export default {
     }
 
     //update data
-    if (this.bookObject == !null && this.bookObject == !undefined) {
-      console.log('getting a book')
-      this.title = this.bookObject.title;
-      this.isFavourite = this.bookObject.isFavourite; 
+    // if (this.bookObject == !null && this.bookObject == !undefined) {
+    //   console.log('getting a book')
+    //   this.title = this.bookObject.title;
+    //   this.isFavourite = this.bookObject.isFavourite;
+    //
+    //   this.priority = this.isFavourite ? "priority-medium" : "priority-low";
+    // } else {
+    //   this.priority = "priority-high";
+    // }
 
-      this.priority = this.isFavourite ? "priority-medium" : "priority-low";
-    } else {
-      this.priority = "priority-high";
-    }
-
-    if (this.bookObject !== null && this.bookObject !== undefined) {
+    if (this.isBook) {
       this.type = "book";
     } else {
       this.type = "app";
     }
 
-    this.makeActionLinks();
+    // this.makeActionLinks();
 
     //format for base64 src
     // if (!this.isSVG) {
@@ -106,37 +108,37 @@ export default {
     // }
   },
   mounted: function() {
-    if(this.bookObject !== null && this.bookObject !== undefined) {
-      var bgUrl = `url(${this.bookObject.cover})`
-
-      this.$el.style.backgroundImage = bgUrl
-      this.$el.style.backgroundSize = 'cover'
-      this.$el.style.backgroundRepeat = 'no-repeat'
-      this.$el.style.backgroundPosition = 'center center'
-
-      console.log(this.$el.style)
-      // console.log(bgUrl.length)
-      //console.log(this.$el.backgroundImage)
-    }
+    // if(this.bookObject !== null && this.bookObject !== undefined) {
+    //   var bgUrl = `url(${this.bookObject.cover})`
+    //
+    //   this.$el.style.backgroundImage = bgUrl
+    //   this.$el.style.backgroundSize = 'cover'
+    //   this.$el.style.backgroundRepeat = 'no-repeat'
+    //   this.$el.style.backgroundPosition = 'center center'
+    //
+    //   console.log(this.$el.style)
+    //   // console.log(bgUrl.length)
+    //   //console.log(this.$el.backgroundImage)
+    // }
   },
   methods: {
-    makeActionLinks: function() {
-      if (this.bookObject == !null && this.bookObject == !undefined) {
-        this.defaultActionLink = "/action/book/view/" + this.link;
-        this.removeActionLink = "/action/book/remove/" + this.link;
-      } else {
-        this.defaultActionLink = this.link;
-      }
-    }
+    // makeActionLinks: function() {
+    //   if (this.bookObject == !null && this.bookObject == !undefined) {
+    //     this.defaultActionLink = "/action/book/view/" + this.link;
+    //     this.removeActionLink = "/action/book/remove/" + this.link;
+    //   } else {
+    //     this.defaultActionLink = this.link;
+    //   }
+    // }
   },
   computed: {
-    bookTitle: function() {
+      bookTitle: function() {
       if(this.bookObject === null || this.bookObject === undefined)
         return ''
 
       return this.bookObject.title[0]
     },
-    bookDetails: function() {
+      bookDetails: function() {
       if(this.bookObject === null || this.bookObject === undefined)
         return ''
 
@@ -168,10 +170,13 @@ export default {
       dataExtractor(this.bookObject.id, 'identifier: ', details, false)
 
       return details
-    }
+    },
+      isBook: function () {
+          return this.bookObject !== undefined
+      }
   },
   watch: {
-      tileState: function(_new, old) {
+      tileState: function(_new) {
           this.tileStateClass = _new
       }
   }
