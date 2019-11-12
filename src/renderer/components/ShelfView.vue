@@ -67,6 +67,7 @@
             </div>
         </div>
 
+        <!--suppress HtmlFormInputWithoutLabel -->
         <input
                 id="book-search"
                 type="text"
@@ -81,8 +82,8 @@
                 :top="'10%'"
                 :left="'75%'"
                 :width="'20%'"
-                :defaultDisplay="false"
-                :defaultExpand="true"
+                :defaultDisplay="true"
+                :defaultExpand="false"
             >
                 <div class="modal-search-options">
                     <input id="smo-title" type="radio" v-model="searchBy" value="title">

@@ -22,7 +22,7 @@ let model = storage.create.predefined.typeRestricted(
             {key: 'date', type: storage.dataTypes.String, default: 'unknown'},
             {key: 'source', type: storage.dataTypes.String, default: 'unknown'},
             // {key: 'cover', type: storage.dataTypes.String, default: ''},
-            // Cover is aviable by: BookManager.getCoverPath(this.get('hash'))
+            // Cover is available by: BookManager.getCoverPath(this.get('hash'))
             {key: 'publisher', type: storage.dataTypes.String, default: 'unknown'},
             //reader data
             {key: 'bookmarks', type: storage.dataTypes.Object, default: []},

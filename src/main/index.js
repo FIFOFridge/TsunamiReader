@@ -29,7 +29,7 @@ const mainWindowURL = process.env.NODE_ENV === 'development'
 app.on('ready', () => {
     App.loadSettings()
         // .timeout(3000)
-        .finally(() => {
+        .finally(async () => {
             log.info('app settings handled, launching')
             log.info(`OS: ${getOS()}`)
             log.info(`arch: ${App.arch}`)
@@ -39,23 +39,31 @@ app.on('ready', () => {
             // const mainWindow = App.mainWindow = new Window(mainWindowUrl, 'Tsunami Reader')
 
             //E:\kasiazki\bron-matematycznej-zaglady-cathy-o-Ebookpoint.pl.epub
-            try {
-                const epubProcessor = new EpubProcessor('E:\\kasiazki\\bron-matematycznej-zaglady-cathy-o-Ebookpoint.pl.epub')
-                epubProcessor.parseMetadata()
-                    .then(v => {
-                        log.verbose(`successfully processed metadata: ${v}`)
-                    })
-                    .catch(err => {
-                        log.error(`unable to get metadata: ${err}`)
-                    })
-            } catch (e) {
-                log.error(`error druing archive processing: ${e}`)
-            }
+            // try {
+            //     const epubProcessor = new EpubProcessor('C:\\Users\\Mateusz\\WebstormProjects\\TsunamiReader\\test\\files\\pg1661-images.epub')
+            //     // noinspection ES6AwaitOutsideAsyncFunction
+            //     await epubProcessor.parseMetadata()
+            //
+            //     await epubProcessor.updateCoverInfo()
+            //     await epubProcessor.tryExtractCover()
+            //         // .then(v => {
+            //         //     log.verbose(`successfully processed metadata: ${epubProcessor.metadata}`)
+            //         //
+            //         //     epubProcessor.updateCoverInfo()
+            //         //         .then()
+            //         // })
+            //         // .catch(err => {
+            //         //     log.error(`unable to get metadata: ${err}`)
+            //         // })
+            //
+            // } catch (e) {
+            //     log.error(`error druing archive processing: ${e}`)
+            // }
 
             //FIXME:
-            // initWindow(mainWindowURL)
-            // App.mainWindow.once('initialized', showMainWindow.bind(this))
-            // App.mainWindow.once('closed', closedMainWindow.bind(this))
+            initWindow(mainWindowURL)
+            App.mainWindow.once('initialized', showMainWindow.bind(this))
+            App.mainWindow.once('closed', closedMainWindow.bind(this))
         })
 })
 

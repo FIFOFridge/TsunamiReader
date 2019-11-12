@@ -172,7 +172,7 @@ export class EpubArchiveHelper {
                     })
             } catch (e) {
                 log.error(`error during metadata processing: ${e}`)
-                reject(err)
+                reject(e)
             }
         })
     }

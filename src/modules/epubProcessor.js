@@ -29,6 +29,7 @@ export class EpubProcessor {
         }
         this.metadata = null
         this.stream = null
+        this.OPF = null
     }
 
     _invalidEpub(filePath) {
@@ -38,55 +39,67 @@ export class EpubProcessor {
         return path.extname(filePath) === '.epub'
     }
 
-    async parseMetadata() {
-        let zipStream = this.stream = new ZipStream({
-            file: this.path,
-            storeEntries: true
+    parseMetadata(timeout = 3000) {
+        let promise = new Promise((resolve, reject) => {
+            let zipStream = this.stream = new ZipStream({
+                file: this.path,
+                storeEntries: true
+            })
+
+            zipStream.once('ready', async () => {
+                try {
+                    const rawMetaContainer = await this._getMetaContainer(zipStream)
+                    const metaContainer = await this._parseXML(rawMetaContainer)
+
+                    if (!(hasNode(metaContainer, 'container.rootfiles.rootfile.@full-path'))) {
+                        log.error(`container don't contains rootfile node: ${JSON.stringify(metaContainer)}`)
+                        // noinspection ExceptionCaughtLocallyJS
+                        reject(`container don't contains rootfile node: ${JSON.stringify(metaContainer)}`)
+                    }
+
+                    const opfContentPath = metaContainer.container.rootfiles.rootfile['@full-path']
+
+                    if (opfContentPath === null || opfContentPath === undefined || !this._isEntryValid(zipStream, opfContentPath)) {
+                        log.error(`unable to get opf content path: ${JSON.stringify(metaContainer)}`)
+                        // noinspection ExceptionCaughtLocallyJS
+                        reject(`unable to get opf content path: ${JSON.stringify(metaContainer)}`)
+                    }
+
+                    const opfEntry = this._getEntryByName(zipStream, opfContentPath)
+                    const rawOPF = await this._readEntryAsTextFile(zipStream, opfEntry)
+
+                    const parsedOPF = await this._parseXML(rawOPF)
+
+                    //ensure then metadata node exists in parsed object
+                    if (!(hasNode(parsedOPF, 'package.metadata'))) {
+                        log.error(`opf don't contains metadata node: ${JSON.stringify(parsedOPF)}`)
+                        // noinspection ExceptionCaughtLocallyJS
+                        reject(`opf don't contains metadata node: ${JSON.stringify(parsedOPF)}`)
+                    }
+
+                    this.metadata = await this._extractMetadataFromObject(parsedOPF.package.metadata)
+                    this.OPF = parsedOPF
+
+                    resolve()
+                } catch(e) {
+                    log.error(`unable to process epub file: ${e}`)
+                    throw new Error(e)
+                }
+            })
         })
 
-        zipStream.once('ready', async () => {
-            try {
-                const rawMetaContainer = await this._getMetaContainer(zipStream)
-                const metaContainer = await this._parseXML(rawMetaContainer)
+        if(timeout > 0) //apply timeout if needed
+            promise.timeout(timeout)
 
-                if (!(hasNode(metaContainer, 'container.rootfiles.rootfile.@full-path'))) {
-                    log.error(`container don't contains rootfile node: ${JSON.stringify(metaContainer)}`)
-                    reject(`container don't contains rootfile node: ${JSON.stringify(metaContainer)}`)
-                }
-
-                const opfContentPath = metaContainer.container.rootfiles.rootfile['@full-path']
-
-                if (opfContentPath === null || opfContentPath === undefined || !this._isEntryValid(zipStream, opfContentPath)) {
-                    log.error(`unable to get opf content path: ${JSON.stringify(metaContainer)}`)
-                    reject(`unable to get opf content path: ${JSON.stringify(metaContainer)}`)
-                }
-
-                const opfEntry = this._getEntryByName(zipStream, opfContentPath)
-                const rawOPF = await this._readEntryAsTextFile(zipStream, opfEntry)
-
-                const parsedOPF = await this._parseXML(rawOPF)
-
-                //ensure then metadata node exists in parsed object
-                if (!(hasNode(parsedOPF, 'package.metadata'))) {
-                    log.error(`opf don't contains metadata node: ${JSON.stringify(parsedOPF)}`)
-                    reject(`opf don't contains metadata node: ${JSON.stringify(parsedOPF)}`)
-                }
-
-                this.metadata = await this._extractMetadataFromObject(parsedOPF.package.metadata)
-
-                // this._updateCover(parsedOPF)
-
-                return undefined
-            } catch(e) {
-                log.error(`unable to process epub file: ${e}`)
-                throw new Error(e)
-            }
-        })
+        return promise
     }
 
-    async tryExtractCover(targetPath) {
+    async extractCover(targetPath) {
         if(!(this.isReading()))
             throw new Error(`stream is closed`)
+
+        if(!(this.hasCover()))
+            throw new Error(`book don't have a cover`)
 
         switch (this._cover.mode) {
             case coverProcessingMode.FromMetadata:
@@ -100,23 +113,22 @@ export class EpubProcessor {
                         throw new Error(`unable to write cover file path: ${err}`)
 
                     trimSpecialExtension(finalPath)
-                    return true
+                    return undefined //promise.resolve()
                 })
-
                 break
 
             case coverProcessingMode.OpenBookLibraryAPI:
                 //TODO: call OBL API and download cover if possible
-                return false
+                return undefined //promise.resolve()
 
             case coverProcessingMode.FirstPage:
                 //TODO
-                return false
+                return undefined //promise.resolve()
 
             default:
                 //TODO: log.warn(...)
                 //TODO: use some default??
-                return false
+                return undefined //promise.resolve()
         }
     }
 
@@ -152,7 +164,7 @@ export class EpubProcessor {
 
         //this function will try to find META-INF/container.xml
         //but we have to iterate all entries (until we find valid one)
-        //becouse of some epubs have different file names case sensitivity :/
+        //because of some epubs have different file names case sensitivity :/
         const contentContainer = entry => {
             if(!(util.isString(entry)))
                 return false
@@ -204,33 +216,33 @@ export class EpubProcessor {
         return extracted
     }
 
-    async _updateCover(opfObject) {
+    async processCover(/*opfObject, timeout = 5000*/) {
+        const opfObject = this.OPF
         let coverResourceId = null
 
         if (hasNode(opfObject, 'package.metadata.meta.@name')) { //common guttenberg cover format
             if (opfObject.package.metadata.meta['@name'] === 'cover') {
-                coverResourceId = this._getResourcePath(opfObject.package.manifest, coverResourceId)
+                let coverResourcePath = this._getResourcePath(opfObject.package.manifest, coverResourceId)
 
-                if(coverResourceId !== null) {
+                if(coverResourcePath !== null) {
                     this._cover.path = coverResourcePath
                     this._cover.mode = coverProcessingMode.FromMetadata
                 }
             }
         }
 
-        if(coverResourceId !== null)
-            return true
+        // if(coverResourceId !== null)
+        //     return true
 
         // else if(*valid isbn found*) {
-            //TODO: try download cover using open book libarary api
+            //TODO: try download cover using open book library api
         //}
         //else {
             //TODO: try to parse .ncx navigation file and extract first page image
-            //    : which usualy contains cover
+            //    : which usually contains cover
         //}
 
-        // return coverResourceId
-        return false
+        return undefined //== promise.resolve()
     }
 
     _nodeValueExtractor(node, tag) {

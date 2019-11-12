@@ -39,7 +39,7 @@ const _ShelfViewModel = {
     mounted: function () {
         this.tryCallBaseHook('mounted')
 
-        this.initBookFilesWatch()
+        // this.initBookFilesWatch()
     },
     beforeDestroy: function () {
         this.tryCallBaseHook('beforeDestroy')

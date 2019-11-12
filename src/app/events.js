@@ -31,24 +31,24 @@ export function subscribeAppEvents() {
                     properties: ['openFile']
                 }
             )
-                .then(filePaths => {
-                    // if (canceled)
-                    //     throw new Error(`action was cancelled by user`)
-                    //     // IPCBridgeMain.reply(
-                    //     //     ipcMainEvents.openBookBrowse,
-                    //     //     createTypeResponse(responseStatus.Fail, 'action was canceled')
-                    //     // )
-
-                    //TODO: move processing logic to external worker (new renderer process)
-                    log.verbose(`selected paths: ${filePaths}`)
-
-                    const epubArchiveProcessor = new EpubArchiveHelper(filePaths[0])
-
-                    epubArchiveProcessor.getBookMetadata()
-                })
-                .catch(err => {
-                    throw new Error(`unable to get file path: ${err}`)
-                })
+                // .then(filePaths => {
+                //     // if (canceled)
+                //     //     throw new Error(`action was cancelled by user`)
+                //     //     // IPCBridgeMain.reply(
+                //     //     //     ipcMainEvents.openBookBrowse,
+                //     //     //     createTypeResponse(responseStatus.Fail, 'action was canceled')
+                //     //     // )
+                //
+                //     //TODO: move processing logic to external worker (new renderer process)
+                //     log.verbose(`selected paths: ${filePaths}`)
+                //
+                //     const epubArchiveProcessor = new EpubArchiveHelper(filePaths[0])
+                //
+                //     epubArchiveProcessor.getBookMetadata()
+                // })
+                // .catch(err => {
+                //     throw new Error(`unable to get file path: ${err}`)
+                // })
         } catch (e) {
             // IPCBridgeMain.reply(
             //     ipcMainEvents.openBookBrowse,
