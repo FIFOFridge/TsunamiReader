@@ -24,6 +24,7 @@ const _ShelfViewModel = {
         viewName: 'Shelf',
         bookModels: [],
         bookHelper: undefined,
+        isBookWatcherAttached: false
         // isBookAddEnabled: true (view)
     },
     created: function () {
@@ -51,19 +52,19 @@ const _ShelfViewModel = {
         }
     },
     methods: {
-        // initBookFilesWatch: function () {
-        //     this.bookHelper = new BookWatcher(paths.booksDirectory, false)
-        //
-        //     this.bookHelper.beginWatch()
-        //         .then(() => {
-        //             this.bookHelper.addListener('added', this.addBook.bind(this))
-        //             this.bookHelper.addListener('removed', this.removeBook.bind(this))
-        //         })
-        //         .catch(err => {
-        //             log.error(`unable to attach book watcher: ${err}`)
-        //             //TODO: mabey some walkaround?
-        //         })
-        // },
+        initBookFilesWatch: function () {
+            this.bookHelper = new BookWatcher(paths.booksDirectory, false)
+
+            this.bookHelper.beginWatch()
+                .then(() => {
+                    this.bookHelper.addListener('added', this.addBook.bind(this))
+                    this.bookHelper.addListener('removed', this.removeBook.bind(this))
+                })
+                .catch(err => {
+                    log.error(`unable to attach book watcher: ${err}`)
+                    //TODO: mabey some walkaround?
+                })
+        },
         processBook: async function(path) {
             this.isBookAddEnabled = false
 

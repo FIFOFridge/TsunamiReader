@@ -49,17 +49,16 @@
             },
             updateBooks: function (value) {
                 let toLoad = []
+                const paths = this.books.map((b) => {return b.path})
 
                 for(let bookPath in value) {
-                    if(!(bookDataPaths.includes(bookPath))) {
+                    if(!(bookPath in paths))
                         toLoad.push(
                             {
                                 path: bookPath,
                                 state: bookDataState.Pending,
                                 metadata: {}
-                            }
-                        )
-                    }
+                            })
                 }
 
                 const loadingTimeout = getAppSetting('bookProcessedDataLoadingTimeout')

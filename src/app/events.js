@@ -5,6 +5,7 @@ import {log, setAppState, getMainWindow, getAppState} from '@src/app/appWrapper'
 import views from '@constants/views'
 import { hasValue } from '@constants/constantsHelper'
 import { EpubArchiveHelper } from '@helpers/epubArchiveHelper'
+import { dialog } from 'electron'
 
 export function subscribeAppEvents() {
     IPCBridgeMain.on(ipcMainEvents.syncAppState,  async(eventObject, state) => {
@@ -20,43 +21,35 @@ export function subscribeAppEvents() {
         //     ipcMainEvents.syncAppState,
         //     createStatusResponse(responseStatus.Success)
         // )
+        return undefined
     }, this)
 
-    IPCBridgeMain.on(ipcMainEvents.openBookBrowse, async (eventObject) => {
-        try {
-            getMainWindow().openDialog(
-                {
-                    filters: {extensions: ['.epub']},
-                    title: 'choose a book to add',
-                    properties: ['openFile']
-                }
-            )
-                // .then(filePaths => {
-                //     // if (canceled)
-                //     //     throw new Error(`action was cancelled by user`)
-                //     //     // IPCBridgeMain.reply(
-                //     //     //     ipcMainEvents.openBookBrowse,
-                //     //     //     createTypeResponse(responseStatus.Fail, 'action was canceled')
-                //     //     // )
-                //
-                //     //TODO: move processing logic to external worker (new renderer process)
-                //     log.verbose(`selected paths: ${filePaths}`)
-                //
-                //     const epubArchiveProcessor = new EpubArchiveHelper(filePaths[0])
-                //
-                //     epubArchiveProcessor.getBookMetadata()
-                // })
-                // .catch(err => {
-                //     throw new Error(`unable to get file path: ${err}`)
-                // })
-        } catch (e) {
-            // IPCBridgeMain.reply(
-            //     ipcMainEvents.openBookBrowse,
-            //     createTypeResponse(responseStatus.Fail, `unable to select file: ${err}`)
-            // )
-            log.error(`unable to select file: ${e}`)
-            throw new Error(`unable to select file: ${e}`)
-        }
+    IPCBridgeMain.on(ipcMainEvents.openBookBrowse, eventObject => {
+        return new Promise(((resolve, reject) => {
+            try {
+                log.info(`opened local book browser`)
+
+                let xd = dialog.showOpenDialog( //<-- docs for (electron) 2.0.18 are incorrect for this function
+                    // getMainWindow(),
+                    {
+                        title: 'choose a book to add',
+                        filters: [
+                            {name: 'eBooks', extensions: ['epub']}
+                        ],
+                        properties: ['openFile']
+                    },
+                    (fileNames) => {
+                        log.info(`selected book to open: ${fileNames[0]}`)
+                        resolve(fileNames[0])
+                    }
+                )
+
+                resolve()
+            } catch (e) {
+                log.error(`unable to select file: ${e}`)
+                reject(`unable to select file: ${e}`)
+            }
+        }))
     }, this)
 }
 

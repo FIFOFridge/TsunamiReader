@@ -129,6 +129,7 @@ export class BookWatcher extends EventEmitter {
                     if(!(this.collection.hasOwnProperty(file))) {
                         // this.collection[file] = true
                         changes.push({event: 'added', path: file})
+                        log.verbose(`new book: ${file}`)
                     }
                 }
 
@@ -137,6 +138,7 @@ export class BookWatcher extends EventEmitter {
                     if(!(files.contains(oldFile))) {
                         // delete this.collection[oldFile]
                         changes.push({event: 'removed', path: oldFile})
+                        log.verbose(`removed book: ${file}`)
                     }
                 }
 

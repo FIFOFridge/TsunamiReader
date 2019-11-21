@@ -4,6 +4,8 @@ import util from 'util'
 import paths from '@constants/paths'
 import bookModel from '@models/book'
 import * as fileHelper from '@helpers/fileHelper'
+import { specialFileExtensions } from '@constants/index'
+import { log } from '@app/log'
 
 export class BookManager {
     static async put(bookModel) {
@@ -91,5 +93,28 @@ export class BookManager {
 
     static _getThumbnailPath(id) {
         return path.join(paths.thumbnailsDirectory, id)
+    }
+
+    static async _hasAnyDamagedBooks() {
+        let has = false
+
+        fs.readdir(paths.booksDirectory, (err, files) => {
+            if(err)
+                throw `unable to check for damaged books: ${err}`
+
+            for(let file in files) {
+                // noinspection EqualityComparisonWithCoercionJS
+                if(
+                    path.extname(file) == specialFileExtensions.Backup ||
+                    path.extname(file) == specialFileExtensions.Lock
+                ) {
+                    has = true
+                    break
+                }
+
+            }
+        })
+
+        return has
     }
 }
