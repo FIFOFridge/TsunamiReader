@@ -6,6 +6,7 @@ import views from '@constants/views'
 import { hasValue } from '@constants/constantsHelper'
 import { EpubArchiveHelper } from '@helpers/epubArchiveHelper'
 import { dialog } from 'electron'
+import util from 'util'
 
 export function subscribeAppEvents() {
     IPCBridgeMain.on(ipcMainEvents.syncAppState,  async(eventObject, state) => {
@@ -39,12 +40,14 @@ export function subscribeAppEvents() {
                         properties: ['openFile']
                     },
                     (fileNames) => {
+                        if(!(util.isArray(fileNames)))
+                            reject('no file selected')
+
                         log.info(`selected book to open: ${fileNames[0]}`)
                         resolve(fileNames[0])
                     }
                 )
 
-                resolve()
             } catch (e) {
                 log.error(`unable to select file: ${e}`)
                 reject(`unable to select file: ${e}`)
