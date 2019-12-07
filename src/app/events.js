@@ -27,7 +27,7 @@ export function subscribeAppEvents() {
 
     IPCBridgeMain.on(ipcMainEvents.openBookBrowse, eventObject => {
         return new Promise(((resolve, reject) => {
-            try {
+            // try {
                 log.info(`opened local book browser`)
 
                 let xd = dialog.showOpenDialog( //<-- docs for (electron) 2.0.18 are incorrect for this function
@@ -40,18 +40,15 @@ export function subscribeAppEvents() {
                         properties: ['openFile']
                     },
                     (fileNames) => {
-                        if(!(util.isArray(fileNames)))
+                        if(!(util.isArray(fileNames))) {
                             reject('no file selected')
+                            return
+                        }
 
                         log.info(`selected book to open: ${fileNames[0]}`)
                         resolve(fileNames[0])
                     }
                 )
-
-            } catch (e) {
-                log.error(`unable to select file: ${e}`)
-                reject(`unable to select file: ${e}`)
-            }
         }))
     }, this)
 }
