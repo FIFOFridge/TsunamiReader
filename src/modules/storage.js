@@ -230,8 +230,15 @@ export class Storage extends EventEmitter {
 
         let currentItem = this._getItemByKey(key)
 
-        if(!(this._areTypesEqual(typeof(value), currentItem.type)) || value === this.defaultEmptyValue) {
-            throw new Error(`current value type: ${typeof (value)} isn't same as declarated: ${currentItem.type} `)
+        // noinspection EqualityComparisonWithCoercionJS
+        if(!(currentItem.type == "null" && this.defaultEmptyValue === null)) { // because > null == "null" -> false
+
+            // noinspection EqualityComparisonWithCoercionJS
+            if(currentItem.type != this.defaultEmptyValue) { //type check needed
+                if (!(this._areTypesEqual(typeof (value), currentItem.type))) {
+                    throw new Error(`current value type: ${typeof (value)} isn't same as declarated: ${currentItem.type} `)
+                }
+            }
         }
 
         currentItem.value = currentItem.dataFormatter === undefined ? value : this._executeDataFormatter(currentItem.dataFormatter, value)
