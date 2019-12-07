@@ -222,22 +222,22 @@ export class IPCBridgeMain {
         eventObject.sender.send(eventName + '-reply', _response)
     }
 
-    //send to renderer
-    //FIXME: sending from main to any renderer require webContents!!!
-    static send(event, replyHandler = undefined, timeout = 0, ...args) {
-        if(replyHandler instanceof Function) {
-            IPCBridgeMain.addListner(`${event}-reply`, replyHandler, 0, false)
-        } else if(replyHandler !== undefined && replyHandler !== null) {
-            log.error(`unable to register reply handler for event: ${event}, replyHandler is not a function`)
-        }
-
-        let __args = [event]
-
-        if(args.length > 0)
-            __args.concat(args)
-
-        ipcMain.send.apply(null, __args)
-    }
+    // //send to renderer
+    // //FIXME: sending from main to any renderer require webContents!!!
+    // static send(event, replyHandler = undefined, timeout = 0, ...args) {
+    //     if(replyHandler instanceof Function) {
+    //         IPCBridgeMain.addListner(`${event}-reply`, replyHandler, 0, false)
+    //     } else if(replyHandler !== undefined && replyHandler !== null) {
+    //         log.error(`unable to register reply handler for event: ${event}, replyHandler is not a function`)
+    //     }
+    //
+    //     let __args = [event]
+    //
+    //     if(args.length > 0)
+    //         __args.concat(args)
+    //
+    //     ipcMain.send.apply(null, __args)
+    // }
 
     static on(event, listner, context = null, timeout = 0) { //redirect to --> _registerHandler
         IPCBridgeMain.addListner(event, listner, context, timeout)

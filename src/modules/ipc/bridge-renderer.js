@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import log from 'electron-log'
+import { log } from '@app/log'
 import { responseStatus, createStatusResponse, createTypeResponse, InternalIPCExecutorProcessingError, isIPCResponse, isResponseSuccess } from './bridge-shared'
 import * as Promise from 'bluebird'
 import { Storage } from '@modules/storage'
@@ -13,6 +13,7 @@ if(!isRunningRenderer()) {
     throw new Error(`unable to use bridge-renderer in main process`)
 }
 
+//init global vars
 if(global.ipcBridgeRendererSubscribedEvents === null || global.ipcBridgeRendererSubscribedEvents === undefined)
     global.ipcBridgeRendererSubscribedEvents = {}
 
@@ -21,23 +22,15 @@ if(global.ipcBridgeRendererSubscribedEvents === null || global.ipcBridgeRenderer
 
 export class IPCBridgeRenderer {
     static addListner(event, handler, context, timeout = 0, deleteWhenDone = false, hardTimeout = 100000/*, hardTimeout = 100000*/) {
+        if(this._hasHandler(event)) {
+            log.verbose(`${event} is already subscribed`)
+            return
+        }
+
+        // noinspection PointlessBooleanExpressionJS
         if(event instanceof String === false && typeof event !== 'string') {
             log.error(`event have to be string`)
             throw new Error(`event have to be string`)
-        }
-
-        if(IPCBridgeRenderer._hasHandler(event) === true) {
-            if(process.env.NODE_ENV !== 'development') {
-                log.error(`event has already assigned handler`)
-                throw new Error(`event has already assigned handler`)
-            } else { //clear duplicates for dev, to prevent hot reload errors
-
-                //also clear hard timeout running in background
-                if(global.ipcBridgeRendererSubscribedEvents[event].hardTimeoutInstance !== undefined)
-                    clearTimeout(global.ipcBridgeRendererSubscribedEvents[event].hardTimeoutInstance)
-
-                delete global.ipcBridgeRendererSubscribedEvents[event]
-            }
         }
 
         global.ipcBridgeRendererSubscribedEvents[event] = {
@@ -143,12 +136,16 @@ export class IPCBridgeRenderer {
 
         try {
             handler.executor.call(null, response)
-        } catch(err) {
+        } catch (err) {
             log.error(`error during exsuction of reply handler: ${event}, handler: \n${handler.toString()}`)
         }
 
-        //auto delete reply handler
-        delete global.ipcBridgeRendererSubscribedEvents[event]
+
+
+        //don't make a sense, because event handlers states will be managed by views/viewModels,
+        //also breaks repeatable events
+        ////auto delete reply handler
+        //delete global.ipcBridgeRendererSubscribedEvents[event]
     }
 
     static _executeEventHandler(event, handler, eventObject, args) {
@@ -185,6 +182,7 @@ export class IPCBridgeRenderer {
                         reject(new InternalIPCExecutorProcessingError(`executor didin't returned promise`))
                     }
 
+                // noinspection DuplicatedCode
                 if(handler.softTimeout > 0)
                     executorPromise.timeout(handler.softTimeout)
 
