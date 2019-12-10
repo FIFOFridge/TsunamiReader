@@ -1,28 +1,14 @@
-import { IPCBridgeMain } from '@ipc/bridge-main'
-import { createStatusResponse, createTypeResponse, responseStatus } from '@ipc/bridge-shared'
+import {IPCBridgeMain} from '@ipc/bridge-main'
 import ipcMainEvents from '@constants/ipcMainEvents'
-import {log, setAppState, getMainWindow, getAppState} from '@src/app/appWrapper'
-import views from '@constants/views'
-import { hasValue } from '@constants/constantsHelper'
-import { EpubArchiveHelper } from '@helpers/epubArchiveHelper'
-import { dialog } from 'electron'
+import {log, messageBox, setAppState} from '@src/app/appWrapper'
+import {dialog} from 'electron'
 import util from 'util'
 
 export function subscribeAppEvents() {
     IPCBridgeMain.on(ipcMainEvents.syncAppState,  async(eventObject, state) => {
-        // if (!(hasValue(views, state))) {
-        //     log.warn(`can not synchronize app state: ${state} is invalid`)
-        //     throw new Error(`can not synchronize app state: ${state} is invalid`)
-        // }
-
         setAppState(state)
 
-        // IPCBridgeMain.reply(
-        //     eventObject,
-        //     ipcMainEvents.syncAppState,
-        //     createStatusResponse(responseStatus.Success)
-        // )
-        return undefined
+        return undefined // === promise.resolve() (when function is async)
     }, this)
 
     IPCBridgeMain.on(ipcMainEvents.openBookBrowse, eventObject => {
@@ -42,15 +28,18 @@ export function subscribeAppEvents() {
                     (fileNames) => {
                         if(!(util.isArray(fileNames))) {
                             reject('no file selected')
-                            return
+                        } else {
+                            log.verbose(`selected book to open: ${fileNames[0]}`)
+                            resolve(fileNames[0])
                         }
-
-                        log.info(`selected book to open: ${fileNames[0]}`)
-                        resolve(fileNames[0])
                     }
                 )
         }))
     }, this)
+
+    IPCBridgeMain.on(ipcMainEvents.displayMessageBox, async (eventObject, message, title, type = 'info', buttons = ['OK']) => {
+        return await messageBox(message, title, type, buttons) //returns selected button
+    })
 }
 
 export function unsubscribeAppEvents() {

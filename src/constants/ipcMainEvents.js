@@ -1,4 +1,5 @@
 export default {
     syncAppState: 'syncAppState',
-    openBookBrowse: 'openBookBrowse'
+    openBookBrowse: 'openBookBrowse',
+    displayMessageBox: 'displayMessageBox'
 }

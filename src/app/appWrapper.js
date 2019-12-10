@@ -14,6 +14,7 @@ import {ipcMain} from 'electron'
 import mainEvents from '@constants/ipcMainEvents'
 import { subscribeAppEvents } from './events'
 import { log as logger } from './log'
+import { dialog } from 'electron'
 
 class Wrapper extends EventEmitter {
     constructor() {
@@ -144,6 +145,34 @@ export function setMainWindow(window) {
         throw new Error(`window have to be instance of Window`)
 
     global.appWrapperInstance.mainWindow = Window
+}
+
+
+/**
+ *
+ * @param {string} message
+ * @param {string} title
+ * @param {string} type - "info" (default) or "error"
+ * @param {Array} buttons - aviable message box buttons (default = ['OK'])
+ * @returns {Promise} return button name selected by user
+ */
+export function messageBox(message, title, type = 'info', buttons = ['OK']) {
+    return new Promise(resolve => {
+        // let mainWindow = getMainWindow()
+
+        dialog.showMessageBox(//mainWindow,
+            {
+                message: message,
+                title: title,
+                type: type,
+                buttons: buttons,
+                noLink: true
+            },
+            (response, /*checkboxChecked*/) => {
+                resolve(buttons[response])
+            }
+        )
+    })
 }
 
 export const mainWindow = global.appWrapperInstance.mainWindow
