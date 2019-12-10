@@ -249,7 +249,18 @@ export default {
                 ipcMainEvents.openBookBrowse,
                 reply => {
                     if(!(isResponseSuccess(reply))) {
-                        log.error(`error occured during: ${reply.get('reason')}`)
+                        log.error(`unable to open book: ${reply.get('reason')}`)
+
+                        //display messagebox
+                        IPCBridgeRenderer.send(
+                            ipcMainEvents.displayMessageBox,
+                            null,
+                            0,
+                            `Error occurend when selecting book to open: ${reply.get('reason')}`,
+                            `Unable to select book to open`,
+                            'error',
+                            ['Ok']
+                        )
                     }
 
                     this.$refs.panelButtonAddBook.setState(true)
