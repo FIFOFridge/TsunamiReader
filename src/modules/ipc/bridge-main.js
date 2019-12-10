@@ -45,14 +45,14 @@ export class IPCBridgeMain {
             deleteWhenDone: deleteWhenDone
         }
 
-        ipcMain.on(event, (eventObject, args) => {
+        ipcMain.on(event, (eventObject, ...args) => {
             const eventDetails = IPCBridgeMain._getEventDetailsById(event)
 
             let promise = this._executeEventHandler(
                 event,
                 eventDetails.handler,
                 eventObject,
-                args
+                ...args
             )
 
             //update event info
@@ -110,7 +110,7 @@ export class IPCBridgeMain {
         return global.ipcBridgeMainSubscribedEvents[id]
     }
 
-    static _executeEventHandler(event, handler, eventObject, args) {
+    static _executeEventHandler(event, handler, eventObject, ...args) {
         return new Promise((resolve, reject) => {
             // const executor = handler.executor
             let status = responseStatus.Undefined
