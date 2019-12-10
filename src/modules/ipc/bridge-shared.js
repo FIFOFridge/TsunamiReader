@@ -67,14 +67,21 @@ export function createStatusResponse(status) {
 }
 
 export function createTypeResponse(status, value) {
-    //TODO: invalid status && value
+
     let caller = getRunnerType()
     let response = ipcResponse
+
+    if(status === responseStatus.Fail) {
+        response.set('reason', value)
+    } else if(status === responseStatus.Success) {
+        response.set('value', value)
+    } else { //status === responseStatus.Undefined
+        //TODO
+    }
 
     response.set('caller', caller)
     response.set('type', responseType.Value)
     response.set('status', status)
-    response.set('value', value)//pass all arguments
 
     return response
 }

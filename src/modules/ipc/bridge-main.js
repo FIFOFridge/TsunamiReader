@@ -166,7 +166,7 @@ export class IPCBridgeMain {
                                     createTypeResponse(responseStatus.Success, returned) :
                                     createStatusResponse(responseStatus.Success)
                         } else { //failed
-                            response = createTypeResponse(responseStatus.Fail, new Error(reason))
+                            response = createTypeResponse(responseStatus.Fail, reason)
                         }
 
                         //release
