@@ -16,6 +16,9 @@ import * as Promise from 'bluebird'
 import { EpubProcessor } from '@modules/epubProcessor'
 import { BookManager } from '@modules/bookManager'
 import { getXXFileHash } from '@helpers/hashHelper'
+import { IPCBridgeRenderer } from "@ipc/bridge-renderer";
+import ipcMainEvents from "@constants/ipcMainEvents";
+import { isResponseSuccess } from "@ipc/bridge-shared";
 
 const _ShelfViewModel = {
     //IMPORTANT: this data isn't compatible with vue format but its
@@ -66,126 +69,55 @@ const _ShelfViewModel = {
                 })
         },
         processBook: async function(path) {
-            this.isBookAddEnabled = false
-
             try {
                 const hash = await getXXFileHash(path)
 
-                if(BookManager.has(hash)) {
-                    // throw new Error(`current book already exists `)
-                    //TODO: display warning about already existing book
-                    return undefined //resolve()
-                }
+                if(BookManager.has(hash))
+                    // noinspection ExceptionCaughtLocallyJS
+                    throw new Error(`current book already exists `)
 
                 const processor = new EpubProcessor(path)
 
                 await processor.parseMetadata()
+                await processor.processCover()
+
                 const model = processor.toBookModel()
 
                 await BookManager.put(model)
             } catch(e) {
                 log.error(`unable to parse process book: ${e}`)
-            } finally {
-                this.isBookAddEnabled = true
+                throw e
             }
 
             return undefined
         },
-        //process book model and map it to grid item
-        // addBook: function (path) {
-        //         let model = bookModel
-        //
-        //         model.fromFile(path)
-        //             .then(() => {
-        //                 try {
-        //                     let gridItem = {}
-        //
-        //                     const storageValueExtractor = (key, storage) => {
-        //                         try {
-        //                             if (storage.isSet(key, true)) {
-        //                                 return storage.get(key)
-        //                             } else {
-        //                                 log.error(`key not found: ${key} --> check book data model`)
-        //                                 return undefined
-        //                             }
-        //                         } catch (e) {
-        //                             log.error(`unable to extract: ${key}`)
-        //                             return undefined
-        //                         }
-        //                     }
-        //
-        //                     //map book model to grid item
-        //                     for (let metaTag in metadataFields) {
-        //                         let value = storageValueExtractor(metaTag, model)
-        //
-        //                         if (value !== undefined)
-        //                             gridItem[metaTag] = value
-        //                     }
-        //
-        //                     //hash will be used as id for object manipulation
-        //                     gridItem.hash = model.get('hash')
-        //
-        //                     this.bookTiles.push(gridItem)
-        //                     this.bookModels.push(model)
-        //                 } catch(err) {
-        //                     //TODO: display error by UI
-        //                     let dump = undefined
-        //
-        //                     try {
-        //                         //read sync should be fine to read
-        //                         //metadata file only
-        //                         const fileContent = fs.readSync(path)
-        //                         const modelContent = model !== undefined ? model.toString() : 'unable to get model'
-        //
-        //                         dump = `raw metadata: ${fileContent}\nmodel: ${modelContent}`
-        //                     } catch (e) {
-        //                         dump = `unable to dump details: ${e}`
-        //                     }
-        //
-        //                     log.error(`unable to add process book metadata: ${err}\ndump: ${dump}`)
-        //                 }
-        //             })
-        //             .catch(err => {
-        //                 //TODO: display error by UI
-        //                 log.error(`unable to add process book metadata: ${err}`)
-        //             })
-        // },
-        // removeBook: function (hash) {
-        //     const tileIndex = this.bookTiles.findIndex(o => { return o.hash === hash })
-        //
-        //     if(tileIndex < 0)
-        //         return
-        //
-        //     //remove from collection
-        //     this.bookTiles.splice(tileIndex, 1)
-        //
-        //     const modelIndex = this.bookModels.findIndex(o => {
-        //         return o.get('hash') === hash }
-        //     )
-        //
-        //     if(modelIndex < 0) {
-        //         log.error(`unable to remove book model with hash: ${hash}`)
-        //         return
-        //     }
-        //
-        //     let model = this.bookModels[modelIndex]
-        //
-        //     //have to remove local file
-        //     if(model.get('isLocal') === true) {
-        //         fs.unlink(model.get('url'), err => {
-        //             if(err) {
-        //                 log.error(`unable to delete local metadata file: ${model.get('url')}`)
-        //                 return
-        //             }
-        //
-        //             this.bookModels.splice(modelIndex, 1)
-        //         })
-        //     } else {
-        //         //simply remove element from grid
-        //         this.bookModels.splice(modelIndex, 1)
-        //     }
-        // }
-        //
+        addLocalBook() {
+            this.$refs.panelButtonAddBook.setState(false)
+
+            IPCBridgeRenderer.send(
+                ipcMainEvents.openBookBrowse,
+                async reply => {
+                    if(!(isResponseSuccess(reply))) {
+                        log.error(`unable to open book: ${reply.get('reason')}`)
+
+                        //display messagebox
+                        IPCBridgeRenderer.send(
+                            ipcMainEvents.displayMessageBox,
+                            null,
+                            0,
+                            `Error occurend when selecting book to open: ${reply.get('reason')}`,
+                            `Unable to select book to open`,
+                            'error',
+                            ['Ok']
+                        )
+                    }
+
+                    await this.processBook()
+
+                    this.$refs.panelButtonAddBook.setState(true)
+                },
+                60000)
+        }
     }
 }
 

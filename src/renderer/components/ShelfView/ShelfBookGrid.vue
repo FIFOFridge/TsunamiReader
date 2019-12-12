@@ -17,6 +17,7 @@
     import bookDataState from '@views/ShelfView/BookDataState'
     import * as Promise from 'bluebird'
     import { getAppSetting } from '@app/appWrapper'
+    import bookModel from '@models/book'
 
     export default {
         components: {
@@ -43,7 +44,7 @@
         },
         methods: {
             beginLoad: async function (path) {
-                const model = bookDataPaths
+                const model = bookModel
                 await model.fromFile(path)
                 return model
             },

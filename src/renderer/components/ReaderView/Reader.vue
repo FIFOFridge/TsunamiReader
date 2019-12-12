@@ -32,7 +32,7 @@
 import fs from 'fs'
 // import readerController from './../../../modules/readerController.js'
 import { ipcRenderer } from 'electron'
-import readerController from '@modules/readerController.js'
+import readerController from '@modules/readerWrapper.js'
 // import debounce from 'debounce'
 
 export default {

@@ -6,7 +6,7 @@
         <div id="left-panel">
             <div class="content-main">
                 <panel-button
-                    v-on:click="addBook"
+                    v-on:click="addLocalBook"
                     ref="panelButtonAddBook"
                     class="pulse-more"
                     label="add book"
@@ -44,15 +44,6 @@
                         svg-height="32px"
                 >
                 </panel-button>
-<!--                    <panel-button -->
-<!--                        label="settings">-->
-<!--                    </panel-button>-->
-<!--                    <panel-button-->
-<!--                            label="themes">-->
-<!--                    </panel-button>-->
-<!--                    <panel-button-->
-<!--                            label="about">-->
-<!--                    </panel-button>-->
             </div>
             <div class="content-second" style="position: absolute; bottom: 0.75em; width: 100%;">
                 <panel-button
@@ -75,8 +66,7 @@
                 v-model="bookSearchQuery"
         >
 
-        <keep-alive>
-            <modal v-show=""
+        <modal v-show="true"
                 :closeable="false"
                 :toggleable="true"
                 :top="'10%'"
@@ -96,23 +86,8 @@
                     <label for="smo-bookmark">Search in: Bookmarks</label>
                 </div>
             </modal>
-        </keep-alive>
 
-
-
-<!--            <shelf-grid -->
-<!--                id="app-tiles-grid"-->
-<!--                style="width=100%; height: 100%;"-->
-<!--                :sourceTiles="this.appTiles"-->
-<!--                >-->
-<!--            </shelf-grid>-->
-<!--            <shelf-grid -->
-<!--                id="books-tiles-grid"-->
-<!--                style="width=100%;"-->
-<!--                :tiles="this.bookTiles"-->
-<!--            >-->
-<!--            </shelf-grid>-->
-<!--        </div>-->
+        <shel-book-grid.vue
     </div>
 </template>
 
@@ -140,30 +115,20 @@ import Modal from '@views/_shared/Modal.vue'
 // import CheckboxGroup from '@views/_shared/CheckboxGroup.vue'
 import ipcMainEvents from '@constants/ipcMainEvents'
 import { isResponseSuccess } from '@ipc/bridge-shared'
+import ShelBookGrid from './ShelfView/ShelfBookGrid'
 
 export default {
     mixins: [
         ShelfViewModel
     ],
     components: {
+        ShelBookGrid,
         ShelfGrid,
         PanelButton,
         Modal
     },
     created: function() {
         log.info(`created shelf view`)
-        // this.appTiles = this.setupAppTiles()
-        // this.bookHelper = new BookHelper(paths.booksCollectionFilePath)
-
-        log.warn(`${this.viewName}`)
-
-        // this.changeAppState(views.Shelf)
-        //     .then(() => {
-        //         log.verbose(`successfully updated app state`)
-        //     })
-        //     .catch(err => {
-        //         log.error(`unable to synchornize app state: ${err}`)
-        //     })
     },
     mounted: function() {
         this.$nextTick(function()
@@ -184,54 +149,8 @@ export default {
         }
     },
     methods: {
-        //FIXME: create method to toggle tile states, independent
-        updateCanAddBook: function(value) {
-            log.verbose(`recived: `, value)
-
-            var addToShelfTileIndex = this.appTiles.findIndex(tile => {
-                return tile.link === "/action/book-add"
-            })
-
-            if(addToShelfTileIndex < 0)
-                throw TypeError(`unable to find tile with link: /action/book-add`)
-
-            var tile = this.appTiles[addToShelfTileIndex]
-
-            var updatedClassName = 'enabled'
-
-            if(value == false)
-                updatedClassName = 'disabled'
-
-            this.$set(this.appTiles[addToShelfTileIndex], 'tileState', updatedClassName)
-        },
-        // addBook: function(value) {
-        //     console.log(`addBook recived: `, value)
-        //
-        //     let md5 = value.get('md5')
-        //     let bookObject = value.get('metadata')
-        //     bookObject.cover = value.get('cover')
-        //
-        //     var bookTile = {}
-        //     bookTile.link = `/epub-reader/${md5}`
-        //     bookTile.id = md5
-        //     bookTile.tileState = 'enabled'
-        //     bookTile.isSVG = false
-        //     bookTile.bookObject = bookObject
-        //     bookTile.img = null // value.get('cover')
-        //     // bookTile.urlProps = { id: value.md5 }
-        //
-        //     this.bookTiles.push(bookTile)
-        // },
-        //create app tiles
         setupAppTiles: function() {
             this.appTiles = appTiles
-            // this.appTiles.slice()
-        },
-        bookGridItemFromFile: function() {
-
-        },
-        searchModeChanged(to) {
-
         },
         toggleSearchOptionsState() {
             if(this.isSearchOptionsVisible === true) { //hide
@@ -241,36 +160,11 @@ export default {
                 this.$refs.searchOptionsContent.style.visibility = 'visible'
                 this.isSearchOptionsVisible = true
             }
-        },
-        addBook() {
-            this.$refs.panelButtonAddBook.setState(false)
-
-            IPCBridgeRenderer.send(
-                ipcMainEvents.openBookBrowse,
-                reply => {
-                    if(!(isResponseSuccess(reply))) {
-                        log.error(`unable to open book: ${reply.get('reason')}`)
-
-                        //display messagebox
-                        IPCBridgeRenderer.send(
-                            ipcMainEvents.displayMessageBox,
-                            null,
-                            0,
-                            `Error occurend when selecting book to open: ${reply.get('reason')}`,
-                            `Unable to select book to open`,
-                            'error',
-                            ['Ok']
-                        )
-                    }
-
-                    this.$refs.panelButtonAddBook.setState(true)
-                },
-                60000)
         }
     },
     watch: {
         searchBy: function(value) {
-            log.verbose(`searchBy: ${value}`)
+            log.verbose(`searchBy filter changed to: ${value}`)
         },
         bookSearchQuery: function (value) {
             log.verbose(`search value changed to: ${value}`)

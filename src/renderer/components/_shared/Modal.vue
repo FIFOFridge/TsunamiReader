@@ -92,7 +92,6 @@
 
     .userslot {
         /*position: absolute;*/
-        transition: all 0.3s ease-out;
     }
 
     .collapsed.userslot {

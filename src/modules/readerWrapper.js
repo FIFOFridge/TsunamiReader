@@ -7,7 +7,7 @@ import util from 'util'
 if(global.ePub === undefined)
     global.ePub = epubjs
 
-class ReaderController extends events.EventEmitter {
+class ReaderWrapper extends events.EventEmitter {
     constructor(
             bookUrl, 
             document, 
@@ -427,4 +427,4 @@ class ReaderController extends events.EventEmitter {
     // }
 }
 
-export default ReaderController
+export default ReaderWrapper
