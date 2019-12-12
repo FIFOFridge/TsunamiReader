@@ -81,6 +81,8 @@ const _ShelfViewModel = {
                 await processor.parseMetadata()
                 await processor.processCover()
 
+                await processor.dispose()
+
                 const model = processor.toBookModel()
 
                 await BookManager.put(model)
@@ -97,7 +99,13 @@ const _ShelfViewModel = {
             IPCBridgeRenderer.send(
                 ipcMainEvents.openBookBrowse,
                 async reply => {
-                    if(!(isResponseSuccess(reply))) {
+                    try {
+                        if (!(isResponseSuccess(reply)))
+                            // noinspection ExceptionCaughtLocallyJS
+                            throw new Error(`unable to open book: ${reply.get('reason')}`)
+
+                        await this.processBook(reply.get('value'))
+                    } catch(ex) {
                         log.error(`unable to open book: ${reply.get('reason')}`)
 
                         //display messagebox
@@ -105,14 +113,12 @@ const _ShelfViewModel = {
                             ipcMainEvents.displayMessageBox,
                             null,
                             0,
-                            `Error occurend when selecting book to open: ${reply.get('reason')}`,
+                            `Error occurend when selecting book to open: ${ex.message}`,
                             `Unable to select book to open`,
                             'error',
                             ['Ok']
                         )
                     }
-
-                    await this.processBook()
 
                     this.$refs.panelButtonAddBook.setState(true)
                 },

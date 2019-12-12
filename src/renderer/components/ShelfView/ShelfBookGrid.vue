@@ -5,6 +5,8 @@
                 <shelf-book
                     :key="index"
                     :state="element.state"
+                    :metadata="element.metadata"
+                    :path="element.path"
                 >
                 </shelf-book>
             </template>
@@ -16,7 +18,7 @@
     import ShelfBook from '@views/ShelfView/ShelfBook.vue'
     import bookDataState from '@views/ShelfView/BookDataState'
     import * as Promise from 'bluebird'
-    import { getAppSetting } from '@app/appWrapper'
+    import { getAppSetting } from '@app/appWrapperProxy'
     import bookModel from '@models/book'
 
     export default {

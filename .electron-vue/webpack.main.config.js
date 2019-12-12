@@ -6,6 +6,7 @@ const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 const Promise = require('bluebird')
+const pathMap = require('./pathMap')
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 
@@ -62,7 +63,9 @@ let mainConfig = {
             '@ipc': path.join(__dirname, '../src/modules/ipc'),
             '@src': path.join(__dirname, '../src'),
             '@views': path.join(__dirname, '../src/renderer/components'),
-            '@viewmodels': path.join(__dirname, '../src/viewModels')
+            '@viewmodels': path.join(__dirname, '../src/viewModels'),
+            '@': path.join(__dirname, '../src/renderer'),
+            'vue$': 'vue/dist/vue.esm.js',
         },
         extensions: ['.js', '.json', '.node']
     },

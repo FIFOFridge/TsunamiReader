@@ -87,7 +87,9 @@
                 </div>
             </modal>
 
-        <shel-book-grid.vue
+        <ShelBookGrid>
+
+        </ShelBookGrid>
     </div>
 </template>
 
