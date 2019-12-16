@@ -9,13 +9,13 @@ import { log } from '@app/log'
 
 export class BookManager {
     static async put(bookModel) {
-        const key = bookModel.get('hash')
+        const hash = bookModel.get('hash')
 
-        if(BookManager.has(id))
-            throw new Error(`book with id: ${id} already exists`)
+        if(BookManager.has(hash))
+            throw new Error(`book with hash: ${hash} already exists`)
 
         if(hash.length < 1)
-            throw new Error(`book model has incorrect hash: ${key}`)
+            throw new Error(`book model has incorrect hash: ${hash}`)
 
         const bookModelPath = fileHelper.appendLockExtension(
             BookManager._getPath(id)
@@ -27,27 +27,27 @@ export class BookManager {
         return undefined // resolve()
     }
 
-    static async get(id) {
-        if(!(BookManager.has(id)))
-            throw new Error(`unable to get book data path: ${id}`)
+    static async get(hash) {
+        if(!(BookManager.has(hash)))
+            throw new Error(`unable to get book data path: ${hash}`)
 
-        return bookModel.fromFile(BookManager._getPath(id))
+        return bookModel.fromFile(BookManager._getPath(hash))
     }
 
-    static getThumbnailPath(id) {
-        if(!(BookManager.hasThumbnail(id)))
-            throw new Error(`unable to get thumbnail path: ${id}`)
+    static getThumbnailPath(hash) {
+        if(!(BookManager.hasThumbnail(hash)))
+            throw new Error(`unable to get thumbnail path: ${hash}`)
 
-        return BookManager._getThumbnailPath(id)
+        return BookManager._getThumbnailPath(hash)
     }
 
-    static has(id) {
-        const path = BookManager._getPath(id)
+    static has(hash) {
+        const path = BookManager._getPath(hash)
         return fs.existsSync(path)
     }
 
-    static hasThumbnail(id) {
-        const path = BookManager._getThumbnailPath(id)
+    static hasThumbnail(hash) {
+        const path = BookManager._getThumbnailPath(hash)
         return fs.existsSync(path)
     }
 
@@ -87,12 +87,12 @@ export class BookManager {
         })
     }
 
-    static _getPath(id) {
-        return path.join(paths.booksDirectory, id)
+    static _getPath(hash) {
+        return path.join(paths.booksDirectory, hash)
     }
 
-    static _getThumbnailPath(id) {
-        return path.join(paths.thumbnailsDirectory, id)
+    static _getThumbnailPath(hash) {
+        return path.join(paths.thumbnailsDirectory, hash)
     }
 
     static async _hasAnyDamagedBooks() {
