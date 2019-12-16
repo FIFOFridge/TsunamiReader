@@ -13,6 +13,7 @@ let model = storage.create.predefined.typeRestricted(
             {key: 'hash', type: storage.dataTypes.String},
             //metadata
             {key: 'author', type: storage.dataTypes.String, default: 'unknown'},
+            {key: 'creator', type: storage.dataTypes.String, default: 'unknown'},
             {key: 'rights', type: storage.dataTypes.String, default: 'unknown'},
             {key: 'identifier', type: storage.dataTypes.String, default: 'unknown'},
             {key: 'contributor', type: storage.dataTypes.String, default: 'unknown'},
