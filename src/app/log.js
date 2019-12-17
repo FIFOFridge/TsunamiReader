@@ -48,9 +48,13 @@ function applyConfig() {
                     caller = 'renderer'
                 }
 
-                const text = util.format.apply(util, msg.data)
+                let text = util.format.apply(util, msg.data)
                 // const date = (msg.date instanceof Date) ? msg.date.toLocaleDateString() : new Date(msg.date).toLocaleDateString()
+
                 console.log(`@${caller} [${msg.level}] ${date}: ${text}`)
+
+                if(msg.level === 'error')
+                    console.trace()
             }
         }
     } else { //Renderer
@@ -89,9 +93,12 @@ function applyConfig() {
                     caller = 'main'
                 }
 
-                const text = util.format.apply(util, msg.data)
+                let text = util.format.apply(util, msg.data)
                 // const date = (msg.date instanceof Date) ? msg.date.toLocaleDateString() : new Date(msg.date).toLocaleDateString()
                 console.log(`@${caller} [${msg.level}] ${date}: ${text}`)
+
+                if(msg.level === 'error')
+                    console.trace()
             }
         }
     }
