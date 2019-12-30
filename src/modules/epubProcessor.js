@@ -10,6 +10,7 @@ import { hasNode } from '@helpers/objectHelper'
 import epubMetadataTags from '@constants/epubMetadataTags'
 import { appendLockExtension, trimSpecialExtension } from '@helpers/fileHelper'
 import { default as bookModel, applyMetadata } from '@models/book'
+import * as Promise from 'bluebird'
 
 export const coverProcessingMode = {
     FromMetadata: 'fromMetadata',
@@ -146,6 +147,8 @@ export class EpubProcessor {
         model.set('path', this.path)
 
         applyMetadata(model, this.metadata)
+
+        return model
     }
 
     async dispose() {

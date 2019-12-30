@@ -18,7 +18,7 @@ export class BookManager {
             throw new Error(`book model has incorrect hash: ${hash}`)
 
         const bookModelPath = fileHelper.appendLockExtension(
-            BookManager._getPath(id)
+            BookManager._getPath(hash)
         )
 
         await bookModel.toFile(bookModelPath)
