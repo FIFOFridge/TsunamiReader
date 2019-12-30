@@ -20,6 +20,7 @@
     import * as Promise from 'bluebird'
     import { getAppSetting } from '@app/appWrapperProxy'
     import bookModel from '@models/book'
+    import { BookManager } from '@modules/bookManager.js'
 
     export default {
         components: {
@@ -42,7 +43,17 @@
             bookDataPaths: []
         },
         mounted: function() {
-
+            this.$nextTick(() => {
+                const pushy = path => {
+                    this.books.push(
+                        {
+                            path: path,
+                            state: bookDataState.Pending,
+                            metadata: null
+                        }
+                    )
+                }
+            })
         },
         methods: {
             beginLoad: async function (path) {
