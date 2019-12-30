@@ -43,14 +43,14 @@ const _ShelfViewModel = {
     mounted: function () {
         this.tryCallBaseHook('mounted')
 
-        // this.initBookFilesWatch()
+        this.initBookFilesWatch()
     },
     beforeDestroy: function () {
         this.tryCallBaseHook('beforeDestroy')
 
-        if(this.bookHelper !== undefined) {
-            this.bookHelper.removeListener('added')
-            this.bookHelper.removeListener('removed')
+        if(this.bookHelper !== undefined && this.bookHelper !== null) {
+            this.bookHelper.removeListener('added', this.addBook)
+            this.bookHelper.removeListener('removed', this.removeBook)
             this.bookHelper.dispose()
         }
     },
@@ -84,6 +84,7 @@ const _ShelfViewModel = {
                 await processor.dispose()
 
                 const model = processor.toBookModel()
+                model.set('hash', hash) //set hash value for processed epub
 
                 await BookManager.put(model)
             } catch(e) {
@@ -93,7 +94,7 @@ const _ShelfViewModel = {
 
             return undefined
         },
-        addLocalBook() {
+        addLocalBook: function() {
             this.$refs.panelButtonAddBook.setState(false)
 
             IPCBridgeRenderer.send(
@@ -106,7 +107,7 @@ const _ShelfViewModel = {
 
                         await this.processBook(reply.get('value'))
                     } catch(ex) {
-                        log.error(`unable to open book: ${reply.get('reason')}`)
+                        log.error(`unable to process book: ${ex.message}`)
 
                         //display messagebox
                         IPCBridgeRenderer.send(
@@ -123,6 +124,12 @@ const _ShelfViewModel = {
                     this.$refs.panelButtonAddBook.setState(true)
                 },
                 60000)
+        },
+        addBookToGrid: function () {
+
+        },
+        removeBookFromGrid: function () {
+
         }
     }
 }
